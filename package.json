@@ -1,0 +1,18 @@
+{
+  "name": "code-fusion-projects",
+  "version": "1.0.0",
+  "description": "MERN Stack Application for Code Fusion Projects",
+  "main": "index.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+  },
+  "author": "Vaibhav Rohidas Pawar",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

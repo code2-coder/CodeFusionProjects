@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #050505;
+    --foreground: #ffffff;
+    
+    --card: rgba(255, 255, 255, 0.03);
+    --card-foreground: #ffffff;
+    
+    --primary: #ffffff;
+    --primary-foreground: #000000;
+    
+    --secondary: #1a1a1a;
+    --secondary-foreground: #ffffff;
+    
+    --muted: #111111;
+    --muted-foreground: #888888;
+    
+    --border: rgba(255, 255, 255, 0.1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-[color:var(--border)];
+  }
+  body {
+    @apply bg-[color:var(--background)] text-[color:var(--foreground)] font-sans antialiased overflow-x-hidden;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+.glass-nav {
+  @apply bg-background/70 backdrop-blur-xl border-b border-[color:var(--border)];
+}
+
+.glass-card {
+  @apply bg-card backdrop-blur-lg border border-[color:var(--border)] rounded-2xl shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-shadow duration-300;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-white/50;
+}
+.dark .text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-white/50;
+}
+.text-gradient-dark {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-black to-black/50;
+}
+.dark .text-gradient-dark {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-white/50;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
