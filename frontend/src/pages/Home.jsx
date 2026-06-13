@@ -7,7 +7,6 @@ import Services from '../components/Services';
 import AIBuilder from '../components/AIBuilder';
 import DomainChecker from '../components/DomainChecker';
 import Templates from '../components/Templates';
-import Projects from '../components/Projects';
 import Testimonials from '../components/Testimonials';
 import Process from '../components/Process';
 import Pricing from '../components/Pricing';
@@ -27,7 +26,6 @@ const Home = () => {
         <AIBuilder />
         <DomainChecker />
         <Templates />
-        <Projects />
         <Testimonials />
         <Process />
         <Pricing />

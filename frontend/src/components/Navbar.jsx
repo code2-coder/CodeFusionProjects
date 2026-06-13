@@ -7,16 +7,8 @@ import { Menu, X, ChevronDown } from 'lucide-react';
 const navItems = [
   { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
-  {
-    label: 'Solutions',
-    dropdown: [
-      { label: 'All Services', href: '#services' },
-      { label: 'AI Builder', href: '#ai-builder' },
-      { label: 'Ready Templates', href: '#templates' },
-      { label: 'Domain Availability', href: '#domain' }
-    ]
-  },
-  { label: 'Projects', href: '#projects' },
+  { label: 'Templates', href: '#templates' },
+  { label: 'Pricing', href: '#pricing' },
   { label: 'Contact', href: '#contact' }
 ];
 
