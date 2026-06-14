@@ -3,24 +3,104 @@ import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 
 const Pricing = () => {
+  const handlePayment = async (plan) => {
+    if (plan.price === "Custom") {
+      alert("Please contact us for custom plans.");
+      return;
+    }
+
+    try {
+      const amountStr = plan.price.replace('₹', '').replace(',', '');
+      const amount = parseInt(amountStr);
+
+      const orderRes = await fetch('http://localhost:5000/api/payments/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount, planName: plan.name }),
+      });
+
+      const orderData = await orderRes.json();
+
+      if (!orderRes.ok) {
+        alert("Failed to create order");
+        return;
+      }
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_dummy',
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Code Fusion",
+        description: `Purchase ${plan.name} Plan`,
+        image: "/ai_logo.png",
+        order_id: orderData.id,
+        handler: async function (response) {
+          try {
+            const verifyRes = await fetch('http://localhost:5000/api/payments/verify-payment', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+                amount,
+                planName: plan.name,
+              }),
+            });
+
+            if (verifyRes.ok) {
+              alert("Payment successful!");
+            } else {
+              alert("Payment verification failed");
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Payment verification failed");
+          }
+        },
+        prefill: {
+          name: "Customer",
+          email: "customer@example.com",
+          contact: "9999999999"
+        },
+        theme: {
+          color: "#3B82F6"
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response){
+        alert("Payment failed");
+      });
+      rzp.open();
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred during payment initialization");
+    }
+  };
+
   const plans = [
     {
       name: "Starter",
-      price: "$999",
+      price: "₹2,999",
       desc: "Perfect for new startups.",
       features: ["5 Page Website", "Responsive Design", "Basic SEO", "Contact Form", "1 Month Support"],
       highlight: false
     },
     {
       name: "Business",
-      price: "$2,499",
+      price: "₹6,999",
       desc: "For growing businesses.",
       features: ["Up to 15 Pages", "Custom UI/UX Design", "CMS Integration", "Advanced SEO", "Performance Optimization", "3 Months Support"],
       highlight: true
     },
     {
       name: "Premium",
-      price: "Custom",
+      price: "₹11,999",
       desc: "Enterprise scale solutions.",
       features: ["Full Stack Web App", "MERN Architecture", "AI Integration", "Custom Dashboard", "E-Commerce Setup", "24/7 Priority Support"],
       highlight: false
@@ -28,7 +108,7 @@ const Pricing = () => {
   ];
 
   return (
-    <section className="py-32 relative bg-background">
+    <section id="pricing" className="py-32 relative bg-background">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <motion.h2 
@@ -75,7 +155,10 @@ const Pricing = () => {
                 ))}
               </div>
 
-              <button className={`w-full py-4 rounded-2xl font-bold transition-all shadow-sm ${plan.highlight ? 'bg-foreground text-background hover:scale-[1.02] hover:shadow-md' : 'bg-secondary/50 border border-[color:var(--border)] hover:bg-secondary'}`}>
+              <button 
+                onClick={() => handlePayment(plan)}
+                className={`w-full py-4 rounded-2xl font-bold transition-all shadow-sm ${plan.highlight ? 'bg-foreground text-background hover:scale-[1.02] hover:shadow-md' : 'bg-secondary/50 border border-[color:var(--border)] hover:bg-secondary'}`}
+              >
                 Get Started
               </button>
             </motion.div>

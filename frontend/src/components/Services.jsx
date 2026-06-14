@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Monitor, PenTool, Search, Briefcase, Bot, Globe } from 'lucide-react';
+import { Monitor, PenTool, Search, Briefcase, Bot, Globe, ShoppingCart, Smartphone, Cloud, Code, TrendingUp } from 'lucide-react';
 
 const Services = () => {
   const services = [
@@ -38,6 +38,41 @@ const Services = () => {
       desc: 'Reliable 99.9% uptime infrastructure for your business.', 
       span: 'md:col-span-1 lg:col-span-2',
       gradient: 'from-indigo-500/10 to-transparent'
+    },
+    { 
+      icon: <ShoppingCart size={28} />, 
+      title: 'E-Commerce Solutions', 
+      desc: 'Scalable, secure, and conversion-optimized online stores.', 
+      span: 'md:col-span-2 lg:col-span-2',
+      gradient: 'from-orange-500/10 to-transparent'
+    },
+    { 
+      icon: <Smartphone size={28} />, 
+      title: 'Mobile App Development', 
+      desc: 'Native and cross-platform apps for iOS and Android.', 
+      span: 'md:col-span-1 lg:col-span-1',
+      gradient: 'from-rose-500/10 to-transparent'
+    },
+    { 
+      icon: <Cloud size={28} />, 
+      title: 'Cloud Architecture & Migration', 
+      desc: 'Secure and efficient cloud solutions tailored to your needs.', 
+      span: 'md:col-span-1 lg:col-span-1',
+      gradient: 'from-cyan-500/10 to-transparent'
+    },
+    { 
+      icon: <Code size={28} />, 
+      title: 'Custom API Development', 
+      desc: 'Robust, secure, and scalable APIs to power your applications.', 
+      span: 'md:col-span-1 lg:col-span-1',
+      gradient: 'from-yellow-500/10 to-transparent'
+    },
+    { 
+      icon: <TrendingUp size={28} />, 
+      title: 'Digital Marketing', 
+      desc: 'Data-driven marketing strategies to maximize your ROI.', 
+      span: 'md:col-span-1 lg:col-span-1',
+      gradient: 'from-red-500/10 to-transparent'
     },
   ];
 
