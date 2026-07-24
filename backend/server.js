@@ -6,6 +6,8 @@ import authRoutes from './routes/authRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import packageRoutes from './routes/packageRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import resourceRoutes from './routes/resourceRoutes.js';
+import searchRoutes from './routes/searchRoutes.js';
 
 dotenv.config();
 
@@ -24,6 +26,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/packages', packageRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/resources', resourceRoutes);
+app.use('/api/search', searchRoutes);
 
 app.get('/', (req, res) => {
   res.send('Code Fusion API is running...');

@@ -1,5 +1,7 @@
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
+import crypto from 'crypto';
+import { sendVerificationEmail } from '../utils/sendEmail.js';
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -18,19 +20,47 @@ export const registerUser = async (req, res) => {
       name,
       email,
       password,
+      isVerified: true
     });
 
     if (user) {
       res.status(201).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        token: generateToken(user._id),
+        message: 'Registration successful. You can now log in.'
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
     }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Verify email address
+// @route   POST /api/auth/verify-otp
+// @access  Public
+export const verifyEmail = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({ message: 'User is already verified' });
+    }
+
+    if (user.verificationToken !== otp) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+
+    res.json({ message: 'Email verified successfully. You can now log in.' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

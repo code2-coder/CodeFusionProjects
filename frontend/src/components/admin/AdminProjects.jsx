@@ -1,15 +1,28 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const AdminProjects = () => {
   const [projects, setProjects] = useState([]);
   const [formData, setFormData] = useState({
-    projectName: '',
-    projectURL: '',
-    projectCode: '',
-    demo: '',
-    images: ''
+    title: '',
+    slug: '',
+    category: '',
+    description: '',
+    content: '',
+    client: '',
+    technologies: '',
+    tags: '',
+    featuredImage: '',
+    gallery: '',
+    demoUrl: '',
+    githubUrl: '',
+    featured: false,
+    published: true,
+    seoTitle: '',
+    seoDescription: ''
   });
   const [editingId, setEditingId] = useState(null);
   const { user } = useContext(AuthContext);
@@ -28,7 +41,12 @@ const AdminProjects = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
+  };
+
+  const handleContentChange = (content) => {
+    setFormData({ ...formData, content });
   };
 
   const handleSubmit = async (e) => {
@@ -40,7 +58,9 @@ const AdminProjects = () => {
       
       const payload = {
         ...formData,
-        images: formData.images.split(',').map(img => img.trim()).filter(img => img)
+        technologies: formData.technologies.split(',').map(item => item.trim()).filter(Boolean),
+        tags: formData.tags.split(',').map(item => item.trim()).filter(Boolean),
+        gallery: formData.gallery.split(',').map(item => item.trim()).filter(Boolean)
       };
 
       if (editingId) {
@@ -49,8 +69,7 @@ const AdminProjects = () => {
         await axios.post('/api/projects', payload, config);
       }
       
-      setFormData({ projectName: '', projectURL: '', projectCode: '', demo: '', images: '' });
-      setEditingId(null);
+      resetForm();
       fetchProjects();
     } catch (error) {
       console.error('Error saving project:', error);
@@ -58,13 +77,34 @@ const AdminProjects = () => {
     }
   };
 
+  const resetForm = () => {
+    setFormData({
+      title: '', slug: '', category: '', description: '', content: '',
+      client: '', technologies: '', tags: '', featuredImage: '',
+      gallery: '', demoUrl: '', githubUrl: '', featured: false,
+      published: true, seoTitle: '', seoDescription: ''
+    });
+    setEditingId(null);
+  };
+
   const handleEdit = (project) => {
     setFormData({
-      projectName: project.projectName || '',
-      projectURL: project.projectURL || '',
-      projectCode: project.projectCode || '',
-      demo: project.demo || '',
-      images: (project.images || []).join(', ')
+      title: project.title || '',
+      slug: project.slug || '',
+      category: project.category || '',
+      description: project.description || '',
+      content: project.content || '',
+      client: project.client || '',
+      technologies: (project.technologies || []).join(', '),
+      tags: (project.tags || []).join(', '),
+      featuredImage: project.featuredImage || '',
+      gallery: (project.gallery || []).join(', '),
+      demoUrl: project.demoUrl || '',
+      githubUrl: project.githubUrl || '',
+      featured: project.featured || false,
+      published: project.published !== undefined ? project.published : true,
+      seoTitle: project.seoTitle || '',
+      seoDescription: project.seoDescription || ''
     });
     setEditingId(project._id);
   };
@@ -86,23 +126,55 @@ const AdminProjects = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6 text-foreground">Manage Projects</h2>
+      <h2 className="text-2xl font-bold mb-6 text-[color:var(--foreground)]">Manage Work / Projects</h2>
       
-      <form onSubmit={handleSubmit} className="bg-card p-6 rounded-xl border border-[color:var(--border)] mb-8 space-y-4">
-        <h3 className="text-xl font-semibold text-foreground mb-4">{editingId ? 'Edit Project' : 'Add New Project'}</h3>
+      <form onSubmit={handleSubmit} className="bg-[color:var(--card)] p-6 rounded-xl border border-[color:var(--border)] mb-8 space-y-4">
+        <h3 className="text-xl font-semibold text-[color:var(--foreground)] mb-4">{editingId ? 'Edit Project' : 'Add New Project'}</h3>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="text" name="projectName" placeholder="Project Name" value={formData.projectName} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-background border border-[color:var(--border)] text-foreground focus:outline-none focus:border-blue-500" required />
-          <input type="text" name="projectURL" placeholder="Project URL" value={formData.projectURL} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-background border border-[color:var(--border)] text-foreground focus:outline-none focus:border-blue-500" required />
-          <input type="text" name="projectCode" placeholder="Project Code" value={formData.projectCode} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-background border border-[color:var(--border)] text-foreground focus:outline-none focus:border-blue-500" />
-          <input type="text" name="demo" placeholder="Demo URL" value={formData.demo} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-background border border-[color:var(--border)] text-foreground focus:outline-none focus:border-blue-500" />
-          <input type="text" name="images" placeholder="Image URLs (comma separated)" value={formData.images} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-background border border-[color:var(--border)] text-foreground focus:outline-none focus:border-blue-500 md:col-span-2" />
+          <input type="text" name="title" placeholder="Project Title" value={formData.title} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" required />
+          <input type="text" name="slug" placeholder="Slug (e.g. my-project)" value={formData.slug} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" required />
+          <input type="text" name="category" placeholder="Category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" required />
+          <input type="text" name="client" placeholder="Client Name" value={formData.client} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
+          
+          <div className="md:col-span-2">
+            <textarea name="description" placeholder="Short Description" value={formData.description} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" required rows="3"></textarea>
+          </div>
+
+          <div className="md:col-span-2 text-black bg-white rounded-xl overflow-hidden border border-[color:var(--border)]">
+            <ReactQuill theme="snow" value={formData.content} onChange={handleContentChange} placeholder="Rich Text Content Overview..." className="h-48 mb-12" />
+          </div>
+
+          <input type="text" name="featuredImage" placeholder="Featured Image URL" value={formData.featuredImage} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
+          <input type="text" name="gallery" placeholder="Gallery Image URLs (comma separated)" value={formData.gallery} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
+          
+          <input type="text" name="technologies" placeholder="Technologies (comma separated)" value={formData.technologies} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
+          <input type="text" name="tags" placeholder="Tags (comma separated)" value={formData.tags} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
+
+          <input type="text" name="demoUrl" placeholder="Live Demo URL" value={formData.demoUrl} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
+          <input type="text" name="githubUrl" placeholder="GitHub URL" value={formData.githubUrl} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
+
+          <input type="text" name="seoTitle" placeholder="SEO Title" value={formData.seoTitle} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
+          <input type="text" name="seoDescription" placeholder="SEO Description" value={formData.seoDescription} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
+
+          <div className="flex items-center gap-4 py-2 text-[color:var(--foreground)]">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="featured" checked={formData.featured} onChange={handleInputChange} className="w-5 h-5" />
+              Featured Project
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="published" checked={formData.published} onChange={handleInputChange} className="w-5 h-5" />
+              Published
+            </label>
+          </div>
         </div>
+
         <div className="flex gap-4 mt-4">
           <button type="submit" className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
             {editingId ? 'Update Project' : 'Add Project'}
           </button>
           {editingId && (
-            <button type="button" onClick={() => { setEditingId(null); setFormData({ projectName: '', projectURL: '', projectCode: '', demo: '', images: '' }); }} className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+            <button type="button" onClick={resetForm} className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
               Cancel Edit
             </button>
           )}
@@ -111,10 +183,10 @@ const AdminProjects = () => {
 
       <div className="space-y-4">
         {projects.map(project => (
-          <div key={project._id} className="p-4 bg-card rounded-xl border border-[color:var(--border)] flex justify-between items-center">
+          <div key={project._id} className="p-4 bg-[color:var(--card)] rounded-xl border border-[color:var(--border)] flex flex-col sm:flex-row justify-between sm:items-center gap-4">
             <div>
-              <p className="font-bold text-foreground">{project.projectName}</p>
-              <p className="text-sm text-foreground/60">{project.projectURL}</p>
+              <p className="font-bold text-[color:var(--foreground)]">{project.title} <span className="text-xs text-blue-400 font-normal ml-2">{project.category}</span></p>
+              <p className="text-sm text-[color:var(--foreground)] opacity-60">/{project.slug} {project.published ? '(Published)' : '(Draft)'}</p>
             </div>
             <div className="flex gap-2">
               <button onClick={() => handleEdit(project)} className="px-3 py-1 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 rounded-md transition-colors">Edit</button>
@@ -122,7 +194,7 @@ const AdminProjects = () => {
             </div>
           </div>
         ))}
-        {projects.length === 0 && <p className="text-foreground/60">No projects found.</p>}
+        {projects.length === 0 && <p className="text-[color:var(--foreground)] opacity-60">No projects found.</p>}
       </div>
     </div>
   );

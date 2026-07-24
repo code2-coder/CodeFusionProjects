@@ -2,13 +2,55 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, User, Mail } from 'lucide-react';
+import { Menu, X, ChevronDown, User, Mail, Search } from 'lucide-react';
+import GlobalSearch from './GlobalSearch';
+import AdminDropdown from './AdminDropdown';
 
 const navItems = [
   { label: 'Home', href: '/#home' },
-  { label: 'About', href: '/#about' },
+  {
+    label: 'Solutions',
+    href: '/solutions',
+    dropdown: [
+      { label: 'Website Development', href: '/solutions#solutions-grid' },
+      { label: 'eCommerce Development', href: '/solutions#solutions-grid' },
+      { label: 'Web Application Development', href: '/solutions#solutions-grid' },
+      { label: 'Mobile App Development', href: '/solutions#solutions-grid' },
+      { label: 'UI/UX Design', href: '/solutions#solutions-grid' },
+      { label: 'Website Redesign', href: '/solutions#solutions-grid' },
+      { label: 'Website Maintenance', href: '/solutions#solutions-grid' },
+      { label: 'Cloud & DevOps', href: '/solutions#solutions-grid' },
+      { label: 'AI Solutions', href: '/solutions#solutions-grid' },
+      { label: 'SEO & Performance Optimization', href: '/solutions#solutions-grid' }
+    ]
+  },
+  {
+    label: 'Work',
+    dropdown: [
+      { label: 'By Industry', isHeader: true },
+      { label: 'Healthcare & Dental', href: '/#industry-healthcare' },
+      { label: 'Hotels & Hospitality', href: '/#industry-hotels' },
+      { label: 'Restaurants & Cafes', href: '/#industry-restaurants' },
+      { label: 'Real Estate', href: '/#industry-real-estate' },
+      { label: 'Construction', href: '/#industry-construction' },
+      { label: 'Education', href: '/#industry-education' },
+      { label: 'Beauty & Salon', href: '/#industry-beauty' },
+      { label: 'Travel & Tourism', href: '/#industry-travel' },
+      { label: 'Finance', href: '/#industry-finance' },
+      { label: 'Startups', href: '/#industry-startups' },
+      { label: 'By Project Type', isHeader: true },
+      { label: 'Business Websites', href: '/#project-business' },
+      { label: 'Landing Pages', href: '/#project-landing' },
+      { label: 'eCommerce Stores', href: '/#project-ecommerce' },
+      { label: 'Web Applications', href: '/#project-web-apps' },
+      { label: 'Mobile Apps', href: '/#project-mobile' },
+      { label: 'Admin Dashboards', href: '/#project-admin' },
+      { label: 'SaaS Platforms', href: '/#project-saas' }
+    ]
+  },
   { label: 'Templates', href: '/#templates' },
   { label: 'Pricing', href: '/#pricing' },
+  { label: 'About', href: '/#about' },
   { label: 'Contact', href: '/#contact' }
 ];
 
@@ -22,16 +64,17 @@ const DesktopNavItem = ({ item, index }) => {
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
       >
-        <motion.button
+        <motion.a
+          href={item.href || '#'}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="flex items-center gap-1 text-sm font-semibold text-foreground/80 hover:text-foreground transition-colors hover:text-gradient relative"
+          className="flex items-center gap-1 text-sm font-semibold text-[color:var(--foreground)] opacity-80 hover:opacity-100 transition-colors relative group-hover:text-blue-400"
         >
           {item.label}
-          <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180 text-blue-400' : ''}`} />
           <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transition-all group-hover:w-full"></span>
-        </motion.button>
+        </motion.a>
 
         <AnimatePresence>
           {isOpen && (
@@ -40,16 +83,22 @@ const DesktopNavItem = ({ item, index }) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 mt-2 w-56 rounded-2xl bg-black/95 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden py-2 z-50"
+              className="absolute top-full left-0 mt-2 w-56 rounded-2xl bg-black/95 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden py-2 z-50 max-h-[70vh] overflow-y-auto"
             >
               {item.dropdown.map((subItem, i) => (
-                <a
-                  key={i}
-                  href={subItem.href}
-                  className="block px-5 py-2.5 text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  {subItem.label}
-                </a>
+                subItem.isHeader ? (
+                  <div key={i} className="block px-5 py-2 text-xs font-bold text-white/50 uppercase tracking-widest mt-1 mb-1">
+                    {subItem.label}
+                  </div>
+                ) : (
+                  <a
+                    key={i}
+                    href={subItem.href}
+                    className="block px-5 py-2.5 text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    {subItem.label}
+                  </a>
+                )
               ))}
             </motion.div>
           )}
@@ -118,21 +167,7 @@ const AccountDropdown = () => {
                 <span className="relative z-10">Continue with Email</span>
               </Link>
               
-              <button
-                onClick={() => alert("Google Login coming soon!")}
-                className="group relative w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-white/80 rounded-2xl hover:text-white transition-all overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-inner border border-white/5">
-                  <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                  </svg>
-                </div>
-                <span className="relative z-10">Continue with Google</span>
-              </button>
+
             </div>
           </motion.div>
         )}
@@ -144,6 +179,7 @@ const AccountDropdown = () => {
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -186,17 +222,24 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setSearchOpen(true)}
+              className="p-2 text-foreground/70 hover:text-foreground rounded-full hover:bg-secondary transition-colors"
+              aria-label="Search"
+            >
+              <Search size={20} />
+            </button>
+
             <div className="hidden sm:flex items-center gap-4">
               {user ? (
                 <>
-                  {user.role === 'admin' && (
-                    <Link to="/admin" className="text-sm font-bold text-purple-400 hover:text-purple-300 transition-colors">
-                      Admin Dashboard
-                    </Link>
+                  {user.role === 'admin' ? (
+                    <AdminDropdown user={user} handleLogout={handleLogout} />
+                  ) : (
+                    <button onClick={handleLogout} className="px-6 py-2.5 rounded-xl bg-foreground text-background font-bold text-sm hover:scale-105 transition-all shadow-[0_4px_14px_rgba(0,0,0,0.1)]">
+                      Logout
+                    </button>
                   )}
-                  <button onClick={handleLogout} className="px-6 py-2.5 rounded-xl bg-foreground text-background font-bold text-sm hover:scale-105 transition-all shadow-[0_4px_14px_rgba(0,0,0,0.1)]">
-                    Logout
-                  </button>
                 </>
               ) : (
                 <AccountDropdown />
@@ -226,19 +269,25 @@ const Navbar = () => {
                 <React.Fragment key={item.label}>
                   {item.dropdown ? (
                     <div className="flex flex-col gap-2">
-                      <div className="text-foreground font-bold py-2 border-b border-[color:var(--border)] opacity-50 uppercase text-xs tracking-wider">
+                      <a href={item.href || '#'} className="text-[color:var(--foreground)] font-bold py-2 border-b border-[color:var(--border)] opacity-50 hover:opacity-100 transition-colors uppercase text-xs tracking-wider block" onClick={() => setMobileMenuOpen(false)}>
                         {item.label}
-                      </div>
+                      </a>
                       <div className="flex flex-col pl-4 gap-2">
                         {item.dropdown.map((subItem) => (
-                          <a
-                            key={subItem.label}
-                            href={subItem.href}
-                            className="text-foreground/80 font-semibold py-2 hover:text-foreground transition-colors"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            {subItem.label}
-                          </a>
+                          subItem.isHeader ? (
+                            <div key={subItem.label} className="text-foreground/50 font-bold py-1 text-xs uppercase tracking-wider mt-2">
+                              {subItem.label}
+                            </div>
+                          ) : (
+                            <a
+                              key={subItem.label}
+                              href={subItem.href}
+                              className="text-foreground/80 font-semibold py-2 hover:text-foreground transition-colors"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              {subItem.label}
+                            </a>
+                          )
                         ))}
                       </div>
                     </div>
@@ -279,19 +328,7 @@ const Navbar = () => {
                         <span>Continue with Email</span>
                       </div>
                     </Link>
-                    <button onClick={() => { alert("Google Login coming soon!"); setMobileMenuOpen(false); }} className="py-3 px-4 font-semibold bg-white/5 border border-[color:var(--border)] rounded-xl hover:bg-white/10 transition-all text-foreground text-sm flex items-center justify-between group">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/5 group-hover:bg-white/20 transition-colors">
-                          <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                          </svg>
-                        </div>
-                        <span>Continue with Google</span>
-                      </div>
-                    </button>
+
                   </div>
                 )}
               </div>
@@ -299,6 +336,7 @@ const Navbar = () => {
           )}
         </AnimatePresence>
       </div>
+      <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </nav>
   );
 };

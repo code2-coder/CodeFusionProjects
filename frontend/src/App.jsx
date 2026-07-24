@@ -5,6 +5,11 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminPanel from './pages/AdminPanel';
+import Solutions from './pages/Solutions';
+import Work from './pages/Work';
+import WorkDetail from './pages/WorkDetail';
+import Resources from './pages/Resources';
+import ResourceDetail from './pages/ResourceDetail';
 import WhatsAppButton from './components/WhatsAppButton';
 import { AuthProvider } from './context/AuthContext';
 
@@ -25,8 +30,13 @@ function App() {
             <Navbar />
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/solutions" element={<Solutions />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/work" element={<Work />} />
+              <Route path="/work/:slug" element={<WorkDetail />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/resources/:slug" element={<ResourceDetail />} />
               <Route path="/admin" element={<AdminPanel />} />
             </Routes>
           </div>

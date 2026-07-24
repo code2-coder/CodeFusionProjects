@@ -4,9 +4,11 @@ import Clients from '../components/Clients';
 import About from '../components/About';
 import Founder from '../components/Founder';
 import Services from '../components/Services';
+import FeaturedWork from '../components/FeaturedWork';
+import FeaturedResources from '../components/FeaturedResources';
 import AIBuilder from '../components/AIBuilder';
 import DomainChecker from '../components/DomainChecker';
-import Templates from '../components/Templates';
+
 import Testimonials from '../components/Testimonials';
 import Process from '../components/Process';
 import Pricing from '../components/Pricing';
@@ -21,12 +23,14 @@ const Home = () => {
         <Hero />
         <Clients />
         <About />
+        <FeaturedWork />
         <Founder />
         <Services />
         <AIBuilder />
         <DomainChecker />
-        <Templates />
+
         <Testimonials />
+        <FeaturedResources />
         <Process />
         <Pricing />
         <FAQ />

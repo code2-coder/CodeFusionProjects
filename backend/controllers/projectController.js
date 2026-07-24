@@ -1,32 +1,30 @@
 import Project from '../models/Project.js';
 
-// @desc    Get all projects
-// @route   GET /api/projects
-// @access  Public
 export const getProjects = async (req, res) => {
   try {
-    const projects = await Project.find({});
+    const projects = await Project.find({}).sort({ createdAt: -1 });
     res.json(projects);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Create a project
-// @route   POST /api/projects
-// @access  Private/Admin
+export const getProjectBySlug = async (req, res) => {
+  try {
+    const project = await Project.findOne({ slug: req.params.slug });
+    if (project) {
+      res.json(project);
+    } else {
+      res.status(404).json({ message: 'Project not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const createProject = async (req, res) => {
   try {
-    const { projectName, projectURL, projectCode, demo, images } = req.body;
-
-    const project = new Project({
-      projectName,
-      projectURL,
-      projectCode,
-      demo,
-      images,
-    });
-
+    const project = new Project(req.body);
     const createdProject = await project.save();
     res.status(201).json(createdProject);
   } catch (error) {
@@ -34,22 +32,12 @@ export const createProject = async (req, res) => {
   }
 };
 
-// @desc    Update a project
-// @route   PUT /api/projects/:id
-// @access  Private/Admin
 export const updateProject = async (req, res) => {
   try {
-    const { projectName, projectURL, projectCode, demo, images } = req.body;
-
     const project = await Project.findById(req.params.id);
 
     if (project) {
-      project.projectName = projectName || project.projectName;
-      project.projectURL = projectURL || project.projectURL;
-      project.projectCode = projectCode || project.projectCode;
-      project.demo = demo || project.demo;
-      project.images = images || project.images;
-
+      Object.assign(project, req.body);
       const updatedProject = await project.save();
       res.json(updatedProject);
     } else {
@@ -60,9 +48,6 @@ export const updateProject = async (req, res) => {
   }
 };
 
-// @desc    Delete a project
-// @route   DELETE /api/projects/:id
-// @access  Private/Admin
 export const deleteProject = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);

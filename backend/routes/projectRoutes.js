@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   getProjects,
+  getProjectBySlug,
   createProject,
   updateProject,
   deleteProject,
@@ -10,6 +11,7 @@ import { protect, admin } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 router.route('/').get(getProjects).post(protect, admin, createProject);
+router.route('/slug/:slug').get(getProjectBySlug);
 router
   .route('/:id')
   .put(protect, admin, updateProject)
