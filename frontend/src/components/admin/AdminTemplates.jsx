@@ -168,14 +168,12 @@ const AdminTemplates = () => {
           <input type="url" name="demoUrl" placeholder="Website Link (Live Demo URL)" value={formData.demoUrl} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-background border border-[color:var(--border)] text-foreground focus:outline-none focus:border-blue-500" />
           
           <div className="md:col-span-2 space-y-2">
-            <label className="block text-sm font-medium text-foreground/80">Gallery Images (Upload or Paste URLs)</label>
-            <input type="text" name="galleryImages" placeholder="Paste existing or external URLs (comma separated)" value={formData.galleryImages} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-background border border-[color:var(--border)] text-foreground focus:outline-none focus:border-blue-500 mb-2" />
+            <label className="block text-sm font-medium text-foreground/80">Gallery Images (Upload)</label>
             <input type="file" multiple accept="image/*" onChange={(e) => setGalleryFiles(e.target.files)} className="w-full px-4 py-2 rounded-xl bg-background border border-[color:var(--border)] text-foreground focus:outline-none focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500/10 file:text-blue-500 hover:file:bg-blue-500/20" />
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <label className="block text-sm font-medium text-foreground/80">Preview Video (Upload or Paste URL)</label>
-            <input type="text" name="previewVideo" placeholder="Paste existing or YouTube URL" value={formData.previewVideo} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-background border border-[color:var(--border)] text-foreground focus:outline-none focus:border-blue-500 mb-2" />
+            <label className="block text-sm font-medium text-foreground/80">Preview Video (Upload)</label>
             <input type="file" accept="video/*" onChange={(e) => setVideoFile(e.target.files[0])} className="w-full px-4 py-2 rounded-xl bg-background border border-[color:var(--border)] text-foreground focus:outline-none focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-500/10 file:text-purple-500 hover:file:bg-purple-500/20" />
           </div>
 
