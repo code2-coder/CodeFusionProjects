@@ -10,6 +10,8 @@ import Work from './pages/Work';
 import WorkDetail from './pages/WorkDetail';
 import Resources from './pages/Resources';
 import ResourceDetail from './pages/ResourceDetail';
+import TemplatesPage from './pages/TemplatesPage';
+import TemplateDetail from './pages/TemplateDetail';
 import WhatsAppButton from './components/WhatsAppButton';
 import { AuthProvider } from './context/AuthContext';
 
@@ -23,7 +25,7 @@ function App() {
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px] animate-blob" />
             <div className="absolute top-[20%] right-[-10%] w-[30%] h-[40%] rounded-full bg-purple-500/10 blur-[120px] animate-blob animation-delay-2000" />
             <div className="absolute bottom-[-10%] left-[20%] w-[40%] h-[40%] rounded-full bg-pink-500/10 blur-[120px] animate-blob animation-delay-4000" />
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+            <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay"></div>
           </div>
 
           <div className="relative z-10">
@@ -33,10 +35,11 @@ function App() {
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/work" element={<Work />} />
               <Route path="/work/:slug" element={<WorkDetail />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/resources/:slug" element={<ResourceDetail />} />
+              <Route path="/templates" element={<TemplatesPage />} />
+              <Route path="/templates/:id" element={<TemplateDetail />} />
               <Route path="/admin" element={<AdminPanel />} />
             </Routes>
           </div>

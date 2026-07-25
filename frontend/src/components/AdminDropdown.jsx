@@ -1,18 +1,45 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { 
-  User, Settings, Shield, Key, LayoutDashboard, FolderKanban, FileEdit, Clock, Star,
-  Briefcase, LayoutTemplate, BookOpen, PenTool, Image as ImageIcon, Bell, Megaphone, Activity,
-  Sun, Moon, Monitor, Palette, Globe, Calendar, Keyboard, FileText, HelpCircle, 
-  MessageSquare, Bug, Lightbulb, PlusCircle, Upload, PenBox, LogOut, X
+  User, Settings, Shield, Key, LayoutDashboard,
+  LogOut, X
 } from 'lucide-react';
+
+const MenuItem = ({ icon: Icon, label, href = "#", badge, onClick, onSelect }) => (
+  <Link 
+    to={href} 
+    onClick={(e) => {
+      if (onClick) {
+        e.preventDefault();
+        onClick();
+      }
+      if (href !== "#" && onSelect) onSelect();
+    }}
+    className="flex items-center justify-between px-4 py-2.5 text-sm font-medium text-[color:var(--foreground)] opacity-70 hover:opacity-100 hover:bg-[color:var(--secondary)] rounded-xl transition-all group"
+  >
+    <div className="flex items-center gap-3">
+      <Icon size={16} className="text-[color:var(--foreground)] group-hover:text-purple-400 transition-colors" />
+      <span>{label}</span>
+    </div>
+    {badge && (
+      <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+        {badge}
+      </span>
+    )}
+  </Link>
+);
+
+const SectionHeader = ({ title }) => (
+  <div className="px-4 py-2 mt-2 text-[10px] font-bold uppercase tracking-widest text-[color:var(--foreground)] opacity-40">
+    {title}
+  </div>
+);
 
 const AdminDropdown = ({ user, handleLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   // Handle click outside to close
   useEffect(() => {
@@ -37,12 +64,7 @@ const AdminDropdown = ({ user, handleLogout }) => {
     return () => document.removeEventListener('keydown', handleEsc);
   }, []);
 
-  const toggleTheme = (theme) => {
-    // Basic theme toggle simulation
-    if (theme === 'dark') document.documentElement.classList.add('dark');
-    else if (theme === 'light') document.documentElement.classList.remove('dark');
-    // For 'system', we'd normally check matchMedia, but we'll leave as placeholder
-  };
+
 
   const confirmLogout = () => {
     setShowLogoutModal(false);
@@ -50,35 +72,7 @@ const AdminDropdown = ({ user, handleLogout }) => {
     handleLogout();
   };
 
-  const MenuItem = ({ icon: Icon, label, href = "#", badge, onClick }) => (
-    <Link 
-      to={href} 
-      onClick={(e) => {
-        if (onClick) {
-          e.preventDefault();
-          onClick();
-        }
-        if (href !== "#") setIsOpen(false);
-      }}
-      className="flex items-center justify-between px-4 py-2.5 text-sm font-medium text-[color:var(--foreground)] opacity-70 hover:opacity-100 hover:bg-[color:var(--secondary)] rounded-xl transition-all group"
-    >
-      <div className="flex items-center gap-3">
-        <Icon size={16} className="text-[color:var(--foreground)] group-hover:text-purple-400 transition-colors" />
-        <span>{label}</span>
-      </div>
-      {badge && (
-        <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-          {badge}
-        </span>
-      )}
-    </Link>
-  );
 
-  const SectionHeader = ({ title }) => (
-    <div className="px-4 py-2 mt-2 text-[10px] font-bold uppercase tracking-widest text-[color:var(--foreground)] opacity-40">
-      {title}
-    </div>
-  );
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -100,7 +94,7 @@ const AdminDropdown = ({ user, handleLogout }) => {
             animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: 10, scale: 0.95, filter: 'blur(5px)' }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-full right-0 mt-4 w-[320px] max-h-[80vh] overflow-y-auto glass-card border border-[color:var(--border)] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] rounded-2xl z-50 custom-scrollbar"
+            className="absolute top-full right-0 mt-4 w-[320px] max-h-[80vh] overflow-y-auto bg-black border border-[color:var(--border)] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] rounded-2xl z-50 custom-scrollbar"
           >
             {/* Header Profile Info */}
             <div className="p-5 border-b border-[color:var(--border)] bg-[color:var(--secondary)]/30 backdrop-blur-md">
@@ -120,91 +114,22 @@ const AdminDropdown = ({ user, handleLogout }) => {
             </div>
 
             <div className="p-2 flex flex-col gap-1">
-              
               <SectionHeader title="My Account" />
-              <MenuItem icon={User} label="My Profile" />
-              <MenuItem icon={Settings} label="Account Settings" />
-              <MenuItem icon={Shield} label="Security Settings" />
-              <MenuItem icon={Key} label="Change Password" />
+              <MenuItem icon={User} label="My Profile" onSelect={() => setIsOpen(false)} />
+              <MenuItem icon={Settings} label="Account Settings" onSelect={() => setIsOpen(false)} />
+              <MenuItem icon={Shield} label="Security Settings" onSelect={() => setIsOpen(false)} />
+              <MenuItem icon={Key} label="Change Password" onSelect={() => setIsOpen(false)} />
 
               <div className="h-px bg-[color:var(--border)] my-2 mx-2"></div>
 
               <SectionHeader title="Workspace" />
-              <MenuItem icon={LayoutDashboard} label="Admin Dashboard" href="/admin" />
-              <MenuItem icon={FolderKanban} label="My Projects" />
-              <MenuItem icon={FileEdit} label="Draft Content" />
-              <MenuItem icon={Clock} label="Recently Edited" />
-              <MenuItem icon={Star} label="Favorites" />
+              <MenuItem icon={LayoutDashboard} label="Admin Dashboard" href="/admin" onSelect={() => setIsOpen(false)} />
 
-              <div className="h-px bg-[color:var(--border)] my-2 mx-2"></div>
 
-              <SectionHeader title="Content Management" />
-              <MenuItem icon={Briefcase} label="Work (Portfolio)" href="/admin" />
-              <MenuItem icon={LayoutTemplate} label="Templates" />
-              <MenuItem icon={BookOpen} label="Resources" href="/admin" />
-              <MenuItem icon={PenTool} label="Blog" />
-              <MenuItem icon={ImageIcon} label="Media Library" />
 
-              <div className="h-px bg-[color:var(--border)] my-2 mx-2"></div>
 
-              <SectionHeader title="Notifications" />
-              <MenuItem icon={Bell} label="View Notifications" badge="3" />
-              <MenuItem icon={Megaphone} label="Announcements" />
-              <MenuItem icon={Activity} label="Activity Log" />
 
-              <div className="h-px bg-[color:var(--border)] my-2 mx-2"></div>
 
-              <SectionHeader title="Appearance" />
-              <div className="flex gap-2 px-4 py-2">
-                <button onClick={() => toggleTheme('light')} className="flex-1 py-2 bg-[color:var(--secondary)] rounded-lg flex items-center justify-center text-[color:var(--foreground)] hover:bg-[color:var(--border)] transition-colors tooltip-trigger" title="Light Mode">
-                  <Sun size={16} />
-                </button>
-                <button onClick={() => toggleTheme('dark')} className="flex-1 py-2 bg-black text-white rounded-lg flex items-center justify-center border border-white/10 hover:bg-neutral-900 transition-colors tooltip-trigger" title="Dark Mode">
-                  <Moon size={16} />
-                </button>
-                <button onClick={() => toggleTheme('system')} className="flex-1 py-2 bg-[color:var(--secondary)] rounded-lg flex items-center justify-center text-[color:var(--foreground)] hover:bg-[color:var(--border)] transition-colors tooltip-trigger" title="System Theme">
-                  <Monitor size={16} />
-                </button>
-              </div>
-              <MenuItem icon={Palette} label="Accent Color Picker" />
-
-              <div className="h-px bg-[color:var(--border)] my-2 mx-2"></div>
-
-              <SectionHeader title="Preferences" />
-              <MenuItem icon={Globe} label="Language" />
-              <MenuItem icon={Calendar} label="Time Zone" />
-              <MenuItem icon={Keyboard} label="Keyboard Shortcuts" />
-
-              <div className="h-px bg-[color:var(--border)] my-2 mx-2"></div>
-
-              <SectionHeader title="Help" />
-              <MenuItem icon={FileText} label="Documentation" />
-              <MenuItem icon={HelpCircle} label="Support Center" />
-              <MenuItem icon={MessageSquare} label="Contact Support" />
-              <MenuItem icon={Bug} label="Report a Bug" />
-              <MenuItem icon={Lightbulb} label="Feature Request" />
-
-              <div className="h-px bg-[color:var(--border)] my-2 mx-2"></div>
-
-              <SectionHeader title="Quick Actions" />
-              <div className="px-3 pb-2 pt-1 grid grid-cols-2 gap-2">
-                <button className="flex flex-col items-center justify-center p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl hover:bg-purple-500/20 transition-colors text-purple-400 group">
-                  <PlusCircle size={20} className="mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-bold text-center">New Project</span>
-                </button>
-                <button className="flex flex-col items-center justify-center p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl hover:bg-blue-500/20 transition-colors text-blue-400 group">
-                  <Upload size={20} className="mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-bold text-center">Upload Template</span>
-                </button>
-                <button className="flex flex-col items-center justify-center p-3 bg-pink-500/10 border border-pink-500/30 rounded-xl hover:bg-pink-500/20 transition-colors text-pink-400 group">
-                  <PenBox size={20} className="mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-bold text-center">Write Blog</span>
-                </button>
-                <button className="flex flex-col items-center justify-center p-3 bg-orange-500/10 border border-orange-500/30 rounded-xl hover:bg-orange-500/20 transition-colors text-orange-400 group">
-                  <ImageIcon size={20} className="mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-bold text-center">Upload Media</span>
-                </button>
-              </div>
 
             </div>
 
@@ -256,7 +181,7 @@ const AdminDropdown = ({ user, handleLogout }) => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative bg-[color:var(--card)] border border-[color:var(--border)] rounded-3xl p-8 max-w-sm w-full shadow-2xl"
+              className="relative bg-[#0a0a0a] border border-[color:var(--border)] rounded-3xl p-8 max-w-sm w-full shadow-2xl"
             >
               <button 
                 onClick={() => setShowLogoutModal(false)}

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  FolderKanban, 
   Package, 
   BookOpen, 
   Users,
@@ -51,9 +50,9 @@ const DashboardOverview = () => {
   }, []);
 
   const statCards = [
-    { title: 'Total Projects', value: stats.projects, icon: FolderKanban, color: 'from-blue-500 to-cyan-400', trend: '+12%' },
-    { title: 'Packages', value: stats.packages, icon: Package, color: 'from-purple-500 to-pink-500', trend: '+5%' },
-    { title: 'Resources', value: stats.resources, icon: BookOpen, color: 'from-orange-500 to-yellow-400', trend: '+18%' },
+
+
+
     { title: 'Active Users', value: stats.activeUsers, icon: Users, color: 'from-emerald-500 to-teal-400', trend: 'Live' },
   ];
 

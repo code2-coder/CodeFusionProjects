@@ -341,7 +341,7 @@ const Solutions = () => {
       <section className="py-24 px-6 relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="glass-card rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden border border-white/10 bg-gradient-to-br from-blue-900/30 to-purple-900/30">
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+            <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay"></div>
             
             <h2 className="text-4xl md:text-6xl font-extrabold mb-6 relative z-10">Ready to Build Your Next Digital Product?</h2>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-12 relative z-10">

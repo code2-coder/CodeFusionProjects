@@ -1,0 +1,62 @@
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import { protect, admin } from '../middleware/authMiddleware.js';
+
+const router = express.Router();
+
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+// File filter (optional, but good for security)
+const fileFilter = (req, file, cb) => {
+  if (file.fieldname === 'images') {
+    if (!file.mimetype.startsWith('image/')) {
+      return cb(new Error('Only images are allowed'));
+    }
+  } else if (file.fieldname === 'video') {
+    if (!file.mimetype.startsWith('video/')) {
+      return cb(new Error('Only videos are allowed'));
+    }
+  }
+  cb(null, true);
+};
+
+const upload = multer({ storage, fileFilter });
+
+// @desc    Upload multiple images
+// @route   POST /api/upload/images
+// @access  Private/Admin
+router.post('/images', protect, admin, upload.array('images', 10), (req, res) => {
+  try {
+    const filePaths = req.files.map(file => `/${file.path.replace(/\\/g, '/')}`);
+    res.status(200).json({ urls: filePaths });
+  } catch (error) {
+    res.status(400).json({ message: 'Error uploading images', error: error.message });
+  }
+});
+
+// @desc    Upload single video
+// @route   POST /api/upload/video
+// @access  Private/Admin
+router.post('/video', protect, admin, upload.single('video'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No video file provided' });
+    }
+    const filePath = `/${req.file.path.replace(/\\/g, '/')}`;
+    res.status(200).json({ url: filePath });
+  } catch (error) {
+    res.status(400).json({ message: 'Error uploading video', error: error.message });
+  }
+});
+
+export default router;
