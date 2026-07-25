@@ -8,7 +8,6 @@ import FeaturedWork from '../components/FeaturedWork';
 import FeaturedResources from '../components/FeaturedResources';
 import AIBuilder from '../components/AIBuilder';
 import DomainChecker from '../components/DomainChecker';
-import Templates from '../components/Templates';
 
 import Testimonials from '../components/Testimonials';
 import Process from '../components/Process';
@@ -25,7 +24,6 @@ const Home = () => {
         <Clients />
         <About />
         <FeaturedWork />
-        <Templates />
         <Founder />
         <Services />
         <AIBuilder />

@@ -5,28 +5,28 @@ import { Quote, Star } from 'lucide-react';
 const Testimonials = () => {
   const reviews = [
     {
-      name: "Sarah Jenkins",
+      name: "Neha Sharma",
       role: "CEO, TechNova",
       content: "Code Fusion completely transformed our digital presence. The AI builder they developed for us saved hundreds of hours. Truly a world-class team.",
-      img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80"
+      img: "https://ui-avatars.com/api/?name=Neha+Sharma&background=8b5cf6&color=fff"
     },
     {
-      name: "David Chen",
+      name: "Rahul Desai",
       role: "Founder, Lumina",
       content: "The level of polish and attention to detail in their UI/UX work is unmatched. They understand the premium startup aesthetic perfectly.",
-      img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80"
+      img: "https://ui-avatars.com/api/?name=Rahul+Desai&background=3b82f6&color=fff"
     },
     {
-      name: "Elena Rodriguez",
+      name: "Priya Patel",
       role: "Director, Zenith Retail",
       content: "Our e-commerce conversion rates doubled after the redesign. The speed and smoothness of the new platform are incredible.",
-      img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80"
+      img: "https://ui-avatars.com/api/?name=Priya+Patel&background=ec4899&color=fff"
     },
     {
-      name: "Marcus Thorne",
+      name: "Vikram Singh",
       role: "VP Product, Elevate",
       content: "Scaling our platform was a nightmare until we partnered with them. Their architecture is flawless and incredibly performant.",
-      img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80"
+      img: "https://ui-avatars.com/api/?name=Vikram+Singh&background=10b981&color=fff"
     }
   ];
 

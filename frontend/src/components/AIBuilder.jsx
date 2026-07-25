@@ -24,9 +24,14 @@ const AIBuilder = () => {
              whileInView={{ opacity: 1, x: 0 }}
              viewport={{ once: true }}
           >
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-card border border-[color:var(--border)] shadow-sm mb-8 text-purple-600 font-bold uppercase tracking-wide text-xs">
-              <Zap size={16} />
-              <span>Next-Gen AI Technology</span>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-card border border-[color:var(--border)] shadow-sm text-purple-600 font-bold uppercase tracking-wide text-xs">
+                <Zap size={16} />
+                <span>Next-Gen AI Technology</span>
+              </div>
+              <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-500 font-bold uppercase tracking-widest text-[10px]">
+                Coming Soon
+              </div>
             </div>
             
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 tracking-tight text-foreground">Build Your Website in <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500">Seconds with AI</span></h2>
@@ -48,8 +53,8 @@ const AIBuilder = () => {
               ))}
             </div>
 
-            <button className="mt-12 px-8 py-4 rounded-2xl bg-foreground text-background font-bold text-lg hover:scale-105 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.1)] flex items-center gap-2 group">
-              Try AI Builder <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <button disabled className="mt-12 px-8 py-4 rounded-2xl bg-secondary/50 text-foreground/50 font-bold text-lg flex items-center gap-2 cursor-not-allowed">
+              Coming Soon
             </button>
           </motion.div>
 
