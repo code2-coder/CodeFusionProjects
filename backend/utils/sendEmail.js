@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resendApiKey = process.env.RESEND_API_KEY;
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 export const sendVerificationEmail = async (email, name, verificationToken) => {
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
@@ -11,6 +12,10 @@ export const sendVerificationEmail = async (email, name, verificationToken) => {
   const verifyLink = `${frontendUrl}/verify/${verificationToken}`;
 
   try {
+    if (!resend) {
+      console.log('Verification email skipped (No RESEND_API_KEY set). OTP:', verificationToken);
+      return { success: true, message: 'Email skipped - no API key' };
+    }
     const data = await resend.emails.send({
       from: `Code Fusion Projects <${fromEmail}>`,
       to: [email],

@@ -9,6 +9,7 @@ import DashboardOverview from '../components/admin/DashboardOverview';
 
 import AdminTemplates from '../components/admin/AdminTemplates';
 import AdminCategories from '../components/admin/AdminCategories';
+import AdminProjects from '../components/admin/AdminProjects';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // A generic placeholder for unbuilt pages
@@ -45,6 +46,8 @@ const AdminPanel = () => {
 
 
 
+      case 'projects':
+        return <AdminProjects />;
       case 'categories':
         return <AdminCategories />;
       case 'templates':

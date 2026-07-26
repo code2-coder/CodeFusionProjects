@@ -13,6 +13,7 @@ import ResourceDetail from './pages/ResourceDetail';
 import TemplatesPage from './pages/TemplatesPage';
 import TemplateDetail from './pages/TemplateDetail';
 import WhatsAppButton from './components/WhatsAppButton';
+import Contact from './components/Contact';
 import { AuthProvider } from './context/AuthContext';
 
 function App() {
@@ -33,8 +34,10 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/solutions" element={<Solutions />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/work" element={<Work />} />
               <Route path="/work/:slug" element={<WorkDetail />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/resources/:slug" element={<ResourceDetail />} />

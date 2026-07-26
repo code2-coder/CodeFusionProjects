@@ -34,38 +34,70 @@ const Testimonials = () => {
   const duplicatedReviews = [...reviews, ...reviews];
 
   return (
-    <section className="py-32 relative overflow-hidden bg-secondary/10 border-y border-[color:var(--border)]">
+    <section className="py-32 lg:py-48 relative overflow-hidden bg-[#000000] border-t border-white/5 font-sans">
       {/* Background gradient orb */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/5 blur-[100px] rounded-full pointer-events-none mix-blend-multiply"></div>
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <motion.div 
+          animate={{ x: [0, -40, 0], y: [0, 20, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[30%] right-[10%] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[140px] mix-blend-screen"
+        ></motion.div>
+        <motion.div 
+          animate={{ x: [0, 40, 0], y: [0, -20, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-[10%] left-[10%] w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[140px] mix-blend-screen"
+        ></motion.div>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10 mb-20">
-        <div className="text-center">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 text-foreground">
-            Trusted by <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Innovators</span>
+      <div className="max-w-[1400px] mx-auto px-6 relative z-10 mb-20 md:mb-28">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center"
+        >
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.03] backdrop-blur-3xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.02)] text-white font-semibold tracking-wide text-xs mb-8">
+            <Star size={14} className="text-yellow-400" />
+            <span className="uppercase tracking-widest text-white/80">Testimonials</span>
+          </div>
+          <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 text-white leading-tight">
+            Trusted by <br className="hidden md:block"/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">Innovators</span>
           </h2>
-          <p className="text-foreground/60 text-lg font-medium">Don't just take our word for it. See what our partners say.</p>
-        </div>
+          <p className="text-white/50 text-lg md:text-2xl font-light tracking-tight max-w-2xl mx-auto leading-relaxed">
+            Don't just take our word for it. See what our visionary partners say about our luxury digital solutions.
+          </p>
+        </motion.div>
       </div>
 
       <div className="relative flex overflow-hidden group">
-        <div className="animate-marquee flex gap-6 px-3 whitespace-nowrap min-w-full">
+        <div className="animate-marquee flex gap-8 px-4 whitespace-nowrap min-w-full">
           {duplicatedReviews.map((review, i) => (
             <div
               key={i}
-              className="glass-card p-8 border-[color:var(--border)] relative flex-shrink-0 w-[350px] md:w-[450px] whitespace-normal group-hover:opacity-50 hover:!opacity-100 transition-opacity duration-300"
+              className="bg-white/[0.02] backdrop-blur-2xl p-8 md:p-10 border border-white/5 rounded-[2.5rem] relative flex-shrink-0 w-[350px] md:w-[480px] whitespace-normal group-hover:opacity-40 hover:!opacity-100 hover:scale-[1.02] transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden"
             >
-              <Quote className="absolute top-6 right-6 text-foreground/5" size={40} />
-              <div className="flex gap-1 text-yellow-500 mb-6">
-                {[1,2,3,4,5].map(star => <Star key={star} size={16} fill="currentColor" />)}
+              {/* Internal Glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-purple-500/0 hover:from-blue-500/5 hover:to-purple-500/5 transition-colors duration-700 pointer-events-none"></div>
+              
+              <Quote className="absolute top-8 right-8 text-white/5" size={60} />
+              
+              <div className="flex gap-1.5 text-yellow-400/90 mb-8 drop-shadow-[0_0_10px_rgba(250,204,21,0.3)]">
+                {[1,2,3,4,5].map(star => <Star key={star} size={18} fill="currentColor" />)}
               </div>
-              <p className="text-foreground/80 leading-relaxed mb-8 relative z-10 font-medium text-sm md:text-base">
+              
+              <p className="text-white/80 leading-relaxed mb-10 relative z-10 font-light text-base md:text-lg tracking-tight">
                 "{review.content}"
               </p>
-              <div className="flex items-center gap-4 mt-auto">
-                <img src={review.img} alt={review.name} className="w-12 h-12 rounded-full object-cover border border-[color:var(--border)]" />
+              
+              <div className="flex items-center gap-5 mt-auto relative z-10">
+                <div className="w-14 h-14 rounded-full p-1 bg-white/5 border border-white/10 backdrop-blur-md">
+                  <img src={review.img} alt={review.name} className="w-full h-full rounded-full object-cover" />
+                </div>
                 <div>
-                  <h4 className="font-bold text-sm text-foreground tracking-tight">{review.name}</h4>
-                  <p className="text-xs text-foreground/60 font-medium">{review.role}</p>
+                  <h4 className="font-bold text-lg text-white tracking-tight">{review.name}</h4>
+                  <p className="text-sm text-white/50 font-light tracking-wide">{review.role}</p>
                 </div>
               </div>
             </div>
@@ -73,24 +105,32 @@ const Testimonials = () => {
         </div>
         
         {/* Second identical row for continuous loop */}
-        <div className="animate-marquee2 absolute top-0 flex gap-6 px-3 whitespace-nowrap min-w-full">
+        <div className="animate-marquee2 absolute top-0 flex gap-8 px-4 whitespace-nowrap min-w-full">
           {duplicatedReviews.map((review, i) => (
             <div
               key={`dup-${i}`}
-              className="glass-card p-8 border-[color:var(--border)] relative flex-shrink-0 w-[350px] md:w-[450px] whitespace-normal group-hover:opacity-50 hover:!opacity-100 transition-opacity duration-300"
+              className="bg-white/[0.02] backdrop-blur-2xl p-8 md:p-10 border border-white/5 rounded-[2.5rem] relative flex-shrink-0 w-[350px] md:w-[480px] whitespace-normal group-hover:opacity-40 hover:!opacity-100 hover:scale-[1.02] transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden"
             >
-              <Quote className="absolute top-6 right-6 text-foreground/5" size={40} />
-              <div className="flex gap-1 text-yellow-500 mb-6">
-                {[1,2,3,4,5].map(star => <Star key={star} size={16} fill="currentColor" />)}
+              {/* Internal Glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-purple-500/0 hover:from-blue-500/5 hover:to-purple-500/5 transition-colors duration-700 pointer-events-none"></div>
+              
+              <Quote className="absolute top-8 right-8 text-white/5" size={60} />
+              
+              <div className="flex gap-1.5 text-yellow-400/90 mb-8 drop-shadow-[0_0_10px_rgba(250,204,21,0.3)]">
+                {[1,2,3,4,5].map(star => <Star key={star} size={18} fill="currentColor" />)}
               </div>
-              <p className="text-foreground/80 leading-relaxed mb-8 relative z-10 font-medium text-sm md:text-base">
+              
+              <p className="text-white/80 leading-relaxed mb-10 relative z-10 font-light text-base md:text-lg tracking-tight">
                 "{review.content}"
               </p>
-              <div className="flex items-center gap-4 mt-auto">
-                <img src={review.img} alt={review.name} className="w-12 h-12 rounded-full object-cover border border-[color:var(--border)]" />
+              
+              <div className="flex items-center gap-5 mt-auto relative z-10">
+                <div className="w-14 h-14 rounded-full p-1 bg-white/5 border border-white/10 backdrop-blur-md">
+                  <img src={review.img} alt={review.name} className="w-full h-full rounded-full object-cover" />
+                </div>
                 <div>
-                  <h4 className="font-bold text-sm text-foreground tracking-tight">{review.name}</h4>
-                  <p className="text-xs text-foreground/60 font-medium">{review.role}</p>
+                  <h4 className="font-bold text-lg text-white tracking-tight">{review.name}</h4>
+                  <p className="text-sm text-white/50 font-light tracking-wide">{review.role}</p>
                 </div>
               </div>
             </div>
@@ -99,8 +139,8 @@ const Testimonials = () => {
       </div>
       
       {/* Fade edges */}
-      <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-[color:var(--background)] to-transparent pointer-events-none z-10"></div>
-      <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-[color:var(--background)] to-transparent pointer-events-none z-10"></div>
+      <div className="absolute top-0 left-0 w-32 md:w-64 h-full bg-gradient-to-r from-[#000000] to-transparent pointer-events-none z-10"></div>
+      <div className="absolute top-0 right-0 w-32 md:w-64 h-full bg-gradient-to-l from-[#000000] to-transparent pointer-events-none z-10"></div>
     </section>
   );
 };

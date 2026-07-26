@@ -1,122 +1,108 @@
 import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
   Monitor, ShoppingCart, LayoutGrid, Smartphone, PenTool, 
   RefreshCw, Cloud, Cpu, Building, Stethoscope, Hotel, 
   Utensils, Home, GraduationCap, Scissors, Plane, 
   PieChart, Rocket, CheckCircle, ArrowRight, Zap, Shield, 
-  Search, Code, Settings, Server, Users, Wrench, LineChart
+  Search, Code, Settings, Server, Users, Wrench, LineChart, Sparkles, Layers
 } from 'lucide-react';
 import Footer from '../components/Footer';
 
 const solutions = [
   {
-    title: 'Website Development',
-    description: 'Design and develop fast, responsive, SEO-friendly websites that represent your brand and generate leads.',
+    title: 'Enterprise Web Architecture',
+    description: 'We do more than build websites. We engineer high-performance, SEO-dominant digital platforms designed to scale aggressively and convert visitors into lifelong clients.',
     icon: Monitor,
-    features: ['Business Websites', 'Corporate Websites', 'Landing Pages', 'Portfolio Websites', 'CMS Integration', 'SEO Optimization', 'Performance Optimization'],
-    color: 'from-blue-500 to-cyan-500'
+    features: ['Corporate Platforms', 'High-Conversion Landing Pages', 'Headless CMS Architecture', 'Advanced SEO Engineering', 'Sub-second Performance optimization'],
+    color: 'from-[#00F0FF] to-[#0080FF]',
+    shadow: 'shadow-[0_0_50px_rgba(0,240,255,0.3)]',
+    span: 'lg:col-span-2' // Bento large
   },
   {
-    title: 'eCommerce Development',
-    description: 'Build secure, scalable online stores that provide seamless shopping experiences and increase sales.',
+    title: 'High-Performance eCommerce',
+    description: 'Bespoke online retail experiences engineered for maximum conversion, secure global payments, and seamless inventory synchronization.',
     icon: ShoppingCart,
-    features: ['Custom Online Stores', 'Payment Gateway Integration', 'Shopping Cart', 'Product Management', 'Order Management', 'Inventory System', 'Customer Accounts'],
-    color: 'from-purple-500 to-pink-500'
+    features: ['Custom Storefronts', 'Global Payment Gateways', 'Frictionless Checkout', 'Automated Inventory'],
+    color: 'from-[#FF0055] to-[#7000FF]',
+    shadow: 'shadow-[0_0_50px_rgba(255,0,85,0.3)]',
+    span: 'lg:col-span-1'
   },
   {
-    title: 'Web Application Development',
-    description: 'Develop custom web applications that automate business operations and improve efficiency.',
+    title: 'Scalable Web Applications',
+    description: 'Complex business logic transformed into intuitive, lightning-fast web applications. We build the operational backbone of modern enterprises.',
     icon: LayoutGrid,
-    features: ['CRM Systems', 'ERP Solutions', 'Booking Platforms', 'Admin Dashboards', 'Customer Portals', 'Inventory Management', 'API Integrations'],
-    color: 'from-green-500 to-emerald-500'
+    features: ['Custom ERP/CRM Systems', 'SaaS Platform Development', 'Secure Data Portals', 'Advanced API Integration'],
+    color: 'from-[#00FF88] to-[#00A3FF]',
+    shadow: 'shadow-[0_0_50px_rgba(0,255,136,0.3)]',
+    span: 'lg:col-span-1'
   },
   {
-    title: 'Mobile App Development',
-    description: 'Create intuitive Android and iOS applications with modern user experiences.',
+    title: 'Native & Cross-Platform Mobile',
+    description: 'Fluid, gesture-driven mobile applications for iOS and Android. We build addictive mobile experiences that keep users coming back.',
     icon: Smartphone,
-    features: ['Android Apps', 'iOS Apps', 'Cross-platform Development', 'Business Applications', 'Service Booking Apps', 'eCommerce Apps'],
-    color: 'from-orange-500 to-amber-500'
+    features: ['iOS & Android Native', 'React Native Frameworks', 'Real-time Synchronization', 'Offline-first Architecture'],
+    color: 'from-[#FF9900] to-[#FF0055]',
+    shadow: 'shadow-[0_0_50px_rgba(255,153,0,0.3)]',
+    span: 'lg:col-span-1'
   },
   {
-    title: 'UI/UX Design',
-    description: 'Craft beautiful, user-centered digital experiences that improve engagement and conversion.',
+    title: 'Luxury UI/UX Design',
+    description: 'Award-winning design systems rooted in human psychology. We craft interfaces that look expensive, feel intuitive, and drive engagement.',
     icon: PenTool,
-    features: ['User Research', 'Wireframes', 'High-Fidelity UI Design', 'Interactive Prototypes', 'Design Systems', 'Accessibility'],
-    color: 'from-rose-500 to-red-500'
+    features: ['Behavioral User Research', 'High-Fidelity Prototyping', 'Micro-interaction Design', 'Comprehensive Design Systems'],
+    color: 'from-[#FF00C8] to-[#7000FF]',
+    shadow: 'shadow-[0_0_50px_rgba(255,0,200,0.3)]',
+    span: 'lg:col-span-1'
   },
   {
-    title: 'Website Redesign',
-    description: 'Modernize outdated websites with improved performance, design, and functionality.',
-    icon: RefreshCw,
-    features: ['Modern UI', 'Responsive Design', 'Speed Optimization', 'SEO Improvements', 'Conversion Optimization', 'Accessibility'],
-    color: 'from-indigo-500 to-blue-500'
-  },
-  {
-    title: 'Cloud & DevOps',
-    description: 'Deploy and manage applications with reliable cloud infrastructure and automated workflows.',
+    title: 'Cloud Infrastructure & DevOps',
+    description: 'Bulletproof server architectures. We deploy your applications on military-grade, auto-scaling cloud networks for 99.99% uptime.',
     icon: Cloud,
-    features: ['Cloud Deployment', 'Docker', 'CI/CD Pipelines', 'Server Configuration', 'Monitoring', 'Security'],
-    color: 'from-cyan-500 to-teal-500'
+    features: ['AWS & Vercel Deployment', 'Docker Containerization', 'Automated CI/CD Pipelines', '24/7 Security Monitoring'],
+    color: 'from-[#00E5FF] to-[#0055FF]',
+    shadow: 'shadow-[0_0_50px_rgba(0,229,255,0.3)]',
+    span: 'lg:col-span-2' // Bento large
   },
   {
-    title: 'AI Solutions',
-    description: 'Leverage artificial intelligence to automate tasks and improve business productivity.',
+    title: 'Applied AI & Automation',
+    description: 'Future-proof your business operations. We integrate custom Large Language Models and AI agents to automate your most complex workflows.',
     icon: Cpu,
-    features: ['AI Chatbots', 'AI Assistants', 'Workflow Automation', 'Document Processing', 'AI Integration', 'Business Automation'],
-    color: 'from-violet-500 to-purple-500'
+    features: ['Custom LLM Integration', 'Intelligent Customer Support', 'Automated Data Processing', 'Predictive Business Analytics'],
+    color: 'from-[#9D00FF] to-[#FF0055]',
+    shadow: 'shadow-[0_0_50px_rgba(157,0,255,0.3)]',
+    span: 'lg:col-span-1'
   },
   {
-    title: 'Website Maintenance',
-    description: 'Keep your digital assets secure, up-to-date, and running smoothly with our dedicated maintenance plans.',
-    icon: Wrench,
-    features: ['Regular Backups', 'Security Updates', 'Performance Monitoring', 'Bug Fixing', 'Content Updates', 'Technical Support'],
-    color: 'from-sky-400 to-blue-500'
-  },
-  {
-    title: 'SEO & Performance Optimization',
-    description: 'Boost your visibility and user experience with technical SEO and speed optimizations.',
+    title: 'Technical SEO & Performance',
+    description: 'Dominate search rankings. We rewrite the rules of performance, optimizing every byte of data to ensure you outrank the competition.',
     icon: LineChart,
-    features: ['Technical SEO Audits', 'Speed Optimization', 'Core Web Vitals', 'On-Page SEO', 'Image Optimization', 'Analytics Setup'],
-    color: 'from-amber-400 to-orange-500'
+    features: ['Deep Technical Audits', 'Core Web Vitals Mastery', 'Dynamic Content Optimization', 'Advanced Schema Markup'],
+    color: 'from-[#FFE600] to-[#FF5500]',
+    shadow: 'shadow-[0_0_50px_rgba(255,230,0,0.3)]',
+    span: 'lg:col-span-1'
   }
 ];
 
 const industries = [
   { name: 'Healthcare', icon: Stethoscope },
-  { name: 'Dental Clinics', icon: Stethoscope },
-  { name: 'Hotels', icon: Hotel },
-  { name: 'Restaurants', icon: Utensils },
   { name: 'Real Estate', icon: Home },
-  { name: 'Construction', icon: Building },
+  { name: 'Hospitality', icon: Hotel },
+  { name: 'Gastronomy', icon: Utensils },
   { name: 'Education', icon: GraduationCap },
-  { name: 'Beauty & Salon', icon: Scissors },
-  { name: 'Travel', icon: Plane },
-  { name: 'Finance', icon: PieChart },
-  { name: 'Retail', icon: ShoppingCart },
-  { name: 'Startups', icon: Rocket }
-];
-
-const features = [
-  { title: 'Modern Technology Stack', icon: Code, desc: 'Built with the latest frameworks for optimal performance and scale.' },
-  { title: 'Scalable Architecture', icon: Server, desc: 'Systems designed to grow seamlessly alongside your business.' },
-  { title: 'Mobile-First Development', icon: Smartphone, desc: 'Flawless experiences across all devices and screen sizes.' },
-  { title: 'SEO Optimized', icon: Search, desc: 'Built-in best practices to ensure your platform ranks high.' },
-  { title: 'High Performance', icon: Zap, desc: 'Lightning-fast load times for better user retention and conversion.' },
-  { title: 'Secure Development', icon: Shield, desc: 'Industry-standard security measures to protect your data.' },
-  { title: 'Transparent Communication', icon: Users, desc: 'Clear, consistent updates throughout the development lifecycle.' },
-  { title: 'Ongoing Support', icon: Settings, desc: 'Dedicated maintenance to keep your digital products running smoothly.' }
+  { name: 'Luxury Retail', icon: ShoppingCart },
+  { name: 'Fintech', icon: PieChart },
+  { name: 'SaaS Startups', icon: Rocket }
 ];
 
 const process = [
-  { step: '01', title: 'Discovery', desc: 'Understanding your business, goals, and technical requirements.' },
-  { step: '02', title: 'Strategy', desc: 'Defining the architecture, technology stack, and project roadmap.' },
-  { step: '03', title: 'Design', desc: 'Creating wireframes and high-fidelity, user-centric interfaces.' },
-  { step: '04', title: 'Development', desc: 'Writing clean, scalable, and secure code for your product.' },
-  { step: '05', title: 'Testing', desc: 'Rigorous QA to ensure performance, security, and flawless UX.' },
-  { step: '06', title: 'Deployment', desc: 'Launching your product on reliable, scalable cloud infrastructure.' },
-  { step: '07', title: 'Support', desc: 'Continuous monitoring, updates, and optimization.' }
+  { step: '01', title: 'Deep Discovery', desc: 'We immerse ourselves in your business model, extracting core objectives and mapping out technical feasibility.' },
+  { step: '02', title: 'Strategic Architecture', desc: 'Drafting the blueprint. We select the optimal tech stack and define the exact data flow for maximum scalability.' },
+  { step: '03', title: 'Visual Engineering', desc: 'Crafting the aesthetic. Our designers produce high-fidelity interactive prototypes focused on conversion and luxury.' },
+  { step: '04', title: 'Agile Development', desc: 'Our elite engineering team writes clean, modular, and secure code, bringing the visual prototypes to life.' },
+  { step: '05', title: 'Rigorous QA', desc: 'We subject the product to extreme stress testing, security audits, and performance profiling across all devices.' },
+  { step: '06', title: 'Global Deployment', desc: 'Seamless launch onto edge networks. We ensure zero-downtime deployment and instant global availability.' }
 ];
 
 const Solutions = () => {
@@ -124,237 +110,304 @@ const Solutions = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const { scrollYProgress } = useScroll();
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  const opacityFade = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.16, 1, 0.3, 1] } }
+  };
+
   return (
-    <div className="min-h-screen bg-[color:var(--background)] pt-24 pb-0 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-[#000000] text-white font-sans overflow-hidden selection:bg-white/20 selection:text-white">
       
-      {/* Background Gradients */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-blue-900/20 to-transparent pointer-events-none" />
-      <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
+      {/* Abyssal Background with Deep Refractions */}
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[#000000]">
+        
+        {/* Parallax Core Lighting */}
+        <motion.div style={{ y: backgroundY }} className="absolute inset-0 w-full h-full">
+          {/* Main Top Light */}
+          <motion.div 
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.4, 0.3] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-[-30%] left-[10%] w-[100vw] h-[100vw] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_50%)] rounded-full blur-[100px] mix-blend-screen"
+          ></motion.div>
+          
+          {/* Cyan/Blue Left Glow */}
+          <motion.div 
+            animate={{ rotate: [0, 90, 0], scale: [1, 1.5, 1], opacity: [0.2, 0.3, 0.2] }}
+            transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+            className="absolute top-[20%] left-[-20%] w-[80vw] h-[80vw] bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.06)_0%,transparent_60%)] rounded-full blur-[120px] mix-blend-screen"
+          ></motion.div>
+          
+          {/* Purple/Pink Right Glow */}
+          <motion.div 
+            animate={{ rotate: [360, 270, 360], scale: [1, 1.3, 1], opacity: [0.15, 0.3, 0.15] }}
+            transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
+            className="absolute top-[40%] right-[-20%] w-[90vw] h-[90vw] bg-[radial-gradient(ellipse_at_center,rgba(112,0,255,0.08)_0%,transparent_60%)] rounded-full blur-[120px] mix-blend-screen"
+          ></motion.div>
+        </motion.div>
+        
+        {/* Film Grain Texture */}
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.25] mix-blend-overlay"></div>
+      </div>
       
       {/* Hero Section */}
-      <section className="relative pt-20 pb-24 lg:pt-32 lg:pb-32 px-6">
-        <div className="max-w-7xl mx-auto text-center">
+      <section className="relative pt-48 pb-32 lg:pt-64 lg:pb-48 px-6 z-10 min-h-[90vh] flex flex-col justify-center">
+        <div className="max-w-[1400px] mx-auto text-center flex flex-col items-center">
+          
+          {/* Status Pill */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 backdrop-blur-md mb-8"
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-white/10 bg-white/[0.01] backdrop-blur-3xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_8px_20px_rgba(0,0,0,0.5)] mb-12"
           >
-            <Rocket size={16} className="text-blue-400" />
-            <span className="text-sm font-semibold text-blue-200">Digital Solutions for Modern Businesses</span>
+            <div className="w-2 h-2 rounded-full bg-[#00F0FF] shadow-[0_0_10px_#00F0FF] animate-pulse"></div>
+            <span className="text-xs font-bold text-white/60 tracking-[0.3em] uppercase">Engineering The Future</span>
           </motion.div>
           
+          {/* Massive Display Heading */}
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8"
+            transition={{ duration: 1.2, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[clamp(4rem,9vw,9rem)] font-black tracking-tighter mb-8 leading-[0.95] drop-shadow-2xl max-w-6xl mx-auto"
           >
-            Build Smarter. <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Grow Faster.</span>
+            Architecting <br className="hidden md:block"/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-br from-white via-white/80 to-white/20">Digital Luxury.</span>
           </motion.h1>
           
+          {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg md:text-xl text-[color:var(--foreground)] opacity-70 max-w-3xl mx-auto mb-12 leading-relaxed"
+            transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-xl md:text-3xl text-white/40 max-w-4xl mx-auto mb-20 font-light leading-relaxed tracking-tight"
           >
-            We help startups, small businesses, and enterprises transform ideas into powerful digital products. From high-performance websites and eCommerce platforms to scalable web applications and AI-powered solutions, we build technology that drives growth and delivers measurable results.
+            We don't just build software. We engineer high-performance digital ecosystems designed to dominate markets and accelerate hyper-growth for ambitious brands.
           </motion.p>
           
+          {/* CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full sm:w-auto"
           >
-            <Link to="/contact" className="px-8 py-4 rounded-xl bg-[color:var(--foreground)] text-[color:var(--background)] font-bold text-lg hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)] w-full sm:w-auto text-center flex items-center justify-center gap-2 group">
-              Start Your Project
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            <Link to="/contact" className="w-full sm:w-auto px-12 py-6 rounded-full bg-white text-black font-black text-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-[0_0_80px_rgba(255,255,255,0.3)] flex items-center justify-center gap-3 group tracking-tight relative overflow-hidden">
+              <span className="relative z-10">Initiate Project</span>
+              <ArrowRight size={22} className="relative z-10 group-hover:translate-x-1 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-white/40 -translate-x-full group-hover:animate-[glare_1.5s_ease-in-out_infinite] skew-x-[-25deg]"></div>
             </Link>
-            <a href="#solutions-grid" className="px-8 py-4 rounded-xl border border-[color:var(--border)] bg-[color:var(--secondary)] bg-opacity-50 backdrop-blur-sm text-[color:var(--foreground)] font-bold text-lg hover:bg-[color:var(--secondary)] transition-all w-full sm:w-auto text-center">
-              Explore Our Work
+            <a href="#solutions-grid" className="w-full sm:w-auto px-12 py-6 rounded-full bg-white/[0.02] border border-white/10 border-t-white/20 backdrop-blur-3xl text-white font-bold text-xl hover:bg-white/[0.05] active:scale-[0.98] transition-all duration-500 flex items-center justify-center shadow-[0_20px_40px_rgba(0,0,0,0.5)] tracking-tight hover:shadow-[0_0_40px_rgba(255,255,255,0.05)]">
+              View Capabilities
             </a>
           </motion.div>
         </div>
+
+        {/* Scroll Indicator */}
+        <motion.div 
+          style={{ opacity: opacityFade }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-none"
+        >
+          <span className="text-[10px] font-bold text-white/30 tracking-[0.4em] uppercase">Scroll</span>
+          <div className="w-[1px] h-16 bg-gradient-to-b from-white/30 to-transparent"></div>
+        </motion.div>
       </section>
 
-      {/* Main Solutions Grid */}
-      <section id="solutions-grid" className="py-24 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Comprehensive Digital Solutions</h2>
-            <p className="text-lg text-[color:var(--foreground)] opacity-70">
-              Every business is unique, and so are its challenges. Our solutions are designed to solve real business problems, improve customer experiences, automate workflows, and accelerate digital growth.
-            </p>
+      {/* Bento Grid Solutions Section */}
+      <section id="solutions-grid" className="py-32 px-6 relative z-10 scroll-mt-24 border-t border-white/5">
+        <div className="max-w-[1400px] mx-auto">
+          
+          <div className="mb-24 md:flex items-end justify-between border-b border-white/10 pb-10">
+            <div className="max-w-3xl">
+              <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter text-white">Capabilities</h2>
+              <p className="text-xl md:text-3xl text-white/40 font-light leading-relaxed tracking-tight">
+                Our core competencies. We deploy cutting-edge technology to solve complex business problems at scale.
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          >
             {solutions.map((solution, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group relative glass-card p-8 rounded-3xl border border-[color:var(--border)] hover:border-blue-500/30 transition-all overflow-hidden flex flex-col h-full"
+                variants={itemVariants}
+                className={`group relative bg-white/[0.01] border border-white/5 border-t-white/10 border-l-white/10 hover:border-white/20 backdrop-blur-3xl p-10 lg:p-14 rounded-[2.5rem] transition-all duration-700 overflow-hidden flex flex-col h-full shadow-[0_20px_40px_0_rgba(0,0,0,0.5)] hover:shadow-[0_40px_80px_0_rgba(0,0,0,0.8)] hover:-translate-y-2 ${solution.span || ''}`}
               >
-                <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${solution.color} opacity-[0.03] group-hover:opacity-[0.08] blur-3xl transition-opacity rounded-full`} />
-                
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-gradient-to-br ${solution.color} bg-opacity-10 shadow-inner border border-white/10`}>
-                  <solution.icon size={28} className="text-white" />
+                {/* Deep Neon Wash */}
+                <div className={`absolute -inset-20 bg-gradient-to-br ${solution.color} opacity-0 group-hover:opacity-[0.07] blur-[100px] transition-opacity duration-1000 rounded-full pointer-events-none`} />
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+
+                {/* Glare effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none overflow-hidden rounded-[2.5rem]">
+                  <div className="absolute top-0 left-[-100%] w-[50%] h-[200%] bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-25deg] group-hover:animate-[glare_2.5s_ease-in-out_infinite]"></div>
                 </div>
                 
-                <h3 className="text-2xl font-bold mb-4">{solution.title}</h3>
-                <p className="text-[color:var(--foreground)] opacity-70 mb-8 flex-grow">{solution.description}</p>
-                
-                <div className="space-y-3 mt-auto">
-                  {solution.features.map((feature, fIndex) => (
-                    <div key={fIndex} className="flex items-start gap-3">
-                      <CheckCircle size={18} className="text-blue-400 shrink-0 mt-0.5" />
-                      <span className="text-sm font-medium text-[color:var(--foreground)] opacity-80">{feature}</span>
-                    </div>
-                  ))}
+                <div className="relative z-10 flex flex-col h-full pointer-events-none">
+                  {/* Floating Icon Sphere */}
+                  <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-12 bg-[#050505] border border-white/10 border-t-white/20 border-l-white/20 group-hover:${solution.shadow} transition-all duration-700 group-hover:scale-110 relative overflow-hidden shadow-[0_10px_20px_rgba(0,0,0,0.5)]`}>
+                    <div className={`absolute inset-0 bg-gradient-to-br ${solution.color} opacity-[0.15] group-hover:opacity-30 transition-opacity duration-700`}></div>
+                    <solution.icon size={32} className="text-white relative z-10 group-hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] transition-all duration-700" />
+                  </div>
+                  
+                  <h3 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight text-white/90 group-hover:text-white transition-colors">{solution.title}</h3>
+                  <p className="text-white/40 font-light text-xl mb-12 flex-grow leading-relaxed group-hover:text-white/70 transition-colors duration-700">{solution.description}</p>
+                  
+                  {/* Features List */}
+                  <div className={`grid grid-cols-1 ${solution.span === 'lg:col-span-2' ? 'sm:grid-cols-2' : ''} gap-y-5 gap-x-8 mt-auto pt-8 border-t border-white/5`}>
+                    {solution.features.map((feature, fIndex) => (
+                      <div key={fIndex} className="flex items-center gap-4 group/feature">
+                        <div className="w-1.5 h-1.5 rounded-full bg-white/20 group-hover/feature:bg-[#00F0FF] group-hover/feature:shadow-[0_0_10px_#00F0FF] transition-all duration-300 shrink-0"></div>
+                        <span className="text-sm md:text-base font-light text-white/50 group-hover/feature:text-white transition-colors tracking-wide">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Industries Section */}
-      <section className="py-24 px-6 bg-[color:var(--secondary)] bg-opacity-20 relative z-10 border-y border-[color:var(--border)]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Industries We Serve</h2>
-            <p className="text-[color:var(--foreground)] opacity-70 max-w-2xl mx-auto">We build tailored solutions for businesses across various sectors, understanding the unique challenges of each industry.</p>
+      {/* Extreme Industries Grid */}
+      <section className="py-32 px-6 relative z-10 border-t border-white/5 bg-[#010101]">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="mb-24">
+            <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter text-white">Sectors We Command</h2>
+            <p className="text-xl md:text-3xl text-white/40 font-light leading-relaxed tracking-tight max-w-3xl">
+              Specialized domain knowledge allows us to engineer solutions tailored to the strict demands of elite industries.
+            </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-8"
+          >
             {industries.map((industry, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="glass-card p-6 rounded-2xl border border-[color:var(--border)] flex flex-col items-center justify-center gap-3 hover:bg-[color:var(--secondary)] bg-opacity-50 transition-colors group cursor-pointer"
+                variants={itemVariants}
+                className="bg-white/[0.01] border border-white/5 border-t-white/10 backdrop-blur-xl p-10 rounded-[2rem] flex flex-col items-center justify-center gap-6 hover:bg-white/[0.03] hover:border-white/20 transition-all duration-500 group cursor-default hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.8)] shadow-2xl relative overflow-hidden"
               >
-                <industry.icon size={28} className="text-[color:var(--foreground)] opacity-50 group-hover:text-blue-400 transition-colors" />
-                <span className="text-sm font-semibold text-center">{industry.name}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+                {/* Subtle spotlight */}
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.05)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-      {/* Why Choose Us */}
-      <section className="py-24 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Code Fusion Projects</h2>
-            <p className="text-[color:var(--foreground)] opacity-70 max-w-2xl mx-auto">We combine technical excellence with business acumen to deliver products that truly perform.</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="glass-card p-6 rounded-2xl border border-[color:var(--border)] hover:border-purple-500/30 transition-colors"
-              >
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 text-purple-400 border border-purple-500/20">
-                  <feature.icon size={20} />
+                <div className="w-16 h-16 rounded-full bg-[#050505] flex items-center justify-center border border-white/5 shadow-inner group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-500 relative z-10">
+                  <industry.icon size={28} className="text-white/30 group-hover:text-white transition-colors duration-500 group-hover:scale-110 drop-shadow-md" />
                 </div>
-                <h4 className="font-bold mb-2">{feature.title}</h4>
-                <p className="text-sm text-[color:var(--foreground)] opacity-60 leading-relaxed">{feature.desc}</p>
+                <span className="text-sm md:text-base font-bold tracking-[0.1em] text-white/50 group-hover:text-white transition-colors uppercase relative z-10 text-center">{industry.name}</span>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Development Process */}
-      <section className="py-24 px-6 bg-black/40 border-y border-[color:var(--border)] relative z-10 overflow-hidden">
-        <div className="max-w-7xl mx-auto relative">
-          <div className="text-center mb-20">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Development Process</h2>
-            <p className="text-[color:var(--foreground)] opacity-70 max-w-2xl mx-auto">A streamlined, transparent approach to bringing your vision to life.</p>
+      {/* Elite Development Process */}
+      <section className="py-40 px-6 bg-[#000000] relative z-10 overflow-hidden font-sans border-y border-white/5 shadow-[inset_0_50px_100px_rgba(0,0,0,0.8)]">
+        
+        {/* Intense local lighting */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[1200px] max-h-[1200px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_60%)] pointer-events-none mix-blend-screen"></div>
+
+        <div className="max-w-[1400px] mx-auto relative z-10">
+          <div className="text-center mb-32 max-w-5xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-white/10 bg-white/[0.02] backdrop-blur-3xl mb-10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+            >
+              <Layers size={16} className="text-white/70" />
+              <span className="text-xs font-bold text-white/70 tracking-[0.3em] uppercase">The Architecture</span>
+            </motion.div>
+
+            <h2 className="text-5xl md:text-8xl font-black mb-10 tracking-tighter text-white leading-tight drop-shadow-2xl">
+              Precision <br className="hidden md:block"/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-br from-white via-white/80 to-white/30">Execution.</span>
+            </h2>
+            <p className="text-white/40 font-light text-xl md:text-3xl max-w-4xl mx-auto tracking-tight leading-relaxed">
+              We do not guess. Our engineering process is a strictly monitored, highly iterative pipeline designed to produce flawless software from day one.
+            </p>
           </div>
 
-          <div className="relative border-l border-white/10 ml-4 md:ml-0 md:border-l-0 md:flex md:flex-wrap md:justify-center md:gap-8">
-            {/* Horizontal connecting line for desktop */}
-            <div className="hidden md:block absolute top-[45px] left-10 right-10 h-px bg-white/10 z-0" />
-            
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             {process.map((step, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative pl-10 md:pl-0 mb-12 md:mb-0 md:w-48 text-left md:text-center group"
+                variants={itemVariants}
+                className="relative bg-[#020202]/50 border border-white/5 border-t-white/10 border-l-white/10 backdrop-blur-3xl rounded-[2.5rem] p-10 md:p-14 shadow-[0_20px_50px_0_rgba(0,0,0,0.8)] group overflow-hidden hover:bg-white/[0.02] hover:border-white/20 hover:-translate-y-3 transition-all duration-700 flex flex-col h-full"
               >
-                {/* Timeline Dot (Mobile) */}
-                <div className="absolute left-[-5px] top-2 w-3 h-3 rounded-full bg-blue-500 md:hidden shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
-                
-                {/* Number Badge */}
-                <div className="w-12 h-12 rounded-full bg-[color:var(--secondary)] opacity-80 border border-[color:var(--border)] backdrop-blur-md flex items-center justify-center text-sm font-bold text-[color:var(--foreground)] mb-6 md:mx-auto relative z-10 group-hover:bg-blue-500/20 group-hover:text-blue-400 group-hover:border-blue-500/50 transition-all">
+                {/* Hover Glow */}
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.05)_0%,transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+
+                {/* Number Watermark */}
+                <div className="absolute top-10 right-10 text-[100px] font-black text-transparent group-hover:text-white/[0.03] transition-colors duration-700 pointer-events-none select-none tracking-tighter" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.05)' }}>
                   {step.step}
                 </div>
-                
-                <h4 className="text-lg font-bold mb-2 group-hover:text-blue-400 transition-colors">{step.title}</h4>
-                <p className="text-sm text-[color:var(--foreground)] opacity-60">{step.desc}</p>
+
+                <div className="relative z-10 flex-grow pointer-events-none">
+                  <div className="text-white/30 text-sm font-bold mb-8 tracking-[0.4em] group-hover:text-white transition-all duration-500 flex items-center gap-4">
+                    <div className="w-8 h-[1px] bg-white/30 group-hover:bg-white transition-colors"></div>
+                    PHASE {step.step}
+                  </div>
+                  
+                  <h4 className="text-3xl md:text-4xl font-bold mb-6 text-white/90 group-hover:text-white transition-colors tracking-tight">{step.title}</h4>
+                  <p className="text-white/40 text-lg md:text-xl font-light leading-relaxed tracking-tight group-hover:text-white/70 transition-colors duration-500">
+                    {step.desc}
+                  </p>
+                </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Technologies */}
-      <section className="py-24 px-6 relative z-10 overflow-hidden flex flex-col items-center">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Technologies We Use</h2>
-          <p className="text-[color:var(--foreground)] opacity-70 max-w-2xl mx-auto">We leverage the most powerful and modern tools to build exceptional digital experiences.</p>
-        </div>
-
-        <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
-          {['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Express.js', 'MongoDB', 'PostgreSQL', 'Firebase', 'Docker', 'GitHub', 'Vercel', 'AWS'].map((tech, i) => (
-            <motion.div
-              key={tech}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: i * 0.05 }}
-              className="px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-md font-semibold text-sm hover:bg-white/10 hover:border-white/20 transition-all cursor-default"
-            >
-              {tech}
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-24 px-6 relative z-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="glass-card rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden border border-white/10 bg-gradient-to-br from-blue-900/30 to-purple-900/30">
-            <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay"></div>
+      {/* Ultimate CTA */}
+      <section className="py-40 px-6 relative z-10 bg-[#000000]">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="rounded-[4rem] p-12 md:p-40 text-center relative overflow-hidden border border-white/5 border-t-white/10 border-l-white/10 bg-[#020202] backdrop-blur-3xl shadow-[0_40px_100px_rgba(0,0,0,0.9)] group flex flex-col items-center">
             
-            <h2 className="text-4xl md:text-6xl font-extrabold mb-6 relative z-10">Ready to Build Your Next Digital Product?</h2>
-            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-12 relative z-10">
-              Whether you need a business website, eCommerce platform, custom web application, mobile app, or AI-powered solution, Code Fusion Projects is ready to help turn your vision into reality.
+            {/* Cinematic Center Light */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[150%] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] pointer-events-none group-hover:opacity-100 transition-opacity duration-1000 opacity-50 mix-blend-screen"></div>
+            
+            {/* Top Light Edge */}
+            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-30 group-hover:opacity-100 transition-opacity duration-1000"></div>
+
+            <h2 className="text-6xl md:text-[8rem] font-black mb-12 relative z-10 tracking-tighter leading-[0.9] drop-shadow-2xl text-white">
+              Start The <br className="hidden md:block"/> 
+              <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">Evolution.</span>
+            </h2>
+            <p className="text-xl md:text-3xl text-white/40 font-light max-w-3xl mx-auto mb-20 relative z-10 tracking-tight leading-relaxed">
+              We are currently accepting new projects. Partner with Code Fusion Projects to build something extraordinary.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
-              <Link to="/contact" className="px-8 py-4 rounded-xl bg-white text-black font-bold text-lg hover:scale-105 transition-all shadow-xl w-full sm:w-auto text-center flex items-center justify-center gap-2 group">
-                Start Your Project
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link to="/contact" className="px-8 py-4 rounded-xl border border-white/20 bg-black/20 backdrop-blur-md text-white font-bold text-lg hover:bg-white/10 transition-all w-full sm:w-auto text-center">
-                Schedule a Free Consultation
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 relative z-10 w-full sm:w-auto">
+              <Link to="/contact" className="w-full sm:w-auto px-16 py-8 rounded-full bg-white text-black font-black text-2xl hover:scale-105 active:scale-95 transition-all duration-500 shadow-[0_0_60px_rgba(255,255,255,0.15)] hover:shadow-[0_0_100px_rgba(255,255,255,0.4)] flex items-center justify-center gap-4 group/btn relative overflow-hidden tracking-tight">
+                <span className="relative z-10">Initiate Now</span>
+                <ArrowRight size={28} className="relative z-10 group-hover/btn:translate-x-2 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-white/40 -translate-x-full group-hover/btn:animate-[glare_1.5s_ease-in-out_infinite] skew-x-[-25deg]"></div>
               </Link>
             </div>
           </div>
@@ -362,6 +415,13 @@ const Solutions = () => {
       </section>
 
       <Footer />
+      
+      <style>{`
+        @keyframes glare {
+          0% { left: -100%; }
+          100% { left: 200%; }
+        }
+      `}</style>
     </div>
   );
 };

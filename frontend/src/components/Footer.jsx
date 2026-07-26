@@ -1,169 +1,216 @@
 import React from 'react';
-import { ArrowUp, Phone, Mail, ArrowRight, MapPin, Send } from 'lucide-react';
-import { FaGithub, FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { ArrowUp, Phone, Mail, ArrowRight, MapPin, Send, Sparkles } from 'lucide-react';
+import { FaLinkedin, FaInstagram, FaGithub, FaTwitter } from 'react-icons/fa';
 
 const Footer = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    }
+  };
+
   return (
-    <footer className="relative pt-24 pb-10 bg-[#050505] overflow-hidden text-white border-t border-white/5">
-      {/* Premium Background Effects */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent opacity-50"></div>
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-gradient-to-t from-blue-600/10 via-purple-600/5 to-transparent rounded-full blur-[120px] pointer-events-none"></div>
+    <footer className="relative pt-32 pb-10 bg-[#000000] overflow-hidden text-white font-sans border-t border-white/5">
+      {/* Premium Atmospheric Lighting */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
+        <motion.div 
+          animate={{ x: [-20, 20, -20], y: [0, -20, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-0 left-1/4 w-[800px] h-[400px] bg-blue-600/10 rounded-full blur-[140px] mix-blend-screen"
+        ></motion.div>
+        <motion.div 
+          animate={{ x: [20, -20, 20], y: [-20, 0, -20] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-0 right-1/4 w-[600px] h-[400px] bg-purple-600/10 rounded-full blur-[150px] mix-blend-screen"
+        ></motion.div>
+      </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-20">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-8 mb-24"
+        >
           
           {/* Brand & Contact Column */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-4 pr-0 lg:pr-8">
-            <div className="flex items-center gap-3 mb-8 group cursor-pointer">
+          <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 lg:col-span-4 pr-0 lg:pr-10">
+            <div className="flex items-center gap-4 mb-8 group cursor-pointer w-fit">
               <div className="relative">
-                <div className="absolute inset-0 bg-white/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <img src="/ai_logo.png" alt="Code Fusion Logo" className="relative w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] brightness-0 invert animate-[pulse_4s_ease-in-out_infinite]" />
+                <div className="absolute inset-0 bg-white/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <img src="/ai_logo.png" alt="Code Fusion Logo" className="relative w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] brightness-0 invert" />
               </div>
-              <span className="font-display font-bold text-2xl md:text-3xl tracking-tight text-white leading-tight">
-                Code Fusion <br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Projects</span>
+              <span className="font-display font-black text-3xl tracking-tighter text-white leading-tight">
+                Code Fusion <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Projects</span>
               </span>
             </div>
             
-            <p className="text-white/50 text-sm leading-relaxed mb-8 font-medium">
+            <p className="text-white/50 text-base leading-relaxed mb-10 font-light tracking-wide max-w-sm">
               Enterprise-grade engineering meets luxury design. Architecting scalable, AI-driven platforms for ambitious startups worldwide.
             </p>
             
-            <div className="flex flex-col gap-4 mb-10">
-              <a href="tel:8767316759" className="group flex items-center gap-4 text-white/60 hover:text-white transition-colors w-fit">
-                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-purple-500/20 group-hover:text-purple-400 transition-colors border border-white/5 group-hover:border-purple-500/30">
-                  <Phone size={16} />
+            <div className="flex flex-col gap-5 mb-12">
+              <a href="tel:8767316759" className="group flex items-center gap-4 text-white/50 hover:text-white transition-colors w-fit">
+                <div className="w-12 h-12 rounded-[1rem] bg-white/[0.02] border border-white/5 backdrop-blur-md flex items-center justify-center group-hover:bg-purple-500/10 group-hover:text-purple-400 group-hover:border-purple-500/20 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all duration-500">
+                  <Phone size={18} />
                 </div>
-                <span className="text-sm font-semibold tracking-wide">+91 8767316759</span>
+                <span className="text-sm font-medium tracking-wide">+91 8767316759</span>
               </a>
-              <a href="mailto:codefusionprojects@gmail.com" className="group flex items-center gap-4 text-white/60 hover:text-white transition-colors w-fit">
-                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-blue-500/20 group-hover:text-blue-400 transition-colors border border-white/5 group-hover:border-blue-500/30">
-                  <Mail size={16} />
+              <a href="mailto:codefusionprojects@gmail.com" className="group flex items-center gap-4 text-white/50 hover:text-white transition-colors w-fit">
+                <div className="w-12 h-12 rounded-[1rem] bg-white/[0.02] border border-white/5 backdrop-blur-md flex items-center justify-center group-hover:bg-blue-500/10 group-hover:text-blue-400 group-hover:border-blue-500/20 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all duration-500">
+                  <Mail size={18} />
                 </div>
-                <span className="text-sm font-semibold tracking-wide">codefusionprojects@gmail.com</span>
+                <span className="text-sm font-medium tracking-wide">codefusionprojects@gmail.com</span>
               </a>
-              <div className="group flex items-center gap-4 text-white/60 hover:text-white transition-colors w-fit cursor-default">
-                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500/20 group-hover:text-emerald-400 transition-colors border border-white/5 group-hover:border-emerald-500/30">
-                  <MapPin size={16} />
+              <div className="group flex items-center gap-4 text-white/50 hover:text-white transition-colors w-fit cursor-default">
+                <div className="w-12 h-12 rounded-[1rem] bg-white/[0.02] border border-white/5 backdrop-blur-md flex items-center justify-center group-hover:bg-pink-500/10 group-hover:text-pink-400 group-hover:border-pink-500/20 group-hover:shadow-[0_0_20px_rgba(236,72,153,0.2)] transition-all duration-500">
+                  <MapPin size={18} />
                 </div>
-                <span className="text-sm font-semibold tracking-wide">Global Remote</span>
+                <span className="text-sm font-medium tracking-wide">Global Remote</span>
               </div>
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               {[
-                { icon: FaTwitter, href: '#', hoverClass: 'hover:bg-[#1DA1F2]/20 hover:text-[#1DA1F2] hover:border-[#1DA1F2]/50' },
-                { icon: FaGithub, href: '#', hoverClass: 'hover:bg-white/20 hover:text-white hover:border-white/50' },
-                { icon: FaLinkedin, href: '#', hoverClass: 'hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] hover:border-[#0A66C2]/50' },
-                { icon: FaInstagram, href: 'https://www.instagram.com/codefusionprojects.in?igsh=MWRtd3FjZXo2Mm54cA==', hoverClass: 'hover:bg-pink-500/20 hover:text-pink-500 hover:border-pink-500/50' }
+                { icon: FaLinkedin, href: '#', color: 'hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/30 hover:shadow-[0_0_20px_rgba(10,102,194,0.2)]' },
+                { icon: FaInstagram, href: 'https://www.instagram.com/codefusionprojects.in?igsh=MWRtd3FjZXo2Mm54cA==', color: 'hover:text-[#E1306C] hover:bg-[#E1306C]/10 hover:border-[#E1306C]/30 hover:shadow-[0_0_20px_rgba(225,48,108,0.2)]' },
+                { icon: FaGithub, href: '#', color: 'hover:text-white hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]' },
+                { icon: FaTwitter, href: '#', color: 'hover:text-[#1DA1F2] hover:bg-[#1DA1F2]/10 hover:border-[#1DA1F2]/30 hover:shadow-[0_0_20px_rgba(29,161,242,0.2)]' }
               ].map((item, i) => {
                 const Icon = item.icon;
                 return (
-                  <a key={i} href={item.href} target="_blank" rel="noreferrer" className={`w-11 h-11 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg text-white/70 ${item.hoverClass}`}>
+                  <a key={i} href={item.href} target="_blank" rel="noreferrer" className={`w-12 h-12 rounded-[1rem] bg-white/[0.02] border border-white/5 backdrop-blur-md flex items-center justify-center transition-all duration-500 text-white/50 ${item.color}`}>
                     <Icon size={18} />
                   </a>
                 );
               })}
             </div>
-          </div>
+          </motion.div>
 
           {/* Links Columns */}
-          <div className="col-span-1 lg:col-span-2 lg:pl-8">
+          <motion.div variants={itemVariants} className="col-span-1 lg:col-span-2 lg:pl-4 lg:pt-4">
             <h4 className="font-bold text-lg mb-8 tracking-tight text-white flex items-center gap-3">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-purple-500"></span>
-              </span>
+              <span className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.8)]"></span>
               Platform
             </h4>
-            <ul className="space-y-4">
+            <ul className="space-y-5">
               {['Features', 'AI Builder', 'Integrations', 'Pricing', 'Showcase'].map(link => (
                 <li key={link}>
-                  <a href={`/#${link.toLowerCase().replace(' ', '-')}`} className="group flex items-center text-white/50 hover:text-white text-sm font-medium transition-colors">
-                    <span className="w-0 overflow-hidden group-hover:w-4 transition-all duration-300 ease-out">
+                  <Link to={`/#${link.toLowerCase().replace(' ', '-')}`} className="group flex items-center text-white/50 hover:text-white text-sm font-medium tracking-wide transition-all duration-300">
+                    <span className="w-0 overflow-hidden group-hover:w-5 transition-all duration-300 ease-out flex items-center">
                       <ArrowRight size={14} className="text-purple-400" />
                     </span>
                     <span className="group-hover:translate-x-1 transition-transform duration-300">{link}</span>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          <div className="col-span-1 lg:col-span-2">
+          <motion.div variants={itemVariants} className="col-span-1 lg:col-span-2 lg:pt-4">
             <h4 className="font-bold text-lg mb-8 tracking-tight text-white flex items-center gap-3">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
-              </span>
+              <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]"></span>
               Agency
             </h4>
-            <ul className="space-y-4">
+            <ul className="space-y-5">
               {['About Us', 'Our Process', 'Careers', 'Blog', 'Contact'].map(link => (
                 <li key={link}>
-                  <a href={`/#${link.toLowerCase().replace(' ', '-')}`} className="group flex items-center text-white/50 hover:text-white text-sm font-medium transition-colors">
-                    <span className="w-0 overflow-hidden group-hover:w-4 transition-all duration-300 ease-out">
+                  <Link to={link === 'Contact' ? '/contact' : `/#${link.toLowerCase().replace(' ', '-')}`} className="group flex items-center text-white/50 hover:text-white text-sm font-medium tracking-wide transition-all duration-300">
+                    <span className="w-0 overflow-hidden group-hover:w-5 transition-all duration-300 ease-out flex items-center">
                       <ArrowRight size={14} className="text-blue-400" />
                     </span>
                     <span className="group-hover:translate-x-1 transition-transform duration-300">{link}</span>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
           {/* Newsletter Column */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-4 lg:pl-8">
-            <div className="p-8 rounded-3xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 relative overflow-hidden group hover:border-white/20 transition-colors duration-500">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 lg:col-span-4 lg:pl-8">
+            <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 pointer-events-none"></div>
               
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/20 rounded-full blur-[50px] group-hover:bg-purple-500/30 transition-colors duration-500 pointer-events-none"></div>
+              <div className="absolute top-0 inset-x-10 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 z-0"></div>
+              
+              <div className="absolute -top-32 -right-32 w-64 h-64 bg-blue-500/20 rounded-full blur-[70px] group-hover:bg-purple-500/20 transition-colors duration-1000 pointer-events-none"></div>
 
-              <h4 className="font-bold text-xl mb-3 tracking-tight text-white relative z-10">Join the Top 1%</h4>
-              <p className="text-white/50 text-sm mb-6 font-medium leading-relaxed relative z-10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] border border-white/10 text-white font-medium tracking-wide text-xs mb-6 relative z-10 shadow-inner">
+                <Sparkles size={14} className="text-blue-400" />
+                Join the Top 1%
+              </div>
+              
+              <p className="text-white/60 text-sm mb-8 font-light tracking-wide leading-relaxed relative z-10">
                 Get exclusive engineering insights, UI/UX trends, and startup resources directly to your inbox.
               </p>
               
-              <form className="relative flex flex-col gap-3 z-10">
+              <form className="relative flex flex-col gap-4 z-10" onSubmit={(e) => e.preventDefault()}>
                 <div className="relative group/input">
                   <input 
                     type="email" 
                     placeholder="Enter your email" 
-                    className="w-full bg-black/60 border border-white/10 rounded-xl pl-5 pr-12 py-3.5 outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all text-sm text-white placeholder:text-white/30 font-medium shadow-inner" 
+                    className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl pl-6 pr-14 py-4 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all text-white placeholder:text-white/30 font-medium shadow-inner" 
                     required
                   />
-                  <Mail size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/input:text-purple-400 transition-colors pointer-events-none" />
+                  <Mail size={18} className="absolute right-5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within/input:text-blue-400 transition-colors pointer-events-none" />
                 </div>
-                <button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3.5 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] active:scale-95 shadow-[0_5px_20px_rgba(168,85,247,0.3)] hover:shadow-[0_8px_25px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2 group/btn">
-                  Subscribe Now
-                  <Send size={16} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                <button type="submit" className="w-full py-4 rounded-2xl bg-white text-black font-bold text-sm hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all flex items-center justify-center gap-2 group/btn hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden">
+                  <span className="relative z-10">Subscribe Now</span>
+                  <Send size={16} className="relative z-10 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                  <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/btn:animate-[glare_1.5s_ease-in-out_infinite] skew-x-[-25deg]"></div>
                 </button>
-                <p className="text-[10px] text-white/30 text-center font-medium mt-1">No spam. Unsubscribe at any time.</p>
+                <p className="text-[10px] text-white/30 text-center font-medium tracking-wide mt-2">No spam. Unsubscribe at any time.</p>
               </form>
             </div>
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-          <p className="text-white/40 text-sm font-medium tracking-wide">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.8, duration: 1 }}
+          className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10"
+        >
+          <p className="text-white/40 text-xs font-medium tracking-wide">
             &copy; {new Date().getFullYear()} Code Fusion Projects. <span className="hidden sm:inline">All rights reserved.</span>
           </p>
           
-          <div className="flex gap-8 text-sm text-white/40 font-medium">
+          <div className="flex gap-8 text-xs text-white/40 font-medium tracking-wide">
             <a href="#" className="hover:text-white hover:underline underline-offset-4 transition-all">Privacy</a>
             <a href="#" className="hover:text-white hover:underline underline-offset-4 transition-all">Terms</a>
             <a href="#" className="hover:text-white hover:underline underline-offset-4 transition-all">Cookies</a>
           </div>
 
-          <button onClick={scrollToTop} className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(255,255,255,0.1)] text-white/60 group">
-            <ArrowUp size={20} className="group-hover:animate-bounce" />
+          <button onClick={scrollToTop} className="w-12 h-12 rounded-full bg-white/[0.05] border border-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white hover:text-black transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,255,255,0.2)] text-white group relative overflow-hidden">
+            <ArrowUp size={20} className="relative z-10 group-hover:-translate-y-1 transition-transform duration-300" />
+            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></div>
           </button>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );

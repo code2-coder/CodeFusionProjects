@@ -1,8 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, Sparkles, Timer } from 'lucide-react';
 
 const Pricing = () => {
+  const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => prev > 0 ? prev - 1 : 0);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds) => {
+    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return { h, m, s };
+  };
+
   const handlePayment = async (plan) => {
     if (plan.price === "Custom") {
       alert("Please contact us for custom plans.");
@@ -108,63 +124,201 @@ const Pricing = () => {
   ];
 
   return (
-    <section id="pricing" className="py-32 relative bg-background">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-20">
+    <section id="pricing" className="py-32 lg:py-48 relative bg-[#000000] font-sans border-t border-white/5 overflow-hidden">
+      
+      {/* Cinematic Lighting Orbs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <motion.div 
+          animate={{ x: [0, 50, 0], y: [0, -40, 0], scale: [1, 1.2, 1] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[10%] right-[10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] mix-blend-screen"
+        ></motion.div>
+        <motion.div 
+          animate={{ x: [0, -50, 0], y: [0, 50, 0], scale: [1, 1.3, 1] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-[0%] left-[10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[140px] mix-blend-screen"
+        ></motion.div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        
+        <div className="text-center mb-20 md:mb-32">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.03] backdrop-blur-3xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.02)] text-white font-semibold tracking-wide text-xs mb-8"
+          >
+            <Sparkles size={16} className="text-blue-400" />
+            <span className="uppercase tracking-widest text-white/80">Pricing</span>
+          </motion.div>
+          
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight"
+            transition={{ delay: 0.1 }}
+            className="text-5xl md:text-7xl font-black mb-6 tracking-tighter leading-tight text-white"
           >
-            Transparent <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Investment</span>
+            Transparent <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">Investment</span>
           </motion.h2>
-          <p className="text-foreground/60 text-lg md:text-xl max-w-2xl mx-auto font-medium">Invest in premium quality architecture that pays for itself.</p>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-white/50 text-lg md:text-2xl max-w-2xl mx-auto font-light tracking-tight leading-relaxed"
+          >
+            Invest in premium quality architecture that pays for itself.
+          </motion.p>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-12 inline-flex flex-col items-center px-10 py-8 rounded-[2.5rem] bg-white/[0.02] border border-white/5 backdrop-blur-3xl shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden group/timerbox"
+          >
+            {/* Ambient inner glow for timer */}
+            <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-purple-500/5 pointer-events-none z-0"></div>
+            <div className="absolute top-0 inset-x-10 h-[1px] bg-gradient-to-r from-transparent via-blue-500/30 to-transparent z-0"></div>
+
+            <div className="flex items-center gap-3 mb-6 relative z-10">
+              <Timer size={18} className="text-blue-400 animate-pulse" />
+              <div className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 uppercase tracking-[0.25em]">Special Launch Offer Ends In</div>
+            </div>
+            
+            <div className="flex items-center gap-3 md:gap-5 relative z-10">
+              {/* Hours Box */}
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-white/[0.03] border border-white/10 rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] backdrop-blur-xl relative overflow-hidden transition-all duration-500 group-hover/timerbox:bg-white/[0.06] group-hover/timerbox:border-white/20">
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover/timerbox:opacity-100 transition-opacity duration-700"></div>
+                  <span className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tighter">{formatTime(timeLeft).h}</span>
+                </div>
+                <span className="text-[10px] md:text-xs text-white/40 uppercase tracking-widest font-semibold mt-3">Hours</span>
+              </div>
+              
+              <span className="text-2xl md:text-3xl text-white/20 font-light mb-7 animate-pulse">:</span>
+
+              {/* Minutes Box */}
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-white/[0.03] border border-white/10 rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] backdrop-blur-xl relative overflow-hidden transition-all duration-500 group-hover/timerbox:bg-white/[0.06] group-hover/timerbox:border-white/20">
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover/timerbox:opacity-100 transition-opacity duration-700"></div>
+                  <span className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tighter">{formatTime(timeLeft).m}</span>
+                </div>
+                <span className="text-[10px] md:text-xs text-white/40 uppercase tracking-widest font-semibold mt-3">Minutes</span>
+              </div>
+
+              <span className="text-2xl md:text-3xl text-white/20 font-light mb-7 animate-pulse">:</span>
+
+              {/* Seconds Box */}
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-white/[0.03] border border-white/10 rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] backdrop-blur-xl relative overflow-hidden transition-all duration-500 group-hover/timerbox:bg-white/[0.06] group-hover/timerbox:border-white/20">
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover/timerbox:opacity-100 transition-opacity duration-700"></div>
+                  <span className="text-3xl md:text-4xl font-black text-emerald-400 tabular-nums tracking-tighter drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">{formatTime(timeLeft).s}</span>
+                </div>
+                <span className="text-[10px] md:text-xs text-white/40 uppercase tracking-widest font-semibold mt-3">Seconds</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center max-w-6xl mx-auto">
           {plans.map((plan, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className={`relative glass-card p-10 rounded-3xl transition-transform hover:-translate-y-2 ${plan.highlight ? 'border-purple-500/50 shadow-[0_10px_40px_rgba(168,85,247,0.15)] md:-translate-y-4 md:hover:-translate-y-6 scale-100 md:scale-105 z-10' : 'border-[color:var(--border)] shadow-sm'}`}
+              transition={{ duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className={`relative backdrop-blur-3xl p-10 md:p-12 rounded-[2.5rem] transition-all duration-700 hover:-translate-y-4 group flex flex-col h-full ${
+                plan.highlight 
+                  ? 'bg-white/[0.06] border border-blue-500/40 shadow-[0_30px_60px_rgba(59,130,246,0.15)] md:-translate-y-6 md:hover:-translate-y-10 scale-100 md:scale-105 z-10' 
+                  : 'bg-white/[0.04] border border-white/10 shadow-2xl hover:bg-white/[0.06] hover:border-white/20'
+              }`}
             >
+              
+              {/* Internal Glows & Glare (Requires overflow-hidden to clip to rounded corners) */}
+              <div className="absolute inset-0 overflow-hidden rounded-[2.5rem] pointer-events-none z-0">
+                {/* Liquid Glare Sweep Animation */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000">
+                  <div className="absolute top-0 left-[-100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-25deg] group-hover:animate-[glare_2.5s_ease-in-out_infinite]"></div>
+                </div>
+
+                {/* Highlight Glow Effect */}
+                {plan.highlight && (
+                  <div className="absolute inset-0 bg-gradient-to-b from-blue-500/15 to-transparent"></div>
+                )}
+              </div>
+
+              {/* Top Edge Glow (Outside overflow-hidden so it sits on the border) */}
+              {plan.highlight ? (
+                <div className="absolute -top-[1px] inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-blue-400 to-transparent opacity-80 z-0"></div>
+              ) : (
+                <div className="absolute -top-[1px] inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+              )}
+
+              {/* RECOMMENDED Badge (Now free from overflow-hidden) */}
               {plan.highlight && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-background text-xs font-bold px-4 py-1.5 rounded-full tracking-wide">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold px-6 py-2 rounded-full tracking-widest uppercase shadow-[0_0_20px_rgba(59,130,246,0.5)] animate-[pulse_3s_ease-in-out_infinite] z-20 whitespace-nowrap border border-white/20">
                   RECOMMENDED
                 </div>
               )}
               
-              <h3 className="text-2xl font-bold mb-2 tracking-tight">{plan.name}</h3>
-              <p className="text-foreground/50 text-sm mb-8 font-medium">{plan.desc}</p>
-              
-              <div className="mb-10">
-                <span className="text-5xl font-extrabold tracking-tighter">{plan.price}</span>
-                {plan.price !== "Custom" && <span className="text-foreground/50 font-medium ml-1">/project</span>}
-              </div>
+              <div className="relative z-10 flex-1 flex flex-col">
+                <h3 className="text-3xl font-black mb-3 tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/70 transition-all duration-500">{plan.name}</h3>
+                <p className="text-white/60 text-base mb-10 font-light tracking-wide h-12">{plan.desc}</p>
+                
+                <div className="mb-12">
+                  <span className="text-5xl md:text-6xl font-black tracking-tighter text-white">{plan.price}</span>
+                  {plan.price !== "Custom" && <span className="text-white/50 font-light ml-2">/project</span>}
+                </div>
 
-              <div className="space-y-5 mb-10 flex-1">
-                {plan.features.map((feat, j) => (
-                  <div key={j} className="flex items-center gap-3">
-                    <Check size={18} className={plan.highlight ? "text-purple-600" : "text-foreground/40"} />
-                    <span className="text-sm font-semibold text-foreground/80">{feat}</span>
-                  </div>
-                ))}
-              </div>
+                <div className="space-y-6 mb-12 flex-1">
+                  {plan.features.map((feat, j) => (
+                    <motion.div 
+                      key={j} 
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + (i * 0.1) + (j * 0.1), duration: 0.5, ease: "easeOut" }}
+                      className="flex items-center gap-4"
+                    >
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
+                        plan.highlight ? 'bg-blue-500/20 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white/10 text-white/60 group-hover:bg-white/20 group-hover:text-white'
+                      } transition-all duration-500`}>
+                        <Check size={14} strokeWidth={3} />
+                      </div>
+                      <span className="text-base font-medium text-white/90 tracking-tight">{feat}</span>
+                    </motion.div>
+                  ))}
+                </div>
 
-              <button 
-                onClick={() => handlePayment(plan)}
-                className={`w-full py-4 rounded-2xl font-bold transition-all shadow-sm ${plan.highlight ? 'bg-foreground text-background hover:scale-[1.02] hover:shadow-md' : 'bg-secondary/50 border border-[color:var(--border)] hover:bg-secondary'}`}
-              >
-                Get Started
-              </button>
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handlePayment(plan)}
+                  className={`w-full py-5 rounded-2xl font-bold transition-all duration-300 text-lg flex items-center justify-center gap-2 relative overflow-hidden group/btn ${
+                    plan.highlight 
+                      ? 'bg-white text-black shadow-[0_0_30px_rgba(255,255,255,0.4)]' 
+                      : 'bg-white/[0.08] border border-white/10 text-white hover:bg-white/[0.15] hover:border-white/30'
+                  }`}
+                >
+                  <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/btn:animate-[glare_1.5s_ease-in-out_infinite] skew-x-[-25deg]"></div>
+                  <span className="relative z-10">Get Started</span>
+                </motion.button>
+              </div>
             </motion.div>
           ))}
         </div>
       </div>
+      <style>{`
+        @keyframes glare {
+          0% { left: -100%; }
+          100% { left: 200%; }
+        }
+      `}</style>
     </section>
   );
 };

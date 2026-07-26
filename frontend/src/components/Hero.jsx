@@ -4,19 +4,52 @@ import { ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section id="home" className="relative pt-48 pb-32 lg:pt-56 lg:pb-40 overflow-hidden flex items-center min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
+    <section id="home" className="relative pt-48 pb-32 lg:pt-56 lg:pb-40 overflow-hidden flex items-center min-h-screen bg-[#000000] font-sans selection:bg-blue-500/30">
+      
+      {/* Apple-Style Mesh Gradient Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <motion.div 
+          animate={{ 
+            rotate: [0, 360],
+            scale: [1, 1.1, 1] 
+          }}
+          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-blue-600/20 rounded-full blur-[140px] mix-blend-screen"
+        ></motion.div>
+        
+        <motion.div 
+          animate={{ 
+            rotate: [360, 0],
+            scale: [1, 1.2, 1] 
+          }}
+          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-purple-600/20 rounded-full blur-[140px] mix-blend-screen"
+        ></motion.div>
+        
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0)_0%,rgba(0,0,0,1)_80%)] pointer-events-none"></div>
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-6 relative z-10 w-full">
         <div className="flex flex-col items-center text-center max-w-5xl mx-auto">
           
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-3xl mb-8 shadow-[0_0_30px_rgba(255,255,255,0.02)]"
+          >
+            <Sparkles size={16} className="text-blue-400" />
+            <span className="text-sm font-semibold text-white/80 tracking-wide uppercase">Introducing CodeFusion</span>
+          </motion.div>
 
           <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-[clamp(3rem,6vw,6.5rem)] font-extrabold tracking-tighter mb-8 leading-[1.05] text-foreground"
+            transition={{ duration: 1.2, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[clamp(3.5rem,7vw,8rem)] font-black tracking-tighter mb-8 leading-[1.05] text-white drop-shadow-2xl"
           >
             Build Digital Experiences that <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 animate-gradient-x">
               Defy Expectations.
             </span>
           </motion.h1>
@@ -24,8 +57,8 @@ const Hero = () => {
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-lg md:text-2xl text-foreground/60 max-w-3xl mb-12 font-medium leading-relaxed"
+            transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-lg md:text-2xl lg:text-3xl text-white/50 max-w-4xl mx-auto mb-14 font-light leading-relaxed tracking-tight"
           >
             Enterprise-grade engineering meets luxury design. We architect scalable, AI-driven platforms for startups that refuse to blend in.
           </motion.p>
@@ -33,43 +66,41 @@ const Hero = () => {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
+            transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto"
           >
             <a href="#contact" className="w-full sm:w-auto">
-              <button className="w-full px-8 py-4 rounded-2xl bg-foreground text-background font-bold text-lg hover:scale-105 transition-all shadow-[0_10px_40px_rgba(0,0,0,0.1)] hover:shadow-[0_15px_50px_rgba(0,0,0,0.2)] flex items-center justify-center gap-2 group">
-                Start Your Project <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              <button className="w-full px-10 py-5 rounded-full bg-white text-black font-semibold text-lg hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2 group">
+                Start Your Project 
+                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
               </button>
             </a>
             <a href="#contact" className="w-full sm:w-auto">
-              <button className="w-full px-8 py-4 rounded-2xl bg-card border border-[color:var(--border)] text-foreground font-bold text-lg hover:bg-secondary transition-all flex items-center justify-center shadow-sm">
+              <button className="w-full px-10 py-5 rounded-full bg-white/[0.03] border border-white/10 backdrop-blur-3xl text-white font-semibold text-lg hover:bg-white/10 active:scale-95 transition-all duration-300 flex items-center justify-center shadow-sm">
                 Get a Proposal
               </button>
             </a>
           </motion.div>
 
+          {/* Glass Badges */}
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.6 }}
-            className="mt-20 flex flex-wrap justify-center gap-8 text-sm md:text-base font-medium text-foreground/60"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-24 flex flex-wrap justify-center gap-4 text-sm md:text-base font-medium text-white/60"
           >
             {['100+ Projects Shipped', 'Award-Winning UI/UX', 'Sub-second Load Times', 'AI-Powered Architecture'].map((badge, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <CheckCircle2 size={18} className="text-green-500" />
-                <span>{badge}</span>
+              <div 
+                key={i} 
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.02] border border-white/5 backdrop-blur-md shadow-lg hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-default"
+              >
+                <CheckCircle2 size={16} className="text-blue-400" />
+                <span className="tracking-wide">{badge}</span>
               </div>
             ))}
           </motion.div>
 
         </div>
-      </div>
-
-      {/* Modern Soft Mesh Background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-         <div className="absolute top-[10%] left-[20%] w-[600px] h-[600px] bg-blue-400/10 rounded-full blur-[120px] mix-blend-multiply opacity-50 animate-blob"></div>
-         <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-purple-400/10 rounded-full blur-[120px] mix-blend-multiply opacity-50 animate-blob animation-delay-2000"></div>
-         <div className="absolute bottom-[10%] left-[40%] w-[700px] h-[700px] bg-pink-400/10 rounded-full blur-[120px] mix-blend-multiply opacity-50 animate-blob animation-delay-4000"></div>
       </div>
     </section>
   );

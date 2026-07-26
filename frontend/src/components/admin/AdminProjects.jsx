@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
 
 const AdminProjects = () => {
   const [projects, setProjects] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
     category: '',
     description: '',
-    content: '',
     client: '',
     technologies: '',
     tags: '',
@@ -36,8 +34,18 @@ const AdminProjects = () => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const { data } = await axios.get('/api/categories');
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
   useEffect(() => {
     fetchProjects();
+    fetchCategories();
   }, []);
 
   const handleInputChange = (e) => {
@@ -45,8 +53,36 @@ const AdminProjects = () => {
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
-  const handleContentChange = (content) => {
-    setFormData({ ...formData, content });
+  const handleFileUpload = async (e, fieldName) => {
+    const files = e.target.files;
+    if (!files.length) return;
+
+    const uploadData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      uploadData.append('images', files[i]);
+    }
+
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${user.token}`
+        }
+      };
+      
+      const { data } = await axios.post('/api/upload/images', uploadData, config);
+      
+      if (fieldName === 'gallery') {
+        setFormData((prev) => {
+          const currentGallery = prev.gallery ? prev.gallery.split(',').map(s=>s.trim()).filter(Boolean) : [];
+          const newGallery = [...currentGallery, ...data.urls].join(', ');
+          return { ...prev, gallery: newGallery };
+        });
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Error uploading image');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -58,6 +94,7 @@ const AdminProjects = () => {
       
       const payload = {
         ...formData,
+        slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
         technologies: formData.technologies.split(',').map(item => item.trim()).filter(Boolean),
         tags: formData.tags.split(',').map(item => item.trim()).filter(Boolean),
         gallery: formData.gallery.split(',').map(item => item.trim()).filter(Boolean)
@@ -79,7 +116,7 @@ const AdminProjects = () => {
 
   const resetForm = () => {
     setFormData({
-      title: '', slug: '', category: '', description: '', content: '',
+      title: '', slug: '', category: '', description: '',
       client: '', technologies: '', tags: '', featuredImage: '',
       gallery: '', demoUrl: '', githubUrl: '', featured: false,
       published: true, seoTitle: '', seoDescription: ''
@@ -93,7 +130,6 @@ const AdminProjects = () => {
       slug: project.slug || '',
       category: project.category || '',
       description: project.description || '',
-      content: project.content || '',
       client: project.client || '',
       technologies: (project.technologies || []).join(', '),
       tags: (project.tags || []).join(', '),
@@ -133,40 +169,38 @@ const AdminProjects = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input type="text" name="title" placeholder="Project Title" value={formData.title} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" required />
-          <input type="text" name="slug" placeholder="Slug (e.g. my-project)" value={formData.slug} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" required />
-          <input type="text" name="category" placeholder="Category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" required />
+
+          <select name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" required>
+            <option value="" disabled>Select Category</option>
+            {categories.map(cat => (
+              <option key={cat._id} value={cat.name}>{cat.name}</option>
+            ))}
+          </select>
+
           <input type="text" name="client" placeholder="Client Name" value={formData.client} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
           
           <div className="md:col-span-2">
-            <textarea name="description" placeholder="Short Description" value={formData.description} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" required rows="3"></textarea>
+            <textarea name="description" placeholder="Full Description" value={formData.description} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" required rows="5"></textarea>
           </div>
 
-          <div className="md:col-span-2 text-black bg-white rounded-xl overflow-hidden border border-[color:var(--border)]">
-            <ReactQuill theme="snow" value={formData.content} onChange={handleContentChange} placeholder="Rich Text Content Overview..." className="h-48 mb-12" />
+
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-[color:var(--foreground)] ml-2 opacity-70">Gallery Images</label>
+            <input type="file" accept="image/*" multiple onChange={(e) => handleFileUpload(e, 'gallery')} className="w-full px-4 py-2 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer" />
+            {formData.gallery && (
+              <div className="flex gap-2 mt-2 flex-wrap">
+                {formData.gallery.split(',').map((url, i) => url.trim() && <img key={i} src={url.trim()} alt="Gallery" className="w-20 h-20 object-cover rounded-md border border-[color:var(--border)]" />)}
+              </div>
+            )}
           </div>
 
-          <input type="text" name="featuredImage" placeholder="Featured Image URL" value={formData.featuredImage} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
-          <input type="text" name="gallery" placeholder="Gallery Image URLs (comma separated)" value={formData.gallery} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
-          
-          <input type="text" name="technologies" placeholder="Technologies (comma separated)" value={formData.technologies} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
-          <input type="text" name="tags" placeholder="Tags (comma separated)" value={formData.tags} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
 
           <input type="text" name="demoUrl" placeholder="Live Demo URL" value={formData.demoUrl} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
-          <input type="text" name="githubUrl" placeholder="GitHub URL" value={formData.githubUrl} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
 
-          <input type="text" name="seoTitle" placeholder="SEO Title" value={formData.seoTitle} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
-          <input type="text" name="seoDescription" placeholder="SEO Description" value={formData.seoDescription} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500" />
 
-          <div className="flex items-center gap-4 py-2 text-[color:var(--foreground)]">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" name="featured" checked={formData.featured} onChange={handleInputChange} className="w-5 h-5" />
-              Featured Project
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" name="published" checked={formData.published} onChange={handleInputChange} className="w-5 h-5" />
-              Published
-            </label>
-          </div>
+
+
         </div>
 
         <div className="flex gap-4 mt-4">
@@ -186,7 +220,7 @@ const AdminProjects = () => {
           <div key={project._id} className="p-4 bg-[color:var(--card)] rounded-xl border border-[color:var(--border)] flex flex-col sm:flex-row justify-between sm:items-center gap-4">
             <div>
               <p className="font-bold text-[color:var(--foreground)]">{project.title} <span className="text-xs text-blue-400 font-normal ml-2">{project.category}</span></p>
-              <p className="text-sm text-[color:var(--foreground)] opacity-60">/{project.slug} {project.published ? '(Published)' : '(Draft)'}</p>
+              <p className="text-sm text-[color:var(--foreground)] opacity-60">/{project.slug}</p>
             </div>
             <div className="flex gap-2">
               <button onClick={() => handleEdit(project)} className="px-3 py-1 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 rounded-md transition-colors">Edit</button>
