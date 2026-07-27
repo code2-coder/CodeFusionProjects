@@ -1,36 +1,42 @@
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.zeptomail.in',
-  port: process.env.SMTP_PORT || 465,
-  secure: process.env.SMTP_SECURE === 'true' || true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-
 export const sendAuthOTP = async (email, otp) => {
   const fromEmail = process.env.SMTP_FROM_EMAIL || 'noreply@codefusionprojects.in';
   const fromName = process.env.SMTP_FROM_NAME || 'Code Fusion Projects';
+  
+  // In ZeptoMail, the SMTP password is often the Send Mail Token
+  const zeptoToken = process.env.ZEPTOMAIL_TOKEN || process.env.SMTP_PASS;
 
   try {
-    if (!process.env.SMTP_PASS) {
+    if (!zeptoToken) {
       console.log('\n=============================================');
       console.log(`🔐 LOCAL DEV OTP FOR ${email}: ${otp}`);
       console.log('=============================================\n');
-      console.log('Authentication email skipped (No valid SMTP_PASS set).');
+      console.log('Authentication email skipped (No valid ZEPTOMAIL_TOKEN or SMTP_PASS set).');
       return { success: true, message: 'Email skipped - no API key' };
     }
-    
-    const info = await transporter.sendMail({
-      from: `"${fromName}" <${fromEmail}>`,
-      to: email,
+
+    // Ensure the token has the correct ZeptoMail prefix for REST API calls
+    const authHeader = zeptoToken.startsWith('Zoho-enczapikey') 
+      ? zeptoToken 
+      : `Zoho-enczapikey ${zeptoToken}`;
+
+    const payload = {
+      from: {
+        address: fromEmail,
+        name: fromName
+      },
+      to: [
+        {
+          email_address: {
+            address: email
+          }
+        }
+      ],
       subject: 'Code Fusion Projects - Your Login Code',
-      html: `
+      htmlbody: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">
           <h2 style="color: #2563eb;">Your Authentication Code 🚀</h2>
           <p style="color: #334155; font-size: 16px;">Please use the following One-Time Password (OTP) to sign in or register to your account:</p>
@@ -44,16 +50,38 @@ export const sendAuthOTP = async (email, otp) => {
           <p style="color: #94a3b8; font-size: 12px; text-align: center;">© ${new Date().getFullYear()} Code Fusion Projects. All rights reserved.</p>
         </div>
       `
+    };
+
+    // Make the REST API call over HTTPS (Port 443 - never blocked by Render)
+    const response = await fetch('https://api.zeptomail.in/v1.1/email', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': authHeader
+      },
+      body: JSON.stringify(payload)
     });
 
-    console.log('OTP email sent:', info.messageId);
-    return info;
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      console.error('ZeptoMail API Error Response:', JSON.stringify(responseData, null, 2));
+      throw new Error(`ZeptoMail API failed with status: ${response.status}`);
+    }
+
+    console.log('OTP email sent successfully via REST API:', responseData.message || 'Success');
+    return { success: true, data: responseData };
+    
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('🔥 Error sending email via ZeptoMail REST API:', error.message);
+    
+    // Fallback to local dev logging
     console.log('\n=============================================');
     console.log(`🔐 LOCAL DEV OTP FOR ${email}: ${otp}`);
     console.log('=============================================\n');
     console.log('Failing over to local dev mode due to email error.');
+    
     return { success: true, message: 'Fell back to local dev logging' };
   }
 };
