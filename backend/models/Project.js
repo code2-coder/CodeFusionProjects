@@ -14,10 +14,11 @@ const projectSchema = new mongoose.Schema(
     gallery: { type: [String], required: false },
     demoUrl: { type: String, required: false },
     githubUrl: { type: String, required: false },
-    featured: { type: Boolean, default: false },
     published: { type: Boolean, default: true },
     seoTitle: { type: String, required: false },
     seoDescription: { type: String, required: false },
+    completionDate: { type: Date, required: false },
+    features: { type: [String], required: false },
   },
   {
     timestamps: true,
