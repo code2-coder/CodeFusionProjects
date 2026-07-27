@@ -3,7 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Register from './pages/Register';
+import Profile from './pages/Profile';
+import StartProject from './pages/StartProject';
+
 import AdminPanel from './pages/AdminPanel';
 import Solutions from './pages/Solutions';
 import Work from './pages/Work';
@@ -36,7 +38,7 @@ function App() {
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+
               <Route path="/work" element={<Work />} />
               <Route path="/work/:slug" element={<WorkDetail />} />
               <Route path="/resources" element={<Resources />} />
@@ -44,6 +46,8 @@ function App() {
               <Route path="/templates" element={<TemplatesPage />} />
               <Route path="/templates/:id" element={<TemplateDetail />} />
               <Route path="/admin" element={<AdminPanel />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/start-project" element={<StartProject />} />
             </Routes>
           </div>
 

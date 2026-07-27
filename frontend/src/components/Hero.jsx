@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -69,12 +70,16 @@ const Hero = () => {
             transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto"
           >
-            <a href="#contact" className="w-full sm:w-auto">
-              <button className="w-full px-10 py-5 rounded-full bg-white text-black font-semibold text-lg hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2 group">
+            <Link 
+              to="/start-project"
+              className="group relative flex items-center justify-center gap-3 bg-white text-black font-bold text-lg sm:text-xl py-4 sm:py-5 px-8 sm:px-10 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+            >
+              <span className="relative z-10 flex items-center gap-2">
                 Start Your Project 
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
-              </button>
-            </a>
+                <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            </Link>
             <a href="#contact" className="w-full sm:w-auto">
               <button className="w-full px-10 py-5 rounded-full bg-white/[0.03] border border-white/10 backdrop-blur-3xl text-white font-semibold text-lg hover:bg-white/10 active:scale-95 transition-all duration-300 flex items-center justify-center shadow-sm">
                 Get a Proposal

@@ -171,7 +171,7 @@ const WorkDetail = () => {
         <div className="max-w-5xl mx-auto text-center glass-card rounded-[3rem] p-12 md:p-20 border border-[color:var(--border)] bg-gradient-to-b from-blue-900/10 to-transparent">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">Want to build something similar?</h2>
           <p className="text-lg opacity-70 mb-10 max-w-2xl mx-auto">Let's discuss how we can bring your ideas to life using the same high-quality development standards.</p>
-          <Link to="/contact" className="inline-block px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg hover:scale-105 transition-all shadow-xl">
+          <Link to="/start-project" className="inline-block px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg hover:scale-105 transition-all shadow-xl">
             Start Your Project
           </Link>
         </div>

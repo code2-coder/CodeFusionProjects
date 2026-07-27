@@ -12,6 +12,8 @@ import searchRoutes from './routes/searchRoutes.js';
 import templateRoutes from './routes/templateRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import projectRequestRoutes from './routes/projectRequestRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
 
 dotenv.config();
 
@@ -39,6 +41,8 @@ app.use('/api/search', searchRoutes);
 app.use('/api/templates', templateRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/project-requests', projectRequestRoutes);
+app.use('/api/contact', contactRoutes);
 
 app.get('/', (req, res) => {
   res.send('Code Fusion API is running...');

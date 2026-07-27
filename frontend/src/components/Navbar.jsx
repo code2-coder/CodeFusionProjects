@@ -222,15 +222,7 @@ const Navbar = () => {
 
             <div className="hidden sm:flex items-center gap-4">
               {user ? (
-                <>
-                  {user.role === 'admin' ? (
-                    <AdminDropdown user={user} handleLogout={handleLogout} />
-                  ) : (
-                    <button onClick={handleLogout} className="px-6 py-2.5 rounded-full bg-white/10 text-white border border-white/20 font-bold text-sm hover:bg-white hover:text-black hover:scale-105 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                      Logout
-                    </button>
-                  )}
-                </>
+                <AdminDropdown user={user} handleLogout={handleLogout} />
               ) : (
                 <AccountDropdown />
               )}

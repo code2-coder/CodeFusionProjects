@@ -2,11 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
-  User, Settings, Shield, Key, LayoutDashboard,
-  LogOut, X
+  User as UserIcon, LayoutDashboard, LogOut, X, Sparkles, ChevronRight
 } from 'lucide-react';
 
-const MenuItem = ({ icon: Icon, label, href = "#", badge, onClick, onSelect }) => (
+const MenuItem = ({ icon: Icon, label, href = "#", onClick, onSelect, active }) => (
   <Link 
     to={href} 
     onClick={(e) => {
@@ -16,32 +15,30 @@ const MenuItem = ({ icon: Icon, label, href = "#", badge, onClick, onSelect }) =
       }
       if (href !== "#" && onSelect) onSelect();
     }}
-    className="flex items-center justify-between px-4 py-2.5 text-sm font-medium text-[color:var(--foreground)] opacity-70 hover:opacity-100 hover:bg-[color:var(--secondary)] rounded-xl transition-all group"
+    className={`group relative flex items-center justify-between px-4 py-3 mx-2 my-1 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
+      active 
+        ? 'text-white bg-white/10 shadow-inner' 
+        : 'text-white/70 hover:text-white hover:bg-white/5'
+    }`}
   >
-    <div className="flex items-center gap-3">
-      <Icon size={16} className="text-[color:var(--foreground)] group-hover:text-purple-400 transition-colors" />
-      <span>{label}</span>
+    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+    
+    <div className="flex items-center gap-3 relative z-10">
+      <div className={`p-1.5 rounded-lg transition-colors duration-300 ${active ? 'bg-white/10 text-purple-400' : 'bg-transparent text-white/50 group-hover:text-purple-400 group-hover:bg-white/10'}`}>
+        <Icon size={16} />
+      </div>
+      <span className="tracking-wide">{label}</span>
     </div>
-    {badge && (
-      <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-        {badge}
-      </span>
-    )}
+    <ChevronRight size={14} className="text-white/20 group-hover:text-white/50 transform translate-x-[-4px] group-hover:translate-x-0 transition-all duration-300 relative z-10" />
   </Link>
-);
-
-const SectionHeader = ({ title }) => (
-  <div className="px-4 py-2 mt-2 text-[10px] font-bold uppercase tracking-widest text-[color:var(--foreground)] opacity-40">
-    {title}
-  </div>
 );
 
 const AdminDropdown = ({ user, handleLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const dropdownRef = useRef(null);
 
-  // Handle click outside to close
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -52,7 +49,6 @@ const AdminDropdown = ({ user, handleLogout }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle ESC key
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.key === 'Escape') {
@@ -64,107 +60,102 @@ const AdminDropdown = ({ user, handleLogout }) => {
     return () => document.removeEventListener('keydown', handleEsc);
   }, []);
 
-
-
   const confirmLogout = () => {
     setShowLogoutModal(false);
     setIsOpen(false);
     handleLogout();
   };
 
-
+  const getInitials = (name) => {
+    if (!name) return 'U';
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Avatar Button */}
+      {/* Avatar Trigger */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-tr from-purple-600 to-blue-600 text-white font-bold border-2 border-[color:var(--border)] hover:border-purple-400 transition-all hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-background"
+        className="relative group flex items-center justify-center w-11 h-11 rounded-full bg-gradient-to-tr from-purple-600/80 to-blue-600/80 text-white font-bold border border-white/20 hover:border-purple-400/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all duration-300 focus:outline-none"
       >
-        {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
-        {/* Online Indicator */}
-        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full"></span>
+        <div className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <span className="relative z-10 text-sm tracking-widest">{getInitials(user?.name)}</span>
+        
+        {/* Animated Online Indicator */}
+        <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-black rounded-full z-20">
+          <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-75"></span>
+        </span>
       </button>
 
-      {/* Main Dropdown */}
+      {/* Dropdown Panel */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 15, scale: 0.95, filter: 'blur(10px)' }}
             animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: 10, scale: 0.95, filter: 'blur(5px)' }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-full right-0 mt-4 w-[320px] max-h-[80vh] overflow-y-auto bg-black border border-[color:var(--border)] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] rounded-2xl z-50 custom-scrollbar"
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute top-full right-0 mt-4 w-[340px] bg-[#09090b]/95 backdrop-blur-2xl border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.8)] rounded-3xl z-50 overflow-hidden"
           >
-            {/* Header Profile Info */}
-            <div className="p-5 border-b border-[color:var(--border)] bg-[color:var(--secondary)]/30 backdrop-blur-md">
-              <div className="flex gap-4 items-center">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-purple-600 to-blue-600 flex items-center justify-center text-white text-lg font-bold shadow-inner">
-                  {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
+            {/* Header / Profile Info */}
+            <div className="relative p-6 overflow-hidden border-b border-white/5">
+              {/* Subtle background glow */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-purple-500/10 to-transparent pointer-events-none" />
+              
+              <div className="flex gap-4 items-center relative z-10">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600 to-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-[0_0_20px_rgba(168,85,247,0.3)] border border-white/20">
+                  {getInitials(user?.name)}
                 </div>
                 <div className="flex flex-col flex-grow overflow-hidden">
-                  <h3 className="font-bold text-[color:var(--foreground)] truncate">{user.name}</h3>
-                  <p className="text-xs font-semibold text-purple-400 truncate">Super Admin</p>
-                  <p className="text-xs text-[color:var(--foreground)] opacity-50 truncate mt-0.5">{user.email}</p>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-white text-lg truncate tracking-tight">{user?.name || 'User'}</h3>
+                    {user?.role === 'admin' && <Sparkles size={14} className="text-purple-400" />}
+                  </div>
+                  <p className="text-[11px] font-bold text-purple-400 uppercase tracking-widest mt-0.5">
+                    {user?.role === 'admin' ? 'Super Admin' : 'Member'}
+                  </p>
+                  <p className="text-xs text-white/50 truncate mt-1">{user?.email}</p>
                 </div>
-              </div>
-              <div className="mt-4 flex items-center gap-2 text-xs font-bold text-[color:var(--foreground)] opacity-60 bg-[color:var(--background)] py-1.5 px-3 rounded-full w-max border border-[color:var(--border)]">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Online
               </div>
             </div>
 
-            <div className="p-2 flex flex-col gap-1">
-              <SectionHeader title="My Account" />
-              <MenuItem icon={User} label="My Profile" onSelect={() => setIsOpen(false)} />
-              <MenuItem icon={Settings} label="Account Settings" onSelect={() => setIsOpen(false)} />
-              <MenuItem icon={Shield} label="Security Settings" onSelect={() => setIsOpen(false)} />
-              <MenuItem icon={Key} label="Change Password" onSelect={() => setIsOpen(false)} />
-
-              <div className="h-px bg-[color:var(--border)] my-2 mx-2"></div>
-
-              <SectionHeader title="Workspace" />
-              <MenuItem icon={LayoutDashboard} label="Admin Dashboard" href="/admin" onSelect={() => setIsOpen(false)} />
-
-
-
-
-
-
-
+            {/* Menu Items */}
+            <div className="py-3">
+              <div className="px-5 py-2">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">My Account</p>
+              </div>
+              <MenuItem 
+                icon={UserIcon} 
+                label="My Profile" 
+                href="/profile"
+                onSelect={() => setIsOpen(false)} 
+              />
+              
+              {user?.role === 'admin' && (
+                <>
+                  <div className="h-px bg-white/5 my-3 mx-4" />
+                  
+                  <div className="px-5 py-2">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">Workspace</p>
+                  </div>
+                  <MenuItem active={true} icon={LayoutDashboard} label="Admin Console" href="/admin" onSelect={() => setIsOpen(false)} />
+                </>
+              )}
             </div>
 
             {/* Footer / Logout */}
-            <div className="p-4 border-t border-[color:var(--border)] bg-[color:var(--secondary)]/50 backdrop-blur-md sticky bottom-0">
+            <div className="p-4 bg-white/[0.02] border-t border-white/5">
               <button 
                 onClick={() => setShowLogoutModal(true)}
-                className="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white font-bold py-3 rounded-xl transition-all border border-red-500/30 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]"
+                className="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 font-bold py-3.5 rounded-2xl transition-all duration-300 border border-red-500/20 hover:border-red-500/40 group"
               >
-                <LogOut size={18} /> Logout
+                <LogOut size={16} className="group-hover:-translate-x-1 transition-transform duration-300" /> 
+                <span className="tracking-wide">Sign Out</span>
               </button>
-              <div className="text-center mt-3 text-[10px] font-bold text-[color:var(--foreground)] opacity-30 uppercase tracking-widest">
-                Version 1.0.0
-              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Custom Scrollbar Styles for the dropdown */}
-      <style dangerouslySetInnerHTML={{__html: `
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: var(--border);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(168, 85, 247, 0.5);
-        }
-      `}} />
 
       {/* Logout Confirmation Modal */}
       <AnimatePresence>
@@ -174,43 +165,48 @@ const AdminDropdown = ({ user, handleLogout }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+              transition={{ duration: 0.3 }}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
               onClick={() => setShowLogoutModal(false)}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative bg-[#0a0a0a] border border-[color:var(--border)] rounded-3xl p-8 max-w-sm w-full shadow-2xl"
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="relative bg-[#09090b] border border-white/10 rounded-[2rem] p-8 max-w-sm w-full shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
             >
+              {/* Decorative top glow */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-red-500/50 blur-sm" />
+
               <button 
                 onClick={() => setShowLogoutModal(false)}
-                className="absolute top-4 right-4 p-2 bg-[color:var(--secondary)] rounded-full hover:bg-[color:var(--border)] transition-colors"
+                className="absolute top-5 right-5 p-2 bg-white/5 text-white/50 hover:text-white rounded-full hover:bg-white/10 transition-colors"
               >
                 <X size={16} />
               </button>
               
-              <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                <LogOut size={28} />
+              <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <LogOut size={28} className="translate-x-[-2px]" />
               </div>
               
-              <h2 className="text-2xl font-bold text-center mb-2">Ready to leave?</h2>
-              <p className="text-center text-[color:var(--foreground)] opacity-70 mb-8">
-                Are you sure you want to log out of your admin session?
+              <h2 className="text-2xl font-bold text-white text-center mb-2 tracking-tight">Ready to leave?</h2>
+              <p className="text-center text-white/60 text-sm mb-8 px-4 leading-relaxed">
+                Are you sure you want to log out of your account?
               </p>
               
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 <button 
                   onClick={() => setShowLogoutModal(false)}
-                  className="flex-1 py-3 bg-[color:var(--secondary)] border border-[color:var(--border)] text-[color:var(--foreground)] font-bold rounded-xl hover:bg-[color:var(--border)] transition-colors"
+                  className="flex-1 py-3.5 bg-white/5 border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-colors text-sm"
                 >
                   Cancel
                 </button>
                 <button 
                   onClick={confirmLogout}
-                  className="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all"
+                  className="flex-1 py-3.5 bg-red-600 text-white font-bold rounded-2xl hover:bg-red-500 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all text-sm"
                 >
-                  Logout
+                  Sign Out
                 </button>
               </div>
             </motion.div>

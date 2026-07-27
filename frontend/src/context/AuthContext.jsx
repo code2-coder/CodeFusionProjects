@@ -9,25 +9,41 @@ export const AuthProvider = ({ children }) => {
     return userInfo ? JSON.parse(userInfo) : null;
   });
 
-  const login = async (email, password) => {
+  const requestOtp = async (email, phone, isLogin) => {
     try {
-      const { data } = await axios.post('/api/auth/login', { email, password });
+      const { data } = await axios.post('/api/auth/request-otp', { email, phone, isLogin });
+      return { success: true, message: data.message };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.message || 'Failed to send OTP' };
+    }
+  };
+
+  const verifyOtp = async (email, otp, name) => {
+    try {
+      const { data } = await axios.post('/api/auth/verify-otp', { email, otp, name });
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.response?.data?.message || 'Login failed' };
+      return { success: false, error: error.response?.data?.message || 'Verification failed' };
     }
   };
 
-    const register = async (name, email, password) => {
-      try {
-        const { data } = await axios.post('/api/auth/register', { name, email, password });
-        return { success: true, message: data.message };
-      } catch (error) {
-        return { success: false, error: error.response?.data?.message || 'Registration failed' };
-      }
-    };
+  const updateProfile = async (userData) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.put('/api/auth/profile', userData, config);
+      setUser(data);
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      return { success: true, message: 'Profile updated successfully' };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.message || 'Update failed' };
+    }
+  };
 
   const logout = () => {
     setUser(null);
@@ -35,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, requestOtp, verifyOtp, updateProfile, logout }}>
       {children}
     </AuthContext.Provider>
   );

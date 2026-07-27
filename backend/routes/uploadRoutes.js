@@ -59,4 +59,19 @@ router.post('/video', protect, admin, upload.single('video'), (req, res) => {
   }
 });
 
+// @desc    Upload user files (documents/images for project requests)
+// @route   POST /api/upload/user-files
+// @access  Private
+router.post('/user-files', protect, upload.array('files', 10), (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: 'No files provided' });
+    }
+    const filePaths = req.files.map(file => `/${file.path.replace(/\\/g, '/')}`);
+    res.status(200).json({ urls: filePaths });
+  } catch (error) {
+    res.status(400).json({ message: 'Error uploading files', error: error.message });
+  }
+});
+
 export default router;

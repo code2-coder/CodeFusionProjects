@@ -18,7 +18,7 @@ const VerifyEmail = () => {
 
   useEffect(() => {
     if (!email) {
-      navigate('/register');
+      navigate('/login');
     }
     inputRef.current?.focus();
   }, [email, navigate]);

@@ -1,20 +1,36 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Phone, Mail, Send, Sparkles, CheckCircle2 } from 'lucide-react';
+import axios from 'axios';
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate network request
-    setTimeout(() => {
-      setIsSubmitting(false);
+
+    const formData = {
+      name: e.target.name.value,
+      email: e.target.email.value,
+      phone: e.target.phone.value,
+      service: e.target.type.options[e.target.type.selectedIndex].text,
+      businessType: e.target.type.value,
+      message: e.target.message.value
+    };
+
+    try {
+      await axios.post('/api/contact', formData);
       setIsSuccess(true);
+      e.target.reset();
       setTimeout(() => setIsSuccess(false), 3000);
-    }, 1500);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert('Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

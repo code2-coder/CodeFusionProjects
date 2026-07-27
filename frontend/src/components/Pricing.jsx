@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Check, Sparkles, Timer } from 'lucide-react';
+import { Check, Sparkles, Timer, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Pricing = () => {
   const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -17,6 +18,16 @@ const Pricing = () => {
     const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
     return { h, m, s };
+  };
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = window.innerWidth < 768 ? 320 : 420;
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const handlePayment = async (plan) => {
@@ -104,22 +115,38 @@ const Pricing = () => {
       name: "Starter",
       price: "₹2,999",
       desc: "Perfect for new startups.",
-      features: ["5 Page Website", "Responsive Design", "Basic SEO", "Contact Form", "1 Month Support"],
+      features: ["5 Page Website", "Responsive Design", "Basic SEO", "Contact Form", "Free Hosting", "Free Domain 1 Year", "1 Year Technical Support", "Unlimited Changes in Website", "WhatsApp & Social Media Integration"],
       highlight: false
     },
     {
       name: "Business",
       price: "₹6,999",
       desc: "For growing businesses.",
-      features: ["Up to 15 Pages", "Custom UI/UX Design", "CMS Integration", "Advanced SEO", "Performance Optimization", "3 Months Support"],
+      features: ["Up to 15 Pages", "Custom UI/UX Design", "CMS Integration", "Advanced SEO", "Performance Optimization", "Free Hosting", "Free Domain 1 Year", "1 Year Technical Support", "Unlimited Changes in Website", "WhatsApp & Social Media Integration"],
       highlight: true
     },
     {
       name: "Premium",
       price: "₹11,999",
       desc: "Enterprise scale solutions.",
-      features: ["Full Stack Web App", "MERN Architecture", "AI Integration", "Custom Dashboard", "E-Commerce Setup", "24/7 Priority Support"],
+      features: ["Full Stack Web App", "MERN Architecture", "AI Integration", "Custom Dashboard", "E-Commerce Setup", "Free Hosting", "Free Domain 1 Year", "1 Year Technical Support", "Unlimited Changes in Website", "WhatsApp & Social Media Integration"],
       highlight: false
+    },
+    {
+      name: "Customized",
+      price: "Custom",
+      desc: "Tailored to your specific needs.",
+      features: ["Custom Architecture", "Dedicated Development Team", "Cloud Infrastructure", "Advanced Security", "Free Hosting", "Free Domain 1 Year", "1 Year Technical Support", "Unlimited Changes in Website", "WhatsApp & Social Media Integration"],
+      highlight: false,
+      isCustom: true
+    },
+    {
+      name: "App Development",
+      price: "Custom",
+      desc: "For iOS and Android platforms.",
+      features: ["Native iOS & Android Apps", "Custom UI/UX Design", "Backend API Integration", "App Store Submission", "Free Hosting", "Free Domain 1 Year", "1 Year Technical Support", "Unlimited Changes", "WhatsApp & Social Media Integration"],
+      highlight: false,
+      isCustom: true
     }
   ];
 
@@ -140,9 +167,9 @@ const Pricing = () => {
         ></motion.div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-[90rem] mx-auto px-6 relative z-10">
         
-        <div className="text-center mb-20 md:mb-32">
+        <div className="text-center mb-16 md:mb-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -224,7 +251,31 @@ const Pricing = () => {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center max-w-6xl mx-auto">
+        {/* Carousel Navigation */}
+        <div className="flex justify-end gap-3 mb-6 max-w-[90rem] mx-auto px-4 lg:px-0">
+          <motion.button 
+            whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.1)" }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => scroll('left')}
+            className="w-12 h-12 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all shadow-lg backdrop-blur-md z-20"
+          >
+            <ChevronLeft size={24} />
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.1)" }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => scroll('right')}
+            className="w-12 h-12 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all shadow-lg backdrop-blur-md z-20"
+          >
+            <ChevronRight size={24} />
+          </motion.button>
+        </div>
+
+        {/* Scrollable Pricing Cards Container */}
+        <div 
+          ref={scrollRef}
+          className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory pb-12 px-4 lg:px-2 pt-10 -mt-10 hide-scrollbar"
+        >
           {plans.map((plan, i) => (
             <motion.div
               key={i}
@@ -232,34 +283,31 @@ const Pricing = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative backdrop-blur-3xl p-10 md:p-12 rounded-[2.5rem] transition-all duration-700 hover:-translate-y-4 group flex flex-col h-full ${
+              className={`snap-center shrink-0 w-[85vw] sm:w-[360px] lg:w-[380px] xl:w-[400px] relative backdrop-blur-3xl p-10 md:p-12 rounded-[2.5rem] transition-all duration-700 hover:-translate-y-4 group flex flex-col h-full ${
                 plan.highlight 
-                  ? 'bg-white/[0.06] border border-blue-500/40 shadow-[0_30px_60px_rgba(59,130,246,0.15)] md:-translate-y-6 md:hover:-translate-y-10 scale-100 md:scale-105 z-10' 
+                  ? 'bg-white/[0.06] border border-blue-500/40 shadow-[0_30px_60px_rgba(59,130,246,0.15)] md:-translate-y-6 md:hover:-translate-y-10 scale-100 z-10' 
                   : 'bg-white/[0.04] border border-white/10 shadow-2xl hover:bg-white/[0.06] hover:border-white/20'
               }`}
             >
               
               {/* Internal Glows & Glare (Requires overflow-hidden to clip to rounded corners) */}
               <div className="absolute inset-0 overflow-hidden rounded-[2.5rem] pointer-events-none z-0">
-                {/* Liquid Glare Sweep Animation */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000">
                   <div className="absolute top-0 left-[-100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-25deg] group-hover:animate-[glare_2.5s_ease-in-out_infinite]"></div>
                 </div>
-
-                {/* Highlight Glow Effect */}
                 {plan.highlight && (
                   <div className="absolute inset-0 bg-gradient-to-b from-blue-500/15 to-transparent"></div>
                 )}
               </div>
 
-              {/* Top Edge Glow (Outside overflow-hidden so it sits on the border) */}
+              {/* Top Edge Glow */}
               {plan.highlight ? (
                 <div className="absolute -top-[1px] inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-blue-400 to-transparent opacity-80 z-0"></div>
               ) : (
                 <div className="absolute -top-[1px] inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
               )}
 
-              {/* RECOMMENDED Badge (Now free from overflow-hidden) */}
+              {/* RECOMMENDED Badge */}
               {plan.highlight && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold px-6 py-2 rounded-full tracking-widest uppercase shadow-[0_0_20px_rgba(59,130,246,0.5)] animate-[pulse_3s_ease-in-out_infinite] z-20 whitespace-nowrap border border-white/20">
                   RECOMMENDED
@@ -271,8 +319,8 @@ const Pricing = () => {
                 <p className="text-white/60 text-base mb-10 font-light tracking-wide h-12">{plan.desc}</p>
                 
                 <div className="mb-12">
-                  <span className="text-5xl md:text-6xl font-black tracking-tighter text-white">{plan.price}</span>
-                  {plan.price !== "Custom" && <span className="text-white/50 font-light ml-2">/project</span>}
+                  <span className={`font-black tracking-tighter text-white ${plan.isCustom ? 'text-4xl lg:text-5xl' : 'text-4xl lg:text-5xl'}`}>{plan.price}</span>
+                  {!plan.isCustom && <span className="text-white/50 font-light ml-2">/project</span>}
                 </div>
 
                 <div className="space-y-6 mb-12 flex-1">
@@ -298,7 +346,13 @@ const Pricing = () => {
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => handlePayment(plan)}
+                  onClick={() => {
+                    if (plan.isCustom) {
+                      document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      handlePayment(plan);
+                    }
+                  }}
                   className={`w-full py-5 rounded-2xl font-bold transition-all duration-300 text-lg flex items-center justify-center gap-2 relative overflow-hidden group/btn ${
                     plan.highlight 
                       ? 'bg-white text-black shadow-[0_0_30px_rgba(255,255,255,0.4)]' 
@@ -306,7 +360,7 @@ const Pricing = () => {
                   }`}
                 >
                   <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/btn:animate-[glare_1.5s_ease-in-out_infinite] skew-x-[-25deg]"></div>
-                  <span className="relative z-10">Get Started</span>
+                  <span className="relative z-10">{plan.isCustom ? 'Contact Us' : 'Get Started'}</span>
                 </motion.button>
               </div>
             </motion.div>
@@ -317,6 +371,13 @@ const Pricing = () => {
         @keyframes glare {
           0% { left: -100%; }
           100% { left: 200%; }
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
     </section>
