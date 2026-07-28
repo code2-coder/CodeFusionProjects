@@ -200,7 +200,7 @@ const AdminProjects = () => {
       await axios.post('/api/categories', { name: newCategoryName }, config);
       setNewCategoryName('');
       fetchCategories();
-    } catch (error) { console.error(error); alert('Error creating category'); }
+    } catch (error) { console.error(error); alert(error.response?.data?.message || 'Error creating category'); }
   };
 
   const handleUpdateCategory = async (e, id) => {
@@ -216,7 +216,7 @@ const AdminProjects = () => {
       setEditingCategoryId(null);
       setEditCategoryName('');
       fetchCategories();
-    } catch (error) { console.error(error); alert('Error updating category'); }
+    } catch (error) { console.error(error); alert(error.response?.data?.message || 'Error updating category'); }
   };
 
   const handleDeleteCategory = async (e, id, name) => {
@@ -229,7 +229,7 @@ const AdminProjects = () => {
           setFormData(prev => ({...prev, category: ''}));
         }
         fetchCategories();
-      } catch (error) { console.error(error); alert('Error deleting category'); }
+      } catch (error) { console.error(error); alert(error.response?.data?.message || 'Error deleting category'); }
     }
   };
 
@@ -295,6 +295,7 @@ const AdminProjects = () => {
                     value={newCategoryName} 
                     onChange={e => setNewCategoryName(e.target.value)}
                     onClick={e => e.stopPropagation()}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleCreateCategory(e); } }}
                     className="flex-1 px-3 py-1.5 rounded-lg bg-[color:var(--background)] border border-[color:var(--border)] text-sm text-[color:var(--foreground)] focus:outline-none focus:border-blue-500"
                   />
                   <button type="button" onClick={handleCreateCategory} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">Add</button>
@@ -309,6 +310,7 @@ const AdminProjects = () => {
                           type="text" 
                           value={editCategoryName} 
                           onChange={e => setEditCategoryName(e.target.value)}
+                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleUpdateCategory(e, cat._id); } }}
                           className="flex-1 px-2 py-1 rounded bg-[color:var(--background)] border border-blue-500 text-sm text-[color:var(--foreground)] focus:outline-none"
                           autoFocus
                         />
