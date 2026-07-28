@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Play, Search, Tag, Filter, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { getImageUrl } from '../utils';
 
 const Templates = () => {
   const [templates, setTemplates] = useState([]);
@@ -151,7 +152,7 @@ const Templates = () => {
                   {/* Image Section */}
                   <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-900">
                     <img 
-                      src={(tpl.galleryImages && tpl.galleryImages[0]) || 'https://via.placeholder.com/800x600?text=No+Image'} 
+                      src={getImageUrl((tpl.galleryImages && tpl.galleryImages[0]) || 'https://via.placeholder.com/800x600?text=No+Image')} 
                       alt={tpl.title} 
                       className="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-[1.05] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]" 
                     />

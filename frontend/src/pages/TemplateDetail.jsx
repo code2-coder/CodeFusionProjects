@@ -4,6 +4,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Share2, Play, ShoppingCart, X, CheckCircle2, ShieldCheck, Zap, Download } from 'lucide-react';
 import Footer from '../components/Footer';
+import { getImageUrl } from '../utils';
 
 const TemplateDetail = () => {
   const { id } = useParams();
@@ -158,7 +159,7 @@ const TemplateDetail = () => {
               {!isVideoOpen ? (
                 <>
                   <img 
-                    src={(template.galleryImages && template.galleryImages[0]) || 'https://via.placeholder.com/1200x600?text=No+Image'} 
+                    src={getImageUrl((template.galleryImages && template.galleryImages[0]) || 'https://via.placeholder.com/1200x600?text=No+Image')} 
                     alt={template.title} 
                     className="w-full h-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-105 cursor-pointer"
                     onClick={() => template.galleryImages && template.galleryImages[0] && setSelectedImage(template.galleryImages[0])}
@@ -254,7 +255,7 @@ const TemplateDetail = () => {
                       className={`relative rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a0a] cursor-pointer group ${idx === 0 && template.galleryImages.length > 2 ? 'sm:col-span-2 aspect-[21/9]' : 'aspect-video'}`}
                       onClick={() => setSelectedImage(imgUrl)}
                     >
-                      <img src={imgUrl} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+                      <img src={getImageUrl(imgUrl)} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
                       <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/10 transition-colors duration-500 mix-blend-overlay"></div>
                     </div>
                   ))}
@@ -358,7 +359,7 @@ const TemplateDetail = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              src={selectedImage} 
+              src={getImageUrl(selectedImage)} 
               alt="Full size view" 
               className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
               onClick={(e) => e.stopPropagation()} 

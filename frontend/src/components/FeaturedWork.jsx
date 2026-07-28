@@ -3,6 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ExternalLink } from 'lucide-react';
+import { getImageUrl } from '../utils';
 
 const FeaturedWork = () => {
   const [projects, setProjects] = useState([]);
@@ -49,7 +50,7 @@ const FeaturedWork = () => {
             >
               <div className="relative h-56 overflow-hidden bg-black">
                 {project.featuredImage ? (
-                  <img src={project.featuredImage} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" />
+                  <img src={getImageUrl(project.featuredImage)} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" />
                 ) : (
                   <div className="w-full h-full bg-blue-900/20" />
                 )}

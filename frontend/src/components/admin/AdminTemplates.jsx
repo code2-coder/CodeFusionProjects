@@ -66,7 +66,7 @@ const AdminTemplates = () => {
         const res = await axios.post('/api/upload/images', uploadData, {
           headers: { Authorization: `Bearer ${user.token}` }
         });
-        uploadedGalleryUrls = res.data.urls.map(url => `http://localhost:5000${url}`);
+        uploadedGalleryUrls = res.data.urls;
       }
 
       let uploadedVideoUrl = '';
@@ -76,7 +76,7 @@ const AdminTemplates = () => {
         const res = await axios.post('/api/upload/video', uploadData, {
           headers: { Authorization: `Bearer ${user.token}` }
         });
-        uploadedVideoUrl = `http://localhost:5000${res.data.url}`;
+        uploadedVideoUrl = res.data.url;
       }
 
       const existingGallery = formData.galleryImages ? formData.galleryImages.split(',').map(s => s.trim()).filter(s => s) : [];

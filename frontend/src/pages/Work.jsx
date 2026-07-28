@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowRight, ExternalLink, Filter, Sparkles } from 'lucide-react';
 import Footer from '../components/Footer';
+import { getImageUrl } from '../utils';
 
 const Work = () => {
   const [projects, setProjects] = useState([]);
@@ -226,7 +227,7 @@ const Work = () => {
 
                             {(project.featuredImage || (project.gallery && project.gallery.length > 0)) ? (
                               <img
-                                src={project.featuredImage || project.gallery[0]}
+                                src={getImageUrl(project.featuredImage || project.gallery[0])}
                                 alt={project.title}
                                 className="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-transform duration-[2s] ease-[0.16,1,0.3,1]"
                               />

@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, ExternalLink, CheckCircle, Sparkles, MonitorSmartphone, Code2 } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import Footer from '../components/Footer';
+import { getImageUrl } from '../utils';
 
 const WorkDetail = () => {
   const { slug } = useParams();
@@ -178,7 +179,7 @@ const WorkDetail = () => {
             >
               <div className="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 z-10 mix-blend-overlay pointer-events-none"></div>
               <img 
-                src={project.featuredImage} 
+                src={getImageUrl(project.featuredImage)} 
                 alt={project.title} 
                 className="w-full h-full object-cover object-top opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-[3s] ease-[0.16,1,0.3,1]" 
               />
@@ -321,7 +322,7 @@ const WorkDetail = () => {
                 >
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none"></div>
                   <img 
-                    src={img} 
+                    src={getImageUrl(img)} 
                     alt={`${project.title} gallery shot ${idx + 1}`} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-[0.16,1,0.3,1] opacity-80 group-hover:opacity-100" 
                   />
