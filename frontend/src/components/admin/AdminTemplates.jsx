@@ -64,7 +64,7 @@ const AdminTemplates = () => {
         const uploadData = new FormData();
         Array.from(galleryFiles).forEach(file => uploadData.append('images', file));
         const res = await axios.post('/api/upload/images', uploadData, {
-          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${user.token}` }
+          headers: { Authorization: `Bearer ${user.token}` }
         });
         uploadedGalleryUrls = res.data.urls.map(url => `http://localhost:5000${url}`);
       }
@@ -74,7 +74,7 @@ const AdminTemplates = () => {
         const uploadData = new FormData();
         uploadData.append('video', videoFile);
         const res = await axios.post('/api/upload/video', uploadData, {
-          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${user.token}` }
+          headers: { Authorization: `Bearer ${user.token}` }
         });
         uploadedVideoUrl = `http://localhost:5000${res.data.url}`;
       }

@@ -73,7 +73,7 @@ const StartProject = () => {
     formData.append('files', file);
 
     try {
-      const config = { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${user.token}` } };
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
       const { data } = await axios.post('/api/upload/user-files', formData, config);
       if (data.urls && data.urls.length > 0) {
         setLogoUrl(data.urls[0]);
@@ -89,7 +89,7 @@ const StartProject = () => {
     Array.from(files).forEach(file => formData.append('files', file));
 
     try {
-      const config = { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${user.token}` } };
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
       const { data } = await axios.post('/api/upload/user-files', formData, config);
       if (data.urls) {
         setContentUrls(data.urls);

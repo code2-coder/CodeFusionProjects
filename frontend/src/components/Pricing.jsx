@@ -40,7 +40,7 @@ const Pricing = () => {
       const amountStr = plan.price.replace('₹', '').replace(',', '');
       const amount = parseInt(amountStr);
 
-      const orderRes = await fetch('http://localhost:5000/api/payments/create-order', {
+      const orderRes = await fetch(`${import.meta.env.VITE_API_URL}/api/payments/create-order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ const Pricing = () => {
         order_id: orderData.id,
         handler: async function (response) {
           try {
-            const verifyRes = await fetch('http://localhost:5000/api/payments/verify-payment', {
+            const verifyRes = await fetch(`${import.meta.env.VITE_API_URL}/api/payments/verify-payment`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

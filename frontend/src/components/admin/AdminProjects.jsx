@@ -90,7 +90,6 @@ const AdminProjects = () => {
     try {
       const config = {
         headers: {
-          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${user.token}`
         }
       };

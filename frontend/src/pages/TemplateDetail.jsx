@@ -59,6 +59,71 @@ const TemplateDetail = () => {
     }
   };
 
+  const handlePayment = async () => {
+    if (!template || !template.price || template.price === 0) {
+      alert("This template is free!");
+      return;
+    }
+
+    try {
+      const amount = template.price;
+      const planName = template.title;
+
+      const { data: orderData } = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/create-order`, {
+        amount,
+        planName,
+      });
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_dummy',
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Code Fusion",
+        description: `Purchase ${template.title}`,
+        image: "/favicon.svg",
+        order_id: orderData.id,
+        handler: async function (response) {
+          try {
+            const { data: verifyData } = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/verify-payment`, {
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+              amount,
+              planName,
+            });
+
+            if (verifyData && verifyData.message === 'Payment verified successfully') {
+              alert("Payment successful! You can now download the template.");
+              // Trigger download or next steps here
+            } else {
+              alert("Payment verification failed");
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Payment verification failed");
+          }
+        },
+        prefill: {
+          name: "Customer",
+          email: "customer@example.com",
+          contact: "9999999999"
+        },
+        theme: {
+          color: "#06b6d4" // cyan-500
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response){
+        alert("Payment failed");
+      });
+      rzp.open();
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred during payment initialization");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#030303] text-white font-sans pb-32 lg:pb-16 pt-20">
       {/* Top Header (Mobile Only) */}
@@ -213,7 +278,7 @@ const TemplateDetail = () => {
 
               <div className="space-y-4">
                 {template.price > 0 ? (
-                  <button className="w-full flex items-center justify-center gap-3 py-5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-2xl font-bold text-lg transition-all shadow-[0_0_40px_rgba(34,211,238,0.3)] hover:shadow-[0_0_60px_rgba(34,211,238,0.5)] hover:-translate-y-1">
+                  <button onClick={handlePayment} className="w-full flex items-center justify-center gap-3 py-5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-2xl font-bold text-lg transition-all shadow-[0_0_40px_rgba(34,211,238,0.3)] hover:shadow-[0_0_60px_rgba(34,211,238,0.5)] hover:-translate-y-1">
                     <ShoppingCart size={22} /> Buy Now
                   </button>
                 ) : (
@@ -258,7 +323,7 @@ const TemplateDetail = () => {
           </div>
           
           {template.price > 0 ? (
-            <button className="flex-1 max-w-[300px] flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-2xl font-bold text-lg shadow-[0_0_30px_rgba(34,211,238,0.4)] active:scale-95 transition-transform">
+            <button onClick={handlePayment} className="flex-1 max-w-[300px] flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-2xl font-bold text-lg shadow-[0_0_30px_rgba(34,211,238,0.4)] active:scale-95 transition-transform">
               <ShoppingCart size={22} /> Buy Now
             </button>
           ) : (
