@@ -1,0 +1,20 @@
+{
+  "short_name": "Code Fusion",
+  "name": "Code Fusion Projects - Software Development Company",
+  "icons": [
+    {
+      "src": "ai_logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "ai_logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

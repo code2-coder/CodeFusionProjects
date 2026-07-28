@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowUp, Phone, Mail, ArrowRight, MapPin, Send, Sparkles } from 'lucide-react';
-import { FaLinkedin, FaInstagram, FaGithub, FaTwitter } from 'react-icons/fa';
+import { FaLinkedin, FaInstagram, FaGithub } from 'react-icons/fa';
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -96,8 +96,7 @@ const Footer = () => {
               {[
                 { icon: FaLinkedin, href: '#', color: 'hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/30 hover:shadow-[0_0_20px_rgba(10,102,194,0.2)]' },
                 { icon: FaInstagram, href: 'https://www.instagram.com/codefusionprojects.in?igsh=MWRtd3FjZXo2Mm54cA==', color: 'hover:text-[#E1306C] hover:bg-[#E1306C]/10 hover:border-[#E1306C]/30 hover:shadow-[0_0_20px_rgba(225,48,108,0.2)]' },
-                { icon: FaGithub, href: '#', color: 'hover:text-white hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]' },
-                { icon: FaTwitter, href: '#', color: 'hover:text-[#1DA1F2] hover:bg-[#1DA1F2]/10 hover:border-[#1DA1F2]/30 hover:shadow-[0_0_20px_rgba(29,161,242,0.2)]' }
+                { icon: FaGithub, href: '#', color: 'hover:text-white hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]' }
               ].map((item, i) => {
                 const Icon = item.icon;
                 return (

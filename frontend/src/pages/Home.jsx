@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import SEO from '../components/SEO';
 import Hero from '../components/Hero';
 import Clients from '../components/Clients';
 import About from '../components/About';
@@ -36,8 +37,40 @@ const Home = () => {
     }
   }, [location]);
 
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Code Fusion Projects",
+    "image": "https://www.codefusionprojects.in/ai_logo.png",
+    "@id": "https://www.codefusionprojects.in/#organization",
+    "url": "https://www.codefusionprojects.in/",
+    "telephone": "+918767316759",
+    "email": "codefusionprojects@gmail.com",
+    "priceRange": "₹2,999 - ₹11,999",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Pune",
+      "addressRegion": "Maharashtra",
+      "addressCountry": "IN"
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Vaibhav Rohidas Pawar",
+      "url": "https://www.instagram.com/vaibhav.pawar.18"
+    },
+    "sameAs": [
+      "https://www.instagram.com/codefusionprojects.in"
+    ]
+  };
+
   return (
     <>
+      <SEO 
+        title="Website Development Company in Pune | MERN Stack Developers"
+        description="Code Fusion Projects is a leading website development company in Pune. We build custom React, MERN stack, E-commerce websites and mobile apps for startups and small businesses."
+        keywords="website development company, website developer in Pune, website development Pune, web development company India, MERN stack developer, React developer, Node.js developer"
+        schema={localBusinessSchema}
+      />
       <main>
         <Hero />
         <Clients />

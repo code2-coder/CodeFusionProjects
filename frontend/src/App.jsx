@@ -1,61 +1,74 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Profile from './pages/Profile';
-import StartProject from './pages/StartProject';
+import { HelmetProvider } from 'react-helmet-async';
+import { AuthProvider } from './context/AuthContext';
 
-import AdminPanel from './pages/AdminPanel';
-import Solutions from './pages/Solutions';
-import Work from './pages/Work';
-import WorkDetail from './pages/WorkDetail';
-import Resources from './pages/Resources';
-import ResourceDetail from './pages/ResourceDetail';
-import TemplatesPage from './pages/TemplatesPage';
-import TemplateDetail from './pages/TemplateDetail';
+import Navbar from './components/Navbar';
 import WhatsAppButton from './components/WhatsAppButton';
 import Contact from './components/Contact';
-import { AuthProvider } from './context/AuthContext';
+
+// Lazy load pages for performance (Code Splitting)
+const Home = lazy(() => import('./pages/Home'));
+const Login = lazy(() => import('./pages/Login'));
+const Profile = lazy(() => import('./pages/Profile'));
+const StartProject = lazy(() => import('./pages/StartProject'));
+const AdminPanel = lazy(() => import('./pages/AdminPanel'));
+const Solutions = lazy(() => import('./pages/Solutions'));
+const Work = lazy(() => import('./pages/Work'));
+const WorkDetail = lazy(() => import('./pages/WorkDetail'));
+const Resources = lazy(() => import('./pages/Resources'));
+const ResourceDetail = lazy(() => import('./pages/ResourceDetail'));
+const TemplatesPage = lazy(() => import('./pages/TemplatesPage'));
+const TemplateDetail = lazy(() => import('./pages/TemplateDetail'));
+
+// Simple loading fallback
+const Loader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-[#000000] text-white">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+);
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)] transition-colors duration-300 relative selection:bg-white/20 selection:text-white">
-          {/* Background Effects */}
-          <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px] animate-blob" />
-            <div className="absolute top-[20%] right-[-10%] w-[30%] h-[40%] rounded-full bg-purple-500/10 blur-[120px] animate-blob animation-delay-2000" />
-            <div className="absolute bottom-[-10%] left-[20%] w-[40%] h-[40%] rounded-full bg-pink-500/10 blur-[120px] animate-blob animation-delay-4000" />
-            <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay"></div>
+    <HelmetProvider>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)] transition-colors duration-300 relative selection:bg-white/20 selection:text-white">
+            {/* Background Effects */}
+            <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+              <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px] animate-blob" />
+              <div className="absolute top-[20%] right-[-10%] w-[30%] h-[40%] rounded-full bg-purple-500/10 blur-[120px] animate-blob animation-delay-2000" />
+              <div className="absolute bottom-[-10%] left-[20%] w-[40%] h-[40%] rounded-full bg-pink-500/10 blur-[120px] animate-blob animation-delay-4000" />
+              <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay"></div>
+            </div>
+
+            <div className="relative z-10">
+              <Navbar />
+              <Suspense fallback={<Loader />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/solutions" element={<Solutions />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/work" element={<Work />} />
+                  <Route path="/work/:slug" element={<WorkDetail />} />
+                  <Route path="/resources" element={<Resources />} />
+                  <Route path="/resources/:slug" element={<ResourceDetail />} />
+                  <Route path="/templates" element={<TemplatesPage />} />
+                  <Route path="/templates/:id" element={<TemplateDetail />} />
+                  <Route path="/admin" element={<AdminPanel />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/start-project" element={<StartProject />} />
+                </Routes>
+              </Suspense>
+            </div>
+
+            {/* Floating WhatsApp Button */}
+            <WhatsAppButton />
           </div>
-
-          <div className="relative z-10">
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/solutions" element={<Solutions />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/login" element={<Login />} />
-
-              <Route path="/work" element={<Work />} />
-              <Route path="/work/:slug" element={<WorkDetail />} />
-              <Route path="/resources" element={<Resources />} />
-              <Route path="/resources/:slug" element={<ResourceDetail />} />
-              <Route path="/templates" element={<TemplatesPage />} />
-              <Route path="/templates/:id" element={<TemplateDetail />} />
-              <Route path="/admin" element={<AdminPanel />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/start-project" element={<StartProject />} />
-            </Routes>
-          </div>
-
-          {/* Floating WhatsApp Button */}
-          <WhatsAppButton />
-        </div>
-      </Router>
-    </AuthProvider>
+        </Router>
+      </AuthProvider>
+    </HelmetProvider>
   );
 }
 
