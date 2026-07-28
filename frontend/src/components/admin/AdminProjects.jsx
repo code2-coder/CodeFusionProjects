@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
+import { getImageUrl } from '../../utils';
 
 const AdminProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -107,7 +108,9 @@ const AdminProjects = () => {
       }
     } catch (error) {
       console.error('Error uploading image:', error);
-      alert('Error uploading image');
+      alert('Error uploading image: ' + (error.response?.data?.message || error.message));
+    } finally {
+      e.target.value = ''; // Reset file input
     }
   };
 
@@ -363,10 +366,11 @@ const AdminProjects = () => {
 
           <div className="flex flex-col gap-2 md:col-span-1">
             <label className="text-sm font-semibold text-[color:var(--foreground)] ml-2 opacity-70">Featured Image</label>
-            <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'featuredImage')} className="w-full px-4 py-2 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer" />
+            <input type="file" accept="image/*" multiple onChange={(e) => handleFileUpload(e, 'featuredImage')} className="w-full px-4 py-2 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer" />
             {formData.featuredImage && (
-              <div className="mt-2">
-                <img src={formData.featuredImage} alt="Featured" className="w-20 h-20 object-cover rounded-md border border-[color:var(--border)]" />
+              <div className="mt-2 relative inline-block">
+                <img src={getImageUrl(formData.featuredImage)} alt="Featured" className="w-20 h-20 object-cover rounded-md border border-[color:var(--border)]" />
+                <button type="button" onClick={() => setFormData(prev => ({ ...prev, featuredImage: '' }))} className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-700">×</button>
               </div>
             )}
           </div>
@@ -376,7 +380,19 @@ const AdminProjects = () => {
             <input type="file" accept="image/*" multiple onChange={(e) => handleFileUpload(e, 'gallery')} className="w-full px-4 py-2 rounded-xl bg-[color:var(--background)] border border-[color:var(--border)] text-[color:var(--foreground)] focus:outline-none focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer" />
             {formData.gallery && (
               <div className="flex gap-2 mt-2 flex-wrap">
-                {formData.gallery.split(',').map((url, i) => url.trim() && <img key={i} src={url.trim()} alt="Gallery" className="w-20 h-20 object-cover rounded-md border border-[color:var(--border)]" />)}
+                {formData.gallery.split(',').map((url, i) => url.trim() && (
+                  <div key={i} className="relative inline-block">
+                    <img src={getImageUrl(url.trim())} alt="Gallery" className="w-20 h-20 object-cover rounded-md border border-[color:var(--border)]" />
+                    <button 
+                      type="button" 
+                      onClick={() => {
+                        const newGallery = formData.gallery.split(',').map(s=>s.trim()).filter(s=>s!==url.trim()).join(', ');
+                        setFormData(prev => ({ ...prev, gallery: newGallery }));
+                      }}
+                      className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-700"
+                    >×</button>
+                  </div>
+                ))}
               </div>
             )}
           </div>
