@@ -66,7 +66,7 @@ const Home = () => {
   return (
     <>
       <SEO 
-        title="Website Development Company in Pune | MERN Stack Developers"
+        title="Website Development Company | MERN Stack Developers"
         description="Code Fusion Projects is a leading website development company in Pune. We build custom React, MERN stack, E-commerce websites and mobile apps for startups and small businesses."
         keywords="website development company, website developer in Pune, website development Pune, web development company India, MERN stack developer, React developer, Node.js developer"
         schema={localBusinessSchema}
