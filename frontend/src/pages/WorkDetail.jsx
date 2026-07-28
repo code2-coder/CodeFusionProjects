@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, ExternalLink, CheckCircle, Sparkles, MonitorSmartphone, Code2 } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import Footer from '../components/Footer';
-import { getImageUrl } from '../utils';
+import { getImageUrl, handleImageError } from '../utils';
 
 const WorkDetail = () => {
   const { slug } = useParams();
@@ -182,6 +182,7 @@ const WorkDetail = () => {
                 src={getImageUrl(project.featuredImage)} 
                 alt={project.title} 
                 className="w-full h-full object-cover object-top opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-[3s] ease-[0.16,1,0.3,1]" 
+                onError={handleImageError}
               />
             </motion.div>
           </div>
@@ -325,6 +326,7 @@ const WorkDetail = () => {
                     src={getImageUrl(img)} 
                     alt={`${project.title} gallery shot ${idx + 1}`} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-[0.16,1,0.3,1] opacity-80 group-hover:opacity-100" 
+                    onError={handleImageError}
                   />
                 </motion.div>
               ))}
