@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Sparkles, Timer, ChevronLeft, ChevronRight } from 'lucide-react';
+import { load } from '@cashfreepayments/cashfree-js';
 
 const Pricing = () => {
   const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
@@ -55,15 +56,21 @@ const Pricing = () => {
         return;
       }
 
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_dummy',
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: "Code Fusion",
-        description: `Purchase ${plan.name} Plan`,
-        image: "/ai_logo.png",
-        order_id: orderData.id,
-        handler: async function (response) {
+      const cashfree = await load({
+        mode: import.meta.env.VITE_CASHFREE_ENVIRONMENT === 'PRODUCTION' ? 'production' : 'sandbox'
+      });
+
+      const checkoutOptions = {
+        paymentSessionId: orderData.payment_session_id,
+        redirectTarget: "_modal",
+      };
+
+      cashfree.checkout(checkoutOptions).then(async (result) => {
+        if (result.error) {
+          console.error(result.error);
+          alert("Payment failed or cancelled: " + (result.error.message || "Unknown error"));
+        }
+        if (result.paymentDetails) {
           try {
             const verifyRes = await fetch(`${import.meta.env.VITE_API_URL}/api/payments/verify-payment`, {
               method: 'POST',
@@ -71,11 +78,7 @@ const Pricing = () => {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                razorpayOrderId: response.razorpay_order_id,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpaySignature: response.razorpay_signature,
-                amount,
-                planName: plan.name,
+                orderId: orderData.order_id
               }),
             });
 
@@ -88,22 +91,8 @@ const Pricing = () => {
             console.error(err);
             alert("Payment verification failed");
           }
-        },
-        prefill: {
-          name: "Customer",
-          email: "customer@example.com",
-          contact: "9999999999"
-        },
-        theme: {
-          color: "#3B82F6"
         }
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.on('payment.failed', function (response){
-        alert("Payment failed");
       });
-      rzp.open();
     } catch (error) {
       console.error(error);
       alert("An error occurred during payment initialization");

@@ -10,21 +10,18 @@ const paymentSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    razorpayOrderId: {
+    orderId: {
       type: String,
       required: true,
+      unique: true,
     },
-    razorpayPaymentId: {
+    paymentSessionId: {
       type: String,
-      required: true,
-    },
-    razorpaySignature: {
-      type: String,
-      required: true,
+      required: false,
     },
     status: {
       type: String,
-      default: 'success',
+      default: 'pending', // usually starts pending, updated when verified
     },
     // We can add a user reference if authentication is present.
     // user: {

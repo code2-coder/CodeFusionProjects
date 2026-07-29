@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Share2, Play, ShoppingCart, X, CheckCircle2, ShieldCheck, Zap, Download } from 'lucide-react';
 import Footer from '../components/Footer';
 import { getImageUrl } from '../utils';
+import { load } from '@cashfreepayments/cashfree-js';
 
 const TemplateDetail = () => {
   const { id } = useParams();
@@ -75,22 +76,24 @@ const TemplateDetail = () => {
         planName,
       });
 
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_dummy',
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: "Code Fusion",
-        description: `Purchase ${template.title}`,
-        image: "/favicon.svg",
-        order_id: orderData.id,
-        handler: async function (response) {
+      const cashfree = await load({
+        mode: import.meta.env.VITE_CASHFREE_ENVIRONMENT === 'PRODUCTION' ? 'production' : 'sandbox'
+      });
+
+      const checkoutOptions = {
+        paymentSessionId: orderData.payment_session_id,
+        redirectTarget: "_modal",
+      };
+
+      cashfree.checkout(checkoutOptions).then(async (result) => {
+        if (result.error) {
+          console.error(result.error);
+          alert("Payment failed or cancelled: " + (result.error.message || "Unknown error"));
+        }
+        if (result.paymentDetails) {
           try {
             const { data: verifyData } = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/verify-payment`, {
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-              amount,
-              planName,
+              orderId: orderData.order_id
             });
 
             if (verifyData && verifyData.message === 'Payment verified successfully') {
@@ -103,22 +106,8 @@ const TemplateDetail = () => {
             console.error(err);
             alert("Payment verification failed");
           }
-        },
-        prefill: {
-          name: "Customer",
-          email: "customer@example.com",
-          contact: "9999999999"
-        },
-        theme: {
-          color: "#06b6d4" // cyan-500
         }
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.on('payment.failed', function (response){
-        alert("Payment failed");
       });
-      rzp.open();
     } catch (error) {
       console.error(error);
       alert("An error occurred during payment initialization");
