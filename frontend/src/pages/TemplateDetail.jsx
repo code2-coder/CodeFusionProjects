@@ -77,7 +77,7 @@ const TemplateDetail = () => {
       });
 
       const cashfree = await load({
-        mode: import.meta.env.VITE_CASHFREE_ENVIRONMENT?.toUpperCase() === 'PRODUCTION' ? 'production' : 'sandbox'
+        mode: orderData.environment || 'sandbox'
       });
 
       const checkoutOptions = {

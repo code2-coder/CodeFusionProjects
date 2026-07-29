@@ -66,7 +66,8 @@ export const createOrder = async (req, res) => {
       payment_session_id: response.data.payment_session_id,
       order_id: response.data.order_id,
       amount: response.data.order_amount,
-      currency: response.data.order_currency
+      currency: response.data.order_currency,
+      environment: process.env.CASHFREE_ENVIRONMENT === "PRODUCTION" ? "production" : "sandbox"
     });
   } catch (error) {
     console.error('Error creating Cashfree order:', error?.response?.data || error);
