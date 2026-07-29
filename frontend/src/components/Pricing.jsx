@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { Check, Sparkles, Timer, ChevronLeft, ChevronRight } from 'lucide-react';
 import { load } from '@cashfreepayments/cashfree-js';
+import toast from 'react-hot-toast';
 
 const Pricing = () => {
   const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
@@ -38,13 +39,13 @@ const Pricing = () => {
 
   const handlePayment = async (plan) => {
     if (!user) {
-      alert("Please log in to purchase this plan.");
+      toast.error("Please log in to purchase this plan.");
       navigate(`/login?redirect=${location.pathname}`);
       return;
     }
 
     if (plan.price === "Custom") {
-      alert("Please contact us for custom plans.");
+      toast.error("Please contact us for custom plans.");
       return;
     }
 
@@ -57,7 +58,7 @@ const Pricing = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ amount, planName: plan.name }),
+        body: JSON.stringify({ amount, planName: plan.name, user }),
       });
 
       const orderData = await orderRes.json();
@@ -79,7 +80,7 @@ const Pricing = () => {
       cashfree.checkout(checkoutOptions).then(async (result) => {
         if (result.error) {
           console.error(result.error);
-          alert("Payment failed or cancelled: " + (result.error.message || "Unknown error"));
+          toast.error("Payment failed or cancelled: " + (result.error.message || "Unknown error"));
         }
         if (result.paymentDetails) {
           try {
@@ -92,21 +93,22 @@ const Pricing = () => {
                 orderId: orderData.order_id
               }),
             });
+            const verifyData = await verifyRes.json();
 
-            if (verifyRes.ok) {
-              alert("Payment successful!");
+            if (verifyRes.ok && verifyData.message === 'Payment verified successfully') {
+              toast.success("Payment successful! Welcome aboard!");
             } else {
-              alert("Payment verification failed");
+              toast.error("Payment verification failed");
             }
           } catch (err) {
             console.error(err);
-            alert("Payment verification failed");
+            toast.error("Payment verification failed");
           }
         }
       });
     } catch (error) {
       console.error(error);
-      alert("An error occurred during payment initialization");
+      toast.error("An error occurred during payment initialization");
     }
   };
 

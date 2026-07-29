@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import { AuthContext } from '../context/AuthContext';
 import { getImageUrl } from '../utils';
 import { load } from '@cashfreepayments/cashfree-js';
+import toast from 'react-hot-toast';
 
 const TemplateDetail = () => {
   const { id } = useParams();
@@ -67,13 +68,13 @@ const TemplateDetail = () => {
 
   const handlePayment = async () => {
     if (!user) {
-      alert("Please log in to purchase this template.");
+      toast.error("Please log in to purchase this template.");
       navigate(`/login?redirect=${location.pathname}`);
       return;
     }
 
     if (!template || !template.price || template.price === 0) {
-      alert("This template is free!");
+      toast.error("This template is free!");
       return;
     }
 
@@ -84,6 +85,8 @@ const TemplateDetail = () => {
       const { data: orderData } = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/create-order`, {
         amount,
         planName,
+        user,
+        templateId: template._id
       });
 
       const cashfree = await load({
@@ -98,7 +101,7 @@ const TemplateDetail = () => {
       cashfree.checkout(checkoutOptions).then(async (result) => {
         if (result.error) {
           console.error(result.error);
-          alert("Payment failed or cancelled: " + (result.error.message || "Unknown error"));
+          toast.error("Payment failed or cancelled: " + (result.error.message || "Unknown error"));
         }
         if (result.paymentDetails) {
           try {
@@ -107,20 +110,20 @@ const TemplateDetail = () => {
             });
 
             if (verifyData && verifyData.message === 'Payment verified successfully') {
-              alert("Payment successful! You can now download the template.");
+              toast.success("Payment successful! You can now download the template.");
               // Trigger download or next steps here
             } else {
-              alert("Payment verification failed");
+              toast.error("Payment verification failed");
             }
           } catch (err) {
             console.error(err);
-            alert("Payment verification failed");
+            toast.error("Payment verification failed");
           }
         }
       });
     } catch (error) {
       console.error(error);
-      alert("An error occurred during payment initialization");
+      toast.error("An error occurred during payment initialization");
     }
   };
 

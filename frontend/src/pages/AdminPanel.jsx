@@ -10,6 +10,7 @@ import DashboardOverview from '../components/admin/DashboardOverview';
 import AdminTemplates from '../components/admin/AdminTemplates';
 import AdminCategories from '../components/admin/AdminCategories';
 import AdminProjects from '../components/admin/AdminProjects';
+import AdminOrders from '../components/admin/AdminOrders';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // A generic placeholder for unbuilt pages
@@ -52,6 +53,8 @@ const AdminPanel = () => {
         return <AdminCategories />;
       case 'templates':
         return <AdminTemplates />;
+      case 'orders':
+        return <AdminOrders />;
       
       // Placeholders for all the other requested tabs
       case 'profile': return <ComingSoon title="My Profile" />;

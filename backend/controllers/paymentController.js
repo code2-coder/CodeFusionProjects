@@ -15,7 +15,7 @@ const cashfree = new Cashfree(
 // @access  Public
 export const createOrder = async (req, res) => {
   try {
-    const { amount, planName } = req.body;
+    const { amount, planName, user, templateId } = req.body;
 
     if (!amount || !planName) {
       return res.status(400).json({ message: 'Amount and plan name are required' });
@@ -33,10 +33,10 @@ export const createOrder = async (req, res) => {
       order_currency: 'INR',
       order_id: orderId,
       customer_details: {
-        customer_id: `cust_${crypto.randomBytes(4).toString('hex')}`,
-        customer_phone: '9999999999',
-        customer_name: planName || 'Customer',
-        customer_email: 'customer@example.com' // Adjust as per your auth requirements
+        customer_id: user?._id || `cust_${crypto.randomBytes(4).toString('hex')}`,
+        customer_phone: user?.phone || '9999999999',
+        customer_name: user?.name || planName || 'Customer',
+        customer_email: user?.email || 'customer@example.com'
       },
       order_meta: {
         // You can specify a return_url here if you want Cashfree to redirect
@@ -58,7 +58,12 @@ export const createOrder = async (req, res) => {
       amount: orderAmount,
       orderId: response.data.order_id,
       paymentSessionId: response.data.payment_session_id,
-      status: 'pending'
+      status: 'pending',
+      user: user?._id || null,
+      userName: user?.name || null,
+      userEmail: user?.email || null,
+      userPhone: user?.phone || null,
+      templateId: templateId || null
     });
     await payment.save();
 
@@ -116,5 +121,93 @@ export const verifyPayment = async (req, res) => {
   } catch (error) {
     console.error('Error verifying Cashfree payment:', error?.response?.data || error);
     res.status(500).json({ message: error?.response?.data?.message || error.message || 'Verification failed' });
+  }
+};
+
+// @desc    Get all orders (Admin)
+// @route   GET /api/payments/orders
+// @access  Private/Admin
+export const getOrders = async (req, res) => {
+  try {
+    const orders = await Payment.find({})
+      .populate('templateId', 'title category price thumbnail')
+      .populate('user', 'name email phone')
+      .sort({ createdAt: -1 });
+      
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ message: 'Failed to fetch orders' });
+  }
+};
+
+// @desc    Create Manual Order (Offline/Admin)
+// @route   POST /api/payments/orders/manual
+// @access  Private/Admin
+export const createManualOrder = async (req, res) => {
+  try {
+    const { userName, userEmail, userPhone, planName, amount, status } = req.body;
+    
+    const payment = new Payment({
+      planName: planName || 'Manual Order',
+      amount: amount || 0,
+      orderId: `manual_${crypto.randomBytes(8).toString('hex')}`,
+      paymentSessionId: 'manual',
+      status: status || 'success',
+      userName,
+      userEmail,
+      userPhone
+    });
+    
+    const createdPayment = await payment.save();
+    res.status(201).json(createdPayment);
+  } catch (error) {
+    console.error('Error creating manual order:', error);
+    res.status(500).json({ message: 'Failed to create manual order' });
+  }
+};
+
+// @desc    Update Order
+// @route   PUT /api/payments/orders/:id
+// @access  Private/Admin
+export const updateOrder = async (req, res) => {
+  try {
+    const { userName, userEmail, userPhone, status, amount } = req.body;
+    
+    const payment = await Payment.findById(req.params.id);
+    if (!payment) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    payment.userName = userName || payment.userName;
+    payment.userEmail = userEmail || payment.userEmail;
+    payment.userPhone = userPhone || payment.userPhone;
+    payment.status = status || payment.status;
+    
+    if (amount !== undefined) {
+      payment.amount = amount;
+    }
+
+    const updatedPayment = await payment.save();
+    res.status(200).json(updatedPayment);
+  } catch (error) {
+    console.error('Error updating order:', error);
+    res.status(500).json({ message: 'Failed to update order' });
+  }
+};
+
+// @desc    Delete Order
+// @route   DELETE /api/payments/orders/:id
+// @access  Private/Admin
+export const deleteOrder = async (req, res) => {
+  try {
+    const payment = await Payment.findByIdAndDelete(req.params.id);
+    if (!payment) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    res.status(200).json({ message: 'Order deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    res.status(500).json({ message: 'Failed to delete order' });
   }
 };

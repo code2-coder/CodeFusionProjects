@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './context/AuthContext';
+import { Toaster } from 'react-hot-toast';
 
 import Navbar from './components/Navbar';
 import WhatsAppButton from './components/WhatsAppButton';
@@ -43,6 +44,7 @@ function App() {
             </div>
 
             <div className="relative z-10">
+              <Toaster position="top-center" toastOptions={{ style: { background: '#333', color: '#fff' } }} />
               <Navbar />
               <Suspense fallback={<Loader />}>
                 <Routes>

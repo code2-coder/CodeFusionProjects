@@ -23,12 +23,19 @@ const paymentSchema = new mongoose.Schema(
       type: String,
       default: 'pending', // usually starts pending, updated when verified
     },
-    // We can add a user reference if authentication is present.
-    // user: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: 'User',
-    //   required: false,
-    // },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+    userName: { type: String },
+    userEmail: { type: String },
+    userPhone: { type: String },
+    templateId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Template',
+      required: false,
+    },
   },
   {
     timestamps: true,

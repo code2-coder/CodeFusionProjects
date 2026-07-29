@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Settings, Shield, Key, // My Account
   LayoutDashboard, // Workspace
-  LayoutTemplate, BookOpen, Tag, Briefcase,
+  LayoutTemplate, BookOpen, Tag, Briefcase, ShoppingCart,
   LogOut, ChevronDown, ChevronRight
 } from 'lucide-react';
 
@@ -40,6 +40,7 @@ const AdminSidebar = ({ activeTab, setActiveTab, handleLogout, user, className =
         { id: 'projects', label: 'Projects', icon: Briefcase },
         { id: 'categories', label: 'Categories', icon: Tag },
         { id: 'templates', label: 'Templates', icon: LayoutTemplate },
+        { id: 'orders', label: 'Orders', icon: ShoppingCart },
 
       ]
     }
