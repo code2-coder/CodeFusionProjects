@@ -32,9 +32,11 @@ const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Fallback: If the file isn't found locally (e.g. it was uploaded to production), fetch it from production!
-app.use('/uploads', (req, res) => {
-  res.redirect(`https://codefusionprojects.onrender.com/uploads${req.url}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/uploads', (req, res) => {
+    res.redirect(`https://codefusionprojects.onrender.com/uploads${req.url}`);
+  });
+}
 
 // Routes
 app.use('/api/auth', authRoutes);

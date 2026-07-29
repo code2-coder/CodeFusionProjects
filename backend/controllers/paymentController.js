@@ -3,10 +3,12 @@ import crypto from 'crypto';
 import Payment from '../models/Payment.js';
 
 // Setup Cashfree credentials
-// Defaults to Sandbox if environment variables are not set properly
-Cashfree.XClientId = process.env.CASHFREE_APP_ID || "dummy_app_id";
-Cashfree.XClientSecret = process.env.CASHFREE_SECRET_KEY || "dummy_secret_key";
-Cashfree.XEnvironment = process.env.CASHFREE_ENVIRONMENT === "PRODUCTION" ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX;
+// Instantiate Cashfree class for v6 SDK
+const cashfree = new Cashfree(
+  process.env.CASHFREE_ENVIRONMENT === "PRODUCTION" ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX,
+  process.env.CASHFREE_APP_ID || "dummy_app_id",
+  process.env.CASHFREE_SECRET_KEY || "dummy_secret_key"
+);
 
 // @desc    Create Cashfree Order
 // @route   POST /api/payments/create-order
@@ -20,15 +22,20 @@ export const createOrder = async (req, res) => {
     }
 
     const orderId = `order_${crypto.randomBytes(8).toString('hex')}`;
+    const orderAmount = parseFloat(amount);
+
+    if (isNaN(orderAmount) || orderAmount <= 0) {
+      return res.status(400).json({ message: 'Invalid order amount' });
+    }
 
     const request = {
-      order_amount: amount,
+      order_amount: orderAmount,
       order_currency: 'INR',
       order_id: orderId,
       customer_details: {
         customer_id: `cust_${crypto.randomBytes(4).toString('hex')}`,
         customer_phone: '9999999999',
-        customer_name: 'Customer',
+        customer_name: planName || 'Customer',
         customer_email: 'customer@example.com' // Adjust as per your auth requirements
       },
       order_meta: {
@@ -37,12 +44,18 @@ export const createOrder = async (req, res) => {
       }
     };
 
-    const response = await Cashfree.PGCreateOrder("2023-08-01", request);
+    console.log('Sending CreateOrderRequest to Cashfree:', JSON.stringify(request, null, 2));
+
+    // SDK v6 expects the request object as the first parameter for PGCreateOrder.
+    // It NO LONGER takes the api version string ("2023-08-01") as the first parameter.
+    const response = await cashfree.PGCreateOrder(request);
     
+    console.log('Received CreateOrderResponse from Cashfree:', JSON.stringify(response.data, null, 2));
+
     // Create a pending payment record
     const payment = new Payment({
       planName,
-      amount,
+      amount: orderAmount,
       orderId: response.data.order_id,
       paymentSessionId: response.data.payment_session_id,
       status: 'pending'
@@ -72,8 +85,11 @@ export const verifyPayment = async (req, res) => {
       return res.status(400).json({ message: 'Order ID is required' });
     }
 
-    const response = await Cashfree.PGFetchPayments("2023-08-01", orderId);
+    // In SDK v6, the method is PGOrderFetchPayments and expects order_id as the first parameter.
+    const response = await cashfree.PGOrderFetchPayments(orderId);
     
+    console.log(`Received FetchPaymentsResponse for Order ${orderId}:`, JSON.stringify(response.data, null, 2));
+
     // Check if any transaction under this order ID is SUCCESS
     const isSuccess = response.data && response.data.some(payment => payment.payment_status === "SUCCESS");
 

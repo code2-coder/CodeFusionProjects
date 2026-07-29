@@ -57,7 +57,7 @@ const Pricing = () => {
       }
 
       const cashfree = await load({
-        mode: import.meta.env.VITE_CASHFREE_ENVIRONMENT === 'PRODUCTION' ? 'production' : 'sandbox'
+        mode: import.meta.env.VITE_CASHFREE_ENVIRONMENT?.toUpperCase() === 'PRODUCTION' ? 'production' : 'sandbox'
       });
 
       const checkoutOptions = {
