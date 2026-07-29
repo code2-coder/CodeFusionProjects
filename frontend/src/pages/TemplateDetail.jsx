@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Share2, Play, ShoppingCart, X, CheckCircle2, ShieldCheck, Zap, Download } from 'lucide-react';
 import Footer from '../components/Footer';
+import { AuthContext } from '../context/AuthContext';
 import { getImageUrl } from '../utils';
 import { load } from '@cashfreepayments/cashfree-js';
 
@@ -14,6 +15,9 @@ const TemplateDetail = () => {
   const [error, setError] = useState('');
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchTemplate = async () => {
@@ -62,6 +66,12 @@ const TemplateDetail = () => {
   };
 
   const handlePayment = async () => {
+    if (!user) {
+      alert("Please log in to purchase this template.");
+      navigate(`/login?redirect=${location.pathname}`);
+      return;
+    }
+
     if (!template || !template.price || template.price === 0) {
       alert("This template is free!");
       return;

@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { Check, Sparkles, Timer, ChevronLeft, ChevronRight } from 'lucide-react';
 import { load } from '@cashfreepayments/cashfree-js';
@@ -6,6 +8,9 @@ import { load } from '@cashfreepayments/cashfree-js';
 const Pricing = () => {
   const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
   const scrollRef = useRef(null);
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -32,6 +37,12 @@ const Pricing = () => {
   };
 
   const handlePayment = async (plan) => {
+    if (!user) {
+      alert("Please log in to purchase this plan.");
+      navigate(`/login?redirect=${location.pathname}`);
+      return;
+    }
+
     if (plan.price === "Custom") {
       alert("Please contact us for custom plans.");
       return;

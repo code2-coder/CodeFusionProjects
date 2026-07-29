@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, ArrowRight, Loader2, CheckCircle2, ChevronLeft, Sparkles, Phone, User } from 'lucide-react';
 
@@ -17,6 +17,7 @@ const Login = () => {
   
   const { requestOtp, verifyOtp } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const inputRef = useRef(null);
   const otpRefs = useRef([]);
 
@@ -58,7 +59,9 @@ const Login = () => {
     setLoading(false);
     
     if (res.success) {
-      navigate('/');
+      const searchParams = new URLSearchParams(location.search);
+      const redirectUrl = searchParams.get('redirect') || '/';
+      navigate(redirectUrl);
     } else {
       setError(res.error);
     }
