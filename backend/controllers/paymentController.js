@@ -1,4 +1,4 @@
-import { Cashfree } from "cashfree-pg";
+import { Cashfree, CFEnvironment } from "cashfree-pg";
 import crypto from 'crypto';
 import Payment from '../models/Payment.js';
 
@@ -6,7 +6,7 @@ import Payment from '../models/Payment.js';
 // Defaults to Sandbox if environment variables are not set properly
 Cashfree.XClientId = process.env.CASHFREE_APP_ID || "dummy_app_id";
 Cashfree.XClientSecret = process.env.CASHFREE_SECRET_KEY || "dummy_secret_key";
-Cashfree.XEnvironment = Cashfree.Environment[process.env.CASHFREE_ENVIRONMENT === "PRODUCTION" ? "PRODUCTION" : "SANDBOX"];
+Cashfree.XEnvironment = process.env.CASHFREE_ENVIRONMENT === "PRODUCTION" ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX;
 
 // @desc    Create Cashfree Order
 // @route   POST /api/payments/create-order

@@ -193,7 +193,7 @@ const Navbar = () => {
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2 cursor-pointer group"
+              className="relative flex items-center gap-2 cursor-pointer group"
             >
               <div className="relative flex items-center justify-center -my-6">
                 <img src="/ai_logo.png" alt="Code Fusion Logo" className="w-20 h-20 md:w-24 md:h-24 object-contain brightness-0 invert drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] group-hover:scale-105 transition-transform duration-500" />
