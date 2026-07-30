@@ -1,6 +1,7 @@
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 import crypto from 'crypto';
 import Payment from '../models/Payment.js';
+import { sendOrderConfirmation } from '../utils/sendEmail.js';
 
 // Setup Cashfree credentials
 // Instantiate Cashfree class for v6 SDK
@@ -114,6 +115,16 @@ export const verifyPayment = async (req, res) => {
         return res.status(404).json({ message: 'Payment record not found for this order' });
     }
 
+    // Populate user if needed, or we can use payment fields since we just added userEmail to the Payment model
+    if (payment.userEmail) {
+      await sendOrderConfirmation(payment.userEmail, {
+        customerName: payment.userName,
+        planName: payment.planName,
+        amount: payment.amount,
+        orderId: payment.orderId,
+      });
+    }
+
     res.status(200).json({
       message: 'Payment verified successfully',
       payment,
@@ -160,6 +171,16 @@ export const createManualOrder = async (req, res) => {
     });
     
     const createdPayment = await payment.save();
+    
+    if (createdPayment.status === 'success' && createdPayment.userEmail) {
+      await sendOrderConfirmation(createdPayment.userEmail, {
+        customerName: createdPayment.userName,
+        planName: createdPayment.planName,
+        amount: createdPayment.amount,
+        orderId: createdPayment.orderId,
+      });
+    }
+
     res.status(201).json(createdPayment);
   } catch (error) {
     console.error('Error creating manual order:', error);
