@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Phone, Mail, Send, Sparkles, CheckCircle2 } from 'lucide-react';
+import SEO from './SEO';
 import axios from 'axios';
 
 const Contact = () => {
@@ -35,6 +36,11 @@ const Contact = () => {
 
   return (
     <section id="contact" className="py-32 lg:py-48 relative overflow-hidden bg-[#000000] border-t border-white/5 font-sans">
+      <SEO 
+        title="Contact Us & Get a Quote | Code Fusion Projects"
+        description="Get in touch with Code Fusion Projects. Inquire about custom MERN stack developments, luxury UI/UX styling, or our ₹2,999 website creation offering."
+        keywords="contact website developer, hire MERN developers, contact Code Fusion, professional web developer contact, website design cost"
+      />
       {/* Cinematic Ambient Lighting */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         <motion.div 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import axios from 'axios';
 import { ArrowLeft, Clock, User, Download, Calendar, Share2 } from 'lucide-react';
 import Footer from '../components/Footer';
@@ -45,6 +46,12 @@ const ResourceDetail = () => {
 
   return (
     <div className="min-h-screen bg-[color:var(--background)] pt-24 pb-0 flex flex-col relative overflow-hidden">
+      <SEO 
+        title={resource.seoTitle || resource.title}
+        description={resource.seoDescription || resource.description || `Read about ${resource.title} at Code Fusion Projects.`}
+        keywords={`${resource.title}, ${resource.category || 'resource'}, Code Fusion Projects`}
+        ogImage={resource.imageUrl}
+      />
       
       {/* Background Gradients */}
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-purple-900/20 to-transparent pointer-events-none" />

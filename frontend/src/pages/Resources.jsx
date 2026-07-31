@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import axios from 'axios';
 import { BookOpen, Clock, Download, ArrowRight, User } from 'lucide-react';
 import Footer from '../components/Footer';
@@ -44,6 +45,11 @@ const Resources = () => {
 
   return (
     <div className="min-h-screen bg-[color:var(--background)] pt-24 pb-0 flex flex-col relative overflow-hidden">
+      <SEO 
+        title="Resources, UI Kits & Web Development Tutorials"
+        description="Access tutorials, articles, design assets, and free website templates to build your next-gen projects. Compiled by Vaibhav Rohidas Pawar at Code Fusion."
+        keywords="free website templates, web design tutorials, React guides, MERN stack coding blog, UI kits download"
+      />
       
       {/* Background Gradients */}
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-purple-900/20 to-transparent pointer-events-none" />

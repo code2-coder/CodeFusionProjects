@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useMotionTemplate } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import SEO from '../components/SEO';
 import axios from 'axios';
 import { ArrowRight, ExternalLink, Filter, Sparkles, Code2, Calendar, Target, Globe } from 'lucide-react';
 import Footer from '../components/Footer';
@@ -341,12 +342,11 @@ const Work = () => {
     <div className="min-h-screen bg-[#030303] flex flex-col relative overflow-hidden font-sans selection:bg-white/20 selection:text-white" ref={containerRef}>
       
       {/* SEO helmet headers */}
-      <Helmet>
-        <title>Selected Works | Code Fusion Projects</title>
-        <meta name="description" content="A curated exhibition of elite digital architecture, immersive products, and scalable enterprise platforms engineered by Code Fusion Projects." />
-        <meta property="og:title" content="Selected Works | Code Fusion Projects" />
-        <meta property="og:description" content="Explore our bespoke web applications, enterprise e-commerce portals, and modern architectural platforms." />
-      </Helmet>
+      <SEO 
+        title="Our Work & Case Studies | Elite Web Applications"
+        description="Explore our collection of elite custom websites, MERN stack web applications, and luxury UI/UX case studies built by Code Fusion Projects starting from ₹2,999."
+        keywords="Code Fusion portfolio, web development projects, client case studies, custom React apps, luxury web design portfolio"
+      />
 
       {/* Dynamic Ambient Background Elements */}
       <div className="fixed inset-0 z-0 pointer-events-none">

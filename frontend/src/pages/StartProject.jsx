@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
 import axios from 'axios';
 import { 
   Building2, User, Phone, Mail, FileText, Upload, Globe, Layout, Link as LinkIcon, 
@@ -188,6 +189,11 @@ const StartProject = () => {
 
   return (
     <div className="min-h-screen pt-32 pb-24 px-4 sm:px-6 relative bg-[#030303] overflow-hidden font-sans selection:bg-blue-500/30">
+      <SEO 
+        title="Start Your Website Project | Free Hosting & Domain"
+        description="Initiate your website development starting from ₹2,999. Tell us about your business, upload assets, select templates, and get a custom proposal from Code Fusion."
+        keywords="start website project, order custom website, MERN stack web app proposal, website starting from 2999, free hosting and free domain"
+      />
       {/* Background Effects */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />

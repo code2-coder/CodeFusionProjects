@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { 
   Monitor, ShoppingCart, LayoutGrid, Smartphone, PenTool, 
   RefreshCw, Cloud, Cpu, Building, Stethoscope, Hotel, 
@@ -126,6 +127,11 @@ const Solutions = () => {
 
   return (
     <div className="min-h-screen bg-[#000000] text-white font-sans relative overflow-hidden selection:bg-white/20 selection:text-white">
+      <SEO 
+        title="Enterprise Web Architecture & Digital Solutions"
+        description="Explore high-performance digital solutions by Code Fusion Projects. We build custom MERN stack applications, premium UI/UX designs, and scalable cloud networks."
+        keywords="Enterprise Web Development, Custom eCommerce storefronts, Luxury UI UX, SaaS platform builder, Cloud Infrastructure, AI website builder, web services"
+      />
       
       {/* Abyssal Background with Deep Refractions */}
       <div className="fixed inset-0 z-0 pointer-events-none bg-[#000000]">
