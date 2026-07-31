@@ -30,7 +30,7 @@
     @apply border-[color:var(--border)];
   }
   body {
-    @apply bg-[color:var(--background)] text-[color:var(--foreground)] font-sans antialiased overflow-x-hidden;
+    @apply bg-[color:var(--background)] text-[color:var(--foreground)] font-sans antialiased overflow-x-hidden relative;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight;
@@ -79,3 +79,19 @@ html {
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.01) 25%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.01) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite linear;
+}
+

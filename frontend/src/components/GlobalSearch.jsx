@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, X, Folder, BookOpen, ArrowRight } from 'lucide-react';
+import { Search, X, Folder, BookOpen, ArrowRight, LayoutTemplate } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const GlobalSearch = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState({ projects: [], resources: [] });
+  const [results, setResults] = useState({ projects: [], resources: [], templates: [] });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const GlobalSearch = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (!query) {
-      setResults({ projects: [], resources: [] });
+      setResults({ projects: [], resources: [], templates: [] });
       return;
     }
 
@@ -78,7 +78,7 @@ const GlobalSearch = ({ isOpen, onClose }) => {
                 <div className="flex justify-center py-12">
                   <div className="w-8 h-8 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
                 </div>
-              ) : query && results.projects.length === 0 && results.resources.length === 0 ? (
+              ) : query && (!results.projects || results.projects.length === 0) && (!results.resources || results.resources.length === 0) && (!results.templates || results.templates.length === 0) ? (
                 <div className="text-center py-12 text-[color:var(--foreground)] opacity-60">
                   No results found for "{query}"
                 </div>
@@ -88,7 +88,7 @@ const GlobalSearch = ({ isOpen, onClose }) => {
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
-                  {results.projects.length > 0 && (
+                  {results.projects && results.projects.length > 0 && (
                     <div>
                       <h3 className="text-sm font-bold uppercase tracking-wider text-[color:var(--foreground)] opacity-50 px-2 mb-3">Projects ({results.projects.length})</h3>
                       <div className="flex flex-col gap-2">
@@ -115,7 +115,34 @@ const GlobalSearch = ({ isOpen, onClose }) => {
                     </div>
                   )}
 
-                  {results.resources.length > 0 && (
+                  {results.templates && results.templates.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-[color:var(--foreground)] opacity-50 px-2 mb-3">Templates ({results.templates.length})</h3>
+                      <div className="flex flex-col gap-2">
+                        {results.templates.map(template => (
+                          <Link 
+                            key={template._id} 
+                            to={`/templates/${template._id}`}
+                            onClick={onClose}
+                            className="flex items-center justify-between p-3 rounded-xl hover:bg-[color:var(--secondary)] transition-colors group"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                                <LayoutTemplate size={18} />
+                              </div>
+                              <div>
+                                <h4 className="font-bold">{template.title}</h4>
+                                <p className="text-xs text-[color:var(--foreground)] opacity-60">{template.category} • {template.price > 0 ? `₹${template.price}` : 'Free'}</p>
+                              </div>
+                            </div>
+                            <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity text-emerald-400" />
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {results.resources && results.resources.length > 0 && (
                     <div>
                       <h3 className="text-sm font-bold uppercase tracking-wider text-[color:var(--foreground)] opacity-50 px-2 mb-3">Resources ({results.resources.length})</h3>
                       <div className="flex flex-col gap-2">

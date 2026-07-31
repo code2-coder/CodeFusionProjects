@@ -7,7 +7,8 @@ import {
   Activity,
   ArrowUpRight,
   TrendingUp,
-  Clock
+  Clock,
+  Briefcase
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -50,10 +51,10 @@ const DashboardOverview = () => {
   }, []);
 
   const statCards = [
-
-
-
-    { title: 'Active Users', value: stats.activeUsers, icon: Users, color: 'from-emerald-500 to-teal-400', trend: 'Live' },
+    { title: 'Total Projects', value: stats.projects, icon: Briefcase, color: 'from-blue-500 to-indigo-450', trend: 'Live' },
+    { title: 'Templates', value: stats.packages, icon: Package, color: 'from-purple-500 to-pink-450', trend: 'Live' },
+    { title: 'Resources', value: stats.resources, icon: BookOpen, color: 'from-orange-500 to-amber-450', trend: 'Live' },
+    { title: 'Active Users', value: stats.activeUsers, icon: Users, color: 'from-emerald-500 to-teal-450', trend: 'Live' },
   ];
 
   const recentActivity = [

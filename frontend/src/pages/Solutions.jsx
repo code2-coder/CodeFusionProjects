@@ -125,7 +125,7 @@ const Solutions = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#000000] text-white font-sans overflow-hidden selection:bg-white/20 selection:text-white">
+    <div className="min-h-screen bg-[#000000] text-white font-sans relative overflow-hidden selection:bg-white/20 selection:text-white">
       
       {/* Abyssal Background with Deep Refractions */}
       <div className="fixed inset-0 z-0 pointer-events-none bg-[#000000]">

@@ -107,7 +107,7 @@ const AIBuilder = () => {
                     <Bot size={28} />
                   </div>
                   <div>
-                    <p className="font-bold text-xl text-white tracking-tight">Code Fusion AI</p>
+                    <p className="font-bold text-xl text-white tracking-tight">FusionAI</p>
                     <div className="flex items-center gap-2 mt-1">
                       <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></div>
                       <p className="text-xs font-bold text-green-400 uppercase tracking-widest">Online</p>

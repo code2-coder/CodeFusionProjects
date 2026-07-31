@@ -166,6 +166,17 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(null);
+
+  const toggleMobileDropdown = (label) => {
+    setMobileDropdownOpen(mobileDropdownOpen === label ? null : label);
+  };
+
+  useEffect(() => {
+    if (!mobileMenuOpen) {
+      setMobileDropdownOpen(null);
+    }
+  }, [mobileMenuOpen]);
 
   const handleLogout = () => {
     logout();
@@ -230,10 +241,15 @@ const Navbar = () => {
 
             {/* Mobile Menu Toggle */}
             <button
-              className="lg:hidden p-2.5 text-white/70 rounded-full bg-white/[0.03] border border-transparent hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300 shadow-inner"
+              className="lg:hidden p-2.5 text-white/70 rounded-full bg-white/[0.03] border border-transparent hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300 shadow-inner focus:outline-none"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              <motion.div
+                animate={{ rotate: mobileMenuOpen ? 180 : 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                {mobileMenuOpen ? <X size={20} className="text-blue-400" /> : <Menu size={20} />}
+              </motion.div>
             </button>
           </div>
         </div>
@@ -242,51 +258,101 @@ const Navbar = () => {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -20, height: 0, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, y: 0, height: 'auto', filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -20, height: 0, filter: 'blur(10px)' }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:hidden absolute top-[calc(100%+1rem)] left-6 right-6 p-6 flex flex-col gap-2 shadow-[0_30px_60px_rgba(0,0,0,0.8)] overflow-hidden rounded-[2rem] bg-black/90 backdrop-blur-3xl border border-white/10 z-40"
+              variants={{
+                hidden: { opacity: 0, y: -15, filter: 'blur(10px)' },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  filter: 'blur(0px)',
+                  transition: {
+                    duration: 0.4,
+                    ease: [0.16, 1, 0.3, 1],
+                    staggerChildren: 0.05,
+                    delayChildren: 0.05
+                  }
+                },
+                exit: {
+                  opacity: 0,
+                  y: -15,
+                  filter: 'blur(10px)',
+                  transition: {
+                    duration: 0.3,
+                    ease: [0.16, 1, 0.3, 1]
+                  }
+                }
+              }}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="lg:hidden absolute top-[calc(100%+1rem)] left-6 right-6 p-6 flex flex-col gap-1 shadow-[0_30px_60px_rgba(0,0,0,0.85)] overflow-hidden rounded-[2.25rem] bg-black/95 backdrop-blur-3xl border border-white/[0.08] z-40"
             >
+              {/* Backlight Glows */}
+              <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-blue-500/5 blur-2xl z-0 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full bg-purple-500/5 blur-2xl z-0 pointer-events-none" />
+
               {navItems.map((item) => (
-                <React.Fragment key={item.label}>
+                <motion.div
+                  key={item.label}
+                  variants={{
+                    hidden: { opacity: 0, x: -10 },
+                    visible: { opacity: 1, x: 0, transition: { duration: 0.3 } }
+                  }}
+                  className="relative z-10"
+                >
                   {item.dropdown ? (
-                    <div className="flex flex-col gap-2">
-                      <div className="text-white/40 font-bold py-2 border-b border-white/10 uppercase text-[10px] tracking-[0.2em] block">
-                        {item.label}
-                      </div>
-                      <div className="flex flex-col pl-4 gap-2 mb-2">
-                        {item.dropdown.map((subItem) => (
-                          subItem.isHeader ? (
-                            <div key={subItem.label} className="text-blue-400 font-bold py-1 text-[10px] uppercase tracking-[0.2em] mt-3">
-                              {subItem.label}
+                    <div className="flex flex-col border-b border-white/[0.06] py-1">
+                      <button
+                        onClick={() => toggleMobileDropdown(item.label)}
+                        className="flex items-center justify-between w-full text-white/95 font-bold py-3 hover:text-blue-400 transition-colors"
+                      >
+                        <span>{item.label}</span>
+                        <ChevronDown size={15} className={`transition-transform duration-300 ${mobileDropdownOpen === item.label ? 'rotate-180 text-blue-400' : 'text-white/40'}`} />
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {mobileDropdownOpen === item.label && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: 'easeInOut' }}
+                            className="overflow-hidden"
+                          >
+                            <div className="flex flex-col pl-4 pb-3 gap-2.5 bg-white/[0.01] rounded-2xl border border-white/[0.03] p-2 mt-1 mb-2">
+                              {item.dropdown.map((subItem) => (
+                                <Link
+                                  key={subItem.label}
+                                  to={subItem.href}
+                                  className="text-white/60 hover:text-white transition-colors text-sm py-1.5 flex items-center gap-2 group"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500/30 group-hover:bg-blue-400 transition-colors"></span>
+                                  {subItem.label}
+                                </Link>
+                              ))}
                             </div>
-                          ) : (
-                            <Link
-                              key={subItem.label}
-                              to={subItem.href}
-                              className="text-white/70 font-semibold py-2 hover:text-white transition-colors text-sm"
-                              onClick={() => setMobileMenuOpen(false)}
-                            >
-                              {subItem.label}
-                            </Link>
-                          )
-                        ))}
-                      </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   ) : (
                     <Link
                       to={item.href}
-                      className="text-white/90 font-bold py-3 border-b border-white/10 hover:text-blue-400 transition-colors"
+                      className="text-white/90 font-bold py-3.5 border-b border-white/[0.06] hover:text-blue-400 transition-colors block"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {item.label}
                     </Link>
                   )}
-                </React.Fragment>
+                </motion.div>
               ))}
-              
-              <div className="flex flex-col gap-3 mt-6 sm:hidden">
+
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, y: 10 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+                }}
+                className="flex flex-col gap-3 mt-6 sm:hidden relative z-10"
+              >
                 {user ? (
                   <>
                     {user.role === 'admin' && (
@@ -314,7 +380,7 @@ const Navbar = () => {
                     </Link>
                   </div>
                 )}
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

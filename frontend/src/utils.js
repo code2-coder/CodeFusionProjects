@@ -17,13 +17,15 @@ export const getImageUrl = (url) => {
   // Remove accidental double slashes (e.g. //uploads -> /uploads)
   cleanUrl = cleanUrl.replace(/\/\//g, '/');
 
-  const baseUrl = import.meta.env.VITE_API_URL || '';
-  return `${baseUrl}${cleanUrl}`;
+  // Return cleanUrl as relative path to let Vite proxy or production server resolve it.
+  return cleanUrl;
 };
 
 export const handleImageError = (e) => {
   if (!e.target.dataset.fallback) {
     e.target.dataset.fallback = 'true';
-    e.target.src = 'https://placehold.co/600x400/1a1a1a/4a4a4a?text=Image+Unavailable';
+    // Use a premium, sleek looking placeholder image matching the dark theme
+    e.target.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop&text=Image+Unavailable';
   }
 };
+

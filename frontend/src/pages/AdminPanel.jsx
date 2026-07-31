@@ -105,11 +105,29 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black pt-24 pb-12 relative overflow-hidden">
+    <div className="min-h-screen bg-black pt-36 lg:pt-28 pb-12 relative overflow-hidden">
       {/* Dynamic Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-[20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/5 blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-600/5 blur-[120px]" />
+      </div>
+
+      {/* Mobile Top Bar */}
+      <div className="lg:hidden fixed top-[72px] sm:top-[80px] inset-x-0 z-30 bg-black/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setMobileMenuOpen(true)}
+            className="p-2 text-white/70 hover:text-white rounded-xl bg-white/[0.03] border border-white/[0.08]"
+          >
+            <Menu size={20} />
+          </button>
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-white">
+            {activeTab === 'overview' ? 'Dashboard' : activeTab.replace('_', ' ')}
+          </span>
+        </div>
+        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shadow-md">
+          {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+        </div>
       </div>
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex gap-8">
@@ -123,40 +141,57 @@ const AdminPanel = () => {
           className="w-80 h-[calc(100vh-6rem)] sticky top-24 glass-card border border-[color:var(--border)] rounded-3xl hidden lg:flex"
         />
 
-        {/* Mobile Header & Menu Toggle */}
-        <div className="lg:hidden fixed top-24 left-4 z-50">
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-3 bg-blue-600 text-white rounded-full shadow-lg hover:scale-105 transition-transform"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+        {/* Mobile Menu Drawer */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setMobileMenuOpen(false)}
+                className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs"
+              />
+
+              {/* Drawer Content */}
+              <motion.div
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 220 }}
+                className="lg:hidden fixed top-0 left-0 bottom-0 w-[300px] max-w-[85vw] h-full z-50 bg-black border-r border-white/[0.08] flex flex-col shadow-2xl"
+              >
+                <div className="flex items-center justify-between p-5 border-b border-white/[0.06] bg-white/[0.01]">
+                  <div className="flex items-center gap-2">
+                    <Sparkles size={16} className="text-blue-400" />
+                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/95">Navigation</span>
+                  </div>
+                  <button 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-1.5 text-white/40 hover:text-white rounded-lg bg-white/[0.03] border border-white/[0.08]"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+                
+                {/* Scrollable Sidebar Wrapper inside Drawer */}
+                <div className="flex-1 overflow-y-auto">
+                  <AdminSidebar 
+                    activeTab={activeTab} 
+                    setActiveTab={handleTabChange} 
+                    handleLogout={handleLogout}
+                    user={user}
+                    className="w-full h-full border-0 shadow-none bg-transparent flex"
+                  />
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
 
         {/* Main Content Area */}
         <main className="flex-1 w-full max-w-full lg:max-w-[calc(100%-22rem)] min-w-0">
-          
-          {/* Mobile Menu Overlay */}
-          <AnimatePresence>
-            {mobileMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                className="lg:hidden fixed inset-0 z-40 bg-black/95 backdrop-blur-xl pt-24 px-6 flex flex-col items-center overflow-y-auto pb-12"
-              >
-                {/* Reusing AdminSidebar for Mobile Layout, but making it full width */}
-                <AdminSidebar 
-                  activeTab={activeTab} 
-                  setActiveTab={handleTabChange} 
-                  handleLogout={handleLogout}
-                  user={user}
-                  className="w-full max-w-sm h-auto flex rounded-3xl border border-[color:var(--border)]"
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           <motion.div
             key={activeTab}
             initial={{ opacity: 0, y: 20 }}
