@@ -186,7 +186,7 @@ const Templates = () => {
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
-        const { data } = await api.get('/templates');
+        const { data } = await api.get('/api/templates');
         setTemplates(data.filter(t => t.status === 'Published'));
       } catch (error) {
         console.error('Error fetching templates:', error);
@@ -195,7 +195,7 @@ const Templates = () => {
     
     const fetchCategories = async () => {
       try {
-        const { data } = await api.get('/categories');
+        const { data } = await api.get('/api/categories');
         setCategories([{ name: 'All' }, ...data]);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -226,7 +226,7 @@ const Templates = () => {
       const amount = template.price;
       const planName = template.title;
 
-      const { data: orderData } = await api.post('/payments/create-order', {
+      const { data: orderData } = await api.post('/api/payments/create-order', {
         amount,
         planName,
         user,
@@ -249,7 +249,7 @@ const Templates = () => {
         }
         if (result.paymentDetails) {
           try {
-            const { data: verifyData } = await api.post('/payments/verify-payment', {
+            const { data: verifyData } = await api.post('/api/payments/verify-payment', {
               orderId: orderData.order_id
             });
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../../api/client';
 import { AuthContext } from '../../context/AuthContext';
 
 const AdminTemplates = () => {
@@ -26,7 +26,7 @@ const AdminTemplates = () => {
 
   const fetchTemplates = async () => {
     try {
-      const { data } = await axios.get('/api/templates');
+      const { data } = await api.get('/api/templates');
       setTemplates(data);
     } catch (error) {
       console.error('Error fetching templates:', error);
@@ -35,7 +35,7 @@ const AdminTemplates = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await axios.get('/api/categories');
+      const { data } = await api.get('/api/categories');
       setCategories(data);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -63,7 +63,7 @@ const AdminTemplates = () => {
       if (galleryFiles.length > 0) {
         const uploadData = new FormData();
         Array.from(galleryFiles).forEach(file => uploadData.append('images', file));
-        const res = await axios.post('/api/upload/images', uploadData, {
+        const res = await api.post('/api/upload/images', uploadData, {
           headers: { Authorization: `Bearer ${user.token}` }
         });
         uploadedGalleryUrls = res.data.urls;
@@ -73,7 +73,7 @@ const AdminTemplates = () => {
       if (videoFile) {
         const uploadData = new FormData();
         uploadData.append('video', videoFile);
-        const res = await axios.post('/api/upload/video', uploadData, {
+        const res = await api.post('/api/upload/video', uploadData, {
           headers: { Authorization: `Bearer ${user.token}` }
         });
         uploadedVideoUrl = res.data.url;
@@ -94,9 +94,9 @@ const AdminTemplates = () => {
       };
 
       if (editingId) {
-        await axios.put(`/api/templates/${editingId}`, payload, config);
+        await api.put(`/api/templates/${editingId}`, payload, config);
       } else {
-        await axios.post('/api/templates', payload, config);
+        await api.post('/api/templates', payload, config);
       }
       
       setFormData({ 
@@ -139,7 +139,7 @@ const AdminTemplates = () => {
         const config = {
           headers: { Authorization: `Bearer ${user.token}` }
         };
-        await axios.delete(`/api/templates/${id}`, config);
+        await api.delete(`/api/templates/${id}`, config);
         fetchTemplates();
       } catch (error) {
         console.error('Error deleting template:', error);

@@ -52,7 +52,7 @@ const WorkDetail = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const { data } = await api.get(`/projects/slug/${slug}`);
+        const { data } = await api.get(`/api/projects/slug/${slug}`);
         setProject(data);
         setLoading(false);
       } catch (error) {

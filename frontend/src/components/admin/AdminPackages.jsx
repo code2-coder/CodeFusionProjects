@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../../api/client';
 import { AuthContext } from '../../context/AuthContext';
 
 const AdminPackages = () => {
@@ -14,7 +14,7 @@ const AdminPackages = () => {
 
   const fetchPackages = async () => {
     try {
-      const { data } = await axios.get('/api/packages');
+      const { data } = await api.get('/api/packages');
       setPackages(data);
     } catch (error) {
       console.error('Error fetching packages:', error);
@@ -43,9 +43,9 @@ const AdminPackages = () => {
       };
 
       if (editingId) {
-        await axios.put(`/api/packages/${editingId}`, payload, config);
+        await api.put(`/api/packages/${editingId}`, payload, config);
       } else {
-        await axios.post('/api/packages', payload, config);
+        await api.post('/api/packages', payload, config);
       }
       
       setFormData({ title: '', price: '', services: '' });
@@ -72,7 +72,7 @@ const AdminPackages = () => {
         const config = {
           headers: { Authorization: `Bearer ${user.token}` }
         };
-        await axios.delete(`/api/packages/${id}`, config);
+        await api.delete(`/api/packages/${id}`, config);
         fetchPackages();
       } catch (error) {
         console.error('Error deleting package:', error);

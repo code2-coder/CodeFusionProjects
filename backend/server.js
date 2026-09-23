@@ -108,6 +108,13 @@ app.use('/api/project-requests', projectRequestRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/ai', aiRoutes);
 
+// Backward compatibility aliases for clients/cached bundles missing the /api prefix
+app.use('/templates', templateRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/projects', projectRoutes);
+app.use('/packages', packageRoutes);
+app.use('/resources', resourceRoutes);
+
 app.get('/', (_req, res) => {
   res.send('Code Fusion API is running...');
 });

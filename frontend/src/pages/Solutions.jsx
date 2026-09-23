@@ -3,85 +3,74 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { 
-  Monitor, ShoppingCart, LayoutGrid, Smartphone, PenTool, 
-  Cloud, Cpu, Stethoscope, Hotel, 
-  Utensils, Home, GraduationCap, 
-  PieChart, Rocket, ArrowRight, LineChart, Layers
+  Monitor, Smartphone, Laptop, Cloud, ShieldCheck, Rocket, Layers,
+  Stethoscope, Hotel, Utensils, Home, GraduationCap, ShoppingCart, PieChart, ArrowRight
 } from 'lucide-react';
 import Footer from '../components/Footer';
 
 const solutions = [
   {
-    title: 'Enterprise Web Architecture',
-    description: 'We do more than build websites. We engineer high-performance, SEO-dominant digital platforms designed to scale aggressively and convert visitors into lifelong clients.',
+    title: 'Web Development',
+    description: 'We engineer high-performance, responsive web applications and digital platforms designed to scale aggressively, convert visitors, and deliver sub-second performance.',
     icon: Monitor,
-    features: ['Corporate Platforms', 'High-Conversion Landing Pages', 'Headless CMS Architecture', 'Advanced SEO Engineering', 'Sub-second Performance optimization'],
+    features: ['Modern React & Next.js Platforms', 'Full-Stack MERN Architecture', 'Headless CMS Integration', 'Sub-second Performance Optimization'],
     color: 'from-[#00F0FF] to-[#0080FF]',
     shadow: 'shadow-[0_0_50px_rgba(0,240,255,0.3)]',
     span: 'lg:col-span-2' // Bento large
   },
   {
-    title: 'High-Performance eCommerce',
-    description: 'Bespoke online retail experiences engineered for maximum conversion, secure global payments, and seamless inventory synchronization.',
-    icon: ShoppingCart,
-    features: ['Custom Storefronts', 'Global Payment Gateways', 'Frictionless Checkout', 'Automated Inventory'],
-    color: 'from-[#FF0055] to-[#7000FF]',
-    shadow: 'shadow-[0_0_50px_rgba(255,0,85,0.3)]',
-    span: 'lg:col-span-1'
-  },
-  {
-    title: 'Scalable Web Applications',
-    description: 'Complex business logic transformed into intuitive, lightning-fast web applications. We build the operational backbone of modern enterprises.',
-    icon: LayoutGrid,
-    features: ['Custom ERP/CRM Systems', 'SaaS Platform Development', 'Secure Data Portals', 'Advanced API Integration'],
-    color: 'from-[#00FF88] to-[#00A3FF]',
-    shadow: 'shadow-[0_0_50px_rgba(0,255,136,0.3)]',
-    span: 'lg:col-span-1'
-  },
-  {
-    title: 'Native & Cross-Platform Mobile',
-    description: 'Fluid, gesture-driven mobile applications for iOS and Android. We build addictive mobile experiences that keep users coming back.',
+    title: 'Mobile App Development',
+    description: 'Fluid, gesture-driven mobile applications for iOS and Android. Native and cross-platform apps with offline-first synchronization and addictive user experiences.',
     icon: Smartphone,
-    features: ['iOS & Android Native', 'React Native Frameworks', 'Real-time Synchronization', 'Offline-first Architecture'],
+    features: ['iOS & Android Native Apps', 'React Native & Flutter Ecosystems', 'Real-time Synchronization', 'Offline-first Architecture'],
     color: 'from-[#FF9900] to-[#FF0055]',
     shadow: 'shadow-[0_0_50px_rgba(255,153,0,0.3)]',
     span: 'lg:col-span-1'
   },
   {
-    title: 'Luxury UI/UX Design',
-    description: 'Award-winning design systems rooted in human psychology. We craft interfaces that look expensive, feel intuitive, and drive engagement.',
-    icon: PenTool,
-    features: ['Behavioral User Research', 'High-Fidelity Prototyping', 'Micro-interaction Design', 'Comprehensive Design Systems'],
-    color: 'from-[#FF00C8] to-[#7000FF]',
-    shadow: 'shadow-[0_0_50px_rgba(255,0,200,0.3)]',
+    title: 'Desktop App Development',
+    description: 'High-performance cross-platform desktop applications engineered for Windows, macOS, and Linux with native OS integration and local hardware acceleration.',
+    icon: Laptop,
+    features: ['Electron & Tauri Frameworks', 'Windows, macOS & Linux Support', 'Hardware Acceleration', 'Local Data & Offline Persistence'],
+    color: 'from-[#00FF88] to-[#00A3FF]',
+    shadow: 'shadow-[0_0_50px_rgba(0,255,136,0.3)]',
     span: 'lg:col-span-1'
   },
   {
-    title: 'Cloud Infrastructure & DevOps',
-    description: 'Bulletproof server architectures. We deploy your applications on military-grade, auto-scaling cloud networks for 99.99% uptime.',
+    title: 'Cloud',
+    description: 'Elastic, auto-scaling cloud architectures built for 99.99% uptime, global CDN distribution, serverless scalability, and optimized cloud workloads.',
     icon: Cloud,
-    features: ['AWS & Vercel Deployment', 'Docker Containerization', 'Automated CI/CD Pipelines', '24/7 Security Monitoring'],
+    features: ['AWS, Azure & GCP Infrastructure', 'Serverless & Microservices', 'High-Availability Architectures', 'Edge Network Optimization'],
     color: 'from-[#00E5FF] to-[#0055FF]',
     shadow: 'shadow-[0_0_50px_rgba(0,229,255,0.3)]',
-    span: 'lg:col-span-2' // Bento large
-  },
-  {
-    title: 'Applied AI & Automation',
-    description: 'Future-proof your business operations. We integrate custom Large Language Models and AI agents to automate your most complex workflows.',
-    icon: Cpu,
-    features: ['Custom LLM Integration', 'Intelligent Customer Support', 'Automated Data Processing', 'Predictive Business Analytics'],
-    color: 'from-[#9D00FF] to-[#FF0055]',
-    shadow: 'shadow-[0_0_50px_rgba(157,0,255,0.3)]',
     span: 'lg:col-span-1'
   },
   {
-    title: 'Technical SEO & Performance',
-    description: 'Dominate search rankings. We rewrite the rules of performance, optimizing every byte of data to ensure you outrank the competition.',
-    icon: LineChart,
-    features: ['Deep Technical Audits', 'Core Web Vitals Mastery', 'Dynamic Content Optimization', 'Advanced Schema Markup'],
+    title: 'Cybersecurity',
+    description: 'Enterprise-grade protection, rigorous vulnerability assessments, zero-trust security models, and end-to-end data encryption for modern web systems.',
+    icon: ShieldCheck,
+    features: ['Vulnerability & Penetration Testing', 'End-to-End Data Encryption', 'Zero-Trust Architecture', 'OWASP Hardening & Audits'],
+    color: 'from-[#FF0055] to-[#7000FF]',
+    shadow: 'shadow-[0_0_50px_rgba(255,0,85,0.3)]',
+    span: 'lg:col-span-1'
+  },
+  {
+    title: 'Deployment',
+    description: 'Automated CI/CD pipelines, containerization, and zero-downtime deployment workflows ensuring rapid, bulletproof software releases.',
+    icon: Rocket,
+    features: ['Docker Containerization', 'Automated CI/CD Pipelines', 'Zero-Downtime Blue/Green Deployments', 'Continuous Health Monitoring'],
     color: 'from-[#FFE600] to-[#FF5500]',
     shadow: 'shadow-[0_0_50px_rgba(255,230,0,0.3)]',
     span: 'lg:col-span-1'
+  },
+  {
+    title: 'Customized Software Development',
+    description: 'Bespoke enterprise systems, custom CRM/ERP platforms, and automated workflow solutions engineered around your exact business requirements.',
+    icon: Layers,
+    features: ['Custom Enterprise CRM/ERP Systems', 'Automated Business Workflows', 'API & Legacy System Integration', 'Bespoke Architecture Design'],
+    color: 'from-[#9D00FF] to-[#FF0055]',
+    shadow: 'shadow-[0_0_50px_rgba(157,0,255,0.3)]',
+    span: 'lg:col-span-2' // Bento large
   }
 ];
 

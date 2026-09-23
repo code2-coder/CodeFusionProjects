@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import axios from 'axios';
+import api from '../../api/client';
 import { AuthContext } from '../../context/AuthContext';
 import { getImageUrl, handleImageError } from '../../utils';
 
@@ -53,7 +53,7 @@ const AdminProjects = () => {
 
   const fetchProjects = async () => {
     try {
-      const { data } = await axios.get('/api/projects');
+      const { data } = await api.get('/api/projects');
       setProjects(data);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -62,7 +62,7 @@ const AdminProjects = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await axios.get('/api/categories');
+      const { data } = await api.get('/api/categories');
       setCategories(data);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -95,7 +95,7 @@ const AdminProjects = () => {
         }
       };
       
-      const { data } = await axios.post('/api/upload/images', uploadData, config);
+      const { data } = await api.post('/api/upload/images', uploadData, config);
       
       if (fieldName === 'gallery') {
         setFormData((prev) => {
@@ -131,9 +131,9 @@ const AdminProjects = () => {
       };
 
       if (editingId) {
-        await axios.put(`/api/projects/${editingId}`, payload, config);
+        await api.put(`/api/projects/${editingId}`, payload, config);
       } else {
-        await axios.post('/api/projects', payload, config);
+        await api.post('/api/projects', payload, config);
       }
       
       resetForm();
@@ -184,7 +184,7 @@ const AdminProjects = () => {
         const config = {
           headers: { Authorization: `Bearer ${user.token}` }
         };
-        await axios.delete(`/api/projects/${id}`, config);
+        await api.delete(`/api/projects/${id}`, config);
         fetchProjects();
       } catch (error) {
         console.error('Error deleting project:', error);
@@ -200,7 +200,7 @@ const AdminProjects = () => {
     if(!newCategoryName.trim()) return;
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      await axios.post('/api/categories', { name: newCategoryName }, config);
+      await api.post('/api/categories', { name: newCategoryName }, config);
       setNewCategoryName('');
       fetchCategories();
     } catch (error) { console.error(error); alert(error.response?.data?.message || 'Error creating category'); }
@@ -212,7 +212,7 @@ const AdminProjects = () => {
     if(!editCategoryName.trim()) return;
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      await axios.put(`/api/categories/${id}`, { name: editCategoryName }, config);
+      await api.put(`/api/categories/${id}`, { name: editCategoryName }, config);
       if (formData.category === categories.find(c => c._id === id)?.name) {
           setFormData(prev => ({...prev, category: editCategoryName}));
       }
@@ -227,7 +227,7 @@ const AdminProjects = () => {
     if(window.confirm('Are you sure you want to delete this category?')) {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
-        await axios.delete(`/api/categories/${id}`, config);
+        await api.delete(`/api/categories/${id}`, config);
         if (formData.category === name) {
           setFormData(prev => ({...prev, category: ''}));
         }

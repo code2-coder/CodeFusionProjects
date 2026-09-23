@@ -1,29 +1,23 @@
-import axios from 'axios';
+import api from '../api/client';
 
-// The base URL should match where the backend is hosted.
-// If there's a proxy in vite.config.js, this might just be '/api/ai'
 const API_URL = '/api/ai';
 
 export const createProject = async (projectData, token) => {
-  const config = {
-    headers: { Authorization: `Bearer ${token}` }
-  };
-  const response = await axios.post(`${API_URL}/projects`, projectData, config);
+  const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  const response = await api.post(`${API_URL}/projects`, projectData, config);
   return response.data;
 };
 
 export const getProjects = async (token) => {
-  const config = {
-    headers: { Authorization: `Bearer ${token}` }
-  };
-  const response = await axios.get(`${API_URL}/projects`, config);
+  const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  const response = await api.get(`${API_URL}/projects`, config);
   return response.data;
 };
 
 export const getProjectDetails = async (projectId, token) => {
   try {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const { data } = await axios.get(`${API_URL}/projects/${projectId}`, config);
+    const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    const { data } = await api.get(`${API_URL}/projects/${projectId}`, config);
     return data;
   } catch (error) {
     console.error('Error fetching project details:', error);
@@ -33,8 +27,8 @@ export const getProjectDetails = async (projectId, token) => {
 
 export const updateProject = async (projectId, projectData, token) => {
   try {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const { data } = await axios.put(`${API_URL}/projects/${projectId}`, projectData, config);
+    const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    const { data } = await api.put(`${API_URL}/projects/${projectId}`, projectData, config);
     return data;
   } catch (error) {
     console.error('Error updating project:', error);
@@ -44,8 +38,8 @@ export const updateProject = async (projectId, projectData, token) => {
 
 export const deleteProject = async (projectId, token) => {
   try {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const { data } = await axios.delete(`${API_URL}/projects/${projectId}`, config);
+    const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    const { data } = await api.delete(`${API_URL}/projects/${projectId}`, config);
     return data;
   } catch (error) {
     console.error('Error deleting project:', error);
@@ -54,20 +48,18 @@ export const deleteProject = async (projectId, token) => {
 };
 
 export const generatePlan = async (projectId, prompt, token, _onChunk) => {
-  const config = {
-    headers: { Authorization: `Bearer ${token}` }
-  };
-  const response = await axios.post(`${API_URL}/generate`, { projectId, promptText: prompt }, config);
+  const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  const response = await api.post(`${API_URL}/generate`, { projectId, promptText: prompt }, config);
   return response.data;
 };
 
 export const exportProjectCode = async (projectId, token) => {
   try {
     const config = {
-      headers: { Authorization: `Bearer ${token}` },
+      ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}),
       responseType: 'blob' // Important to handle the ZIP file stream
     };
-    const response = await axios.get(`${API_URL}/projects/${projectId}/export`, config);
+    const response = await api.get(`${API_URL}/projects/${projectId}/export`, config);
     
     // Create a temporary link to download the blob
     const url = window.URL.createObjectURL(new Blob([response.data]));

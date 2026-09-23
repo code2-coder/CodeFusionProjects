@@ -296,7 +296,7 @@ const Work = () => {
     let isMounted = true;
     const fetchProjects = async () => {
       try {
-        const { data } = await api.get('/projects');
+        const { data } = await api.get('/api/projects');
         if (!isMounted) return;
         const published = data.filter(p => p.published);
         setProjects(published);

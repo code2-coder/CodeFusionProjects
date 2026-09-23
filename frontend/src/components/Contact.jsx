@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Phone, Mail, Send, Sparkles, CheckCircle2 } from 'lucide-react';
 import SEO from './SEO';
-import axios from 'axios';
+import api from '../api/client';
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,7 +22,7 @@ const Contact = () => {
     };
 
     try {
-      await axios.post('/api/contact', formData);
+      await api.post('/api/contact', formData);
       setIsSuccess(true);
       e.target.reset();
       setTimeout(() => setIsSuccess(false), 3000);

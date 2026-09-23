@@ -12,14 +12,13 @@ const navItems = [
     label: 'Solutions',
     href: '/solutions',
     dropdown: [
-      { label: 'Enterprise Web Architecture', href: '/solutions#solutions-grid' },
-      { label: 'High-Performance eCommerce', href: '/solutions#solutions-grid' },
-      { label: 'Scalable Web Applications', href: '/solutions#solutions-grid' },
-      { label: 'Native & Cross-Platform Mobile', href: '/solutions#solutions-grid' },
-      { label: 'Luxury UI/UX Design', href: '/solutions#solutions-grid' },
-      { label: 'Cloud Infrastructure & DevOps', href: '/solutions#solutions-grid' },
-      { label: 'Applied AI & Automation', href: '/solutions#solutions-grid' },
-      { label: 'Technical SEO & Performance', href: '/solutions#solutions-grid' }
+      { label: 'Web Development', href: '/solutions#solutions-grid' },
+      { label: 'Mobile App Development', href: '/solutions#solutions-grid' },
+      { label: 'Desktop App Development', href: '/solutions#solutions-grid' },
+      { label: 'Cloud', href: '/solutions#solutions-grid' },
+      { label: 'Cybersecurity', href: '/solutions#solutions-grid' },
+      { label: 'Deployment', href: '/solutions#solutions-grid' },
+      { label: 'Customized Software Development', href: '/solutions#solutions-grid' }
     ]
   },
   { label: 'Work', href: '/work' },
@@ -64,7 +63,7 @@ const DesktopNavItem = ({ item, index }) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.98 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 mt-2 w-72 rounded-2xl bg-black/80 backdrop-blur-xl border border-white/10 shadow-2xl py-3 z-50"
+              className="absolute top-full left-0 mt-2 w-80 rounded-2xl bg-black/80 backdrop-blur-xl border border-white/10 shadow-2xl py-3 z-50"
             >
               <div className="px-5 py-2 mb-1">
                 <span className="text-[10px] font-medium text-white/40 tracking-wider uppercase">Core Capabilities</span>

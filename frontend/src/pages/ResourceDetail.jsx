@@ -13,7 +13,7 @@ const ResourceDetail = () => {
   useEffect(() => {
     const fetchResource = async () => {
       try {
-        const { data } = await api.get(`/resources/slug/${slug}`);
+        const { data } = await api.get(`/api/resources/slug/${slug}`);
         setResource(data);
         setLoading(false);
       } catch (error) {

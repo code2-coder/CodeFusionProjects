@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/client';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen } from 'lucide-react';
@@ -10,7 +10,7 @@ const FeaturedResources = () => {
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const { data } = await axios.get('/api/resources');
+        const { data } = await api.get('/api/resources');
         const featured = data.filter(r => r.published && r.featured).slice(0, 6);
         setResources(featured);
       } catch (error) {

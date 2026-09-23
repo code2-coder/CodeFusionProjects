@@ -70,7 +70,7 @@ const TemplateDetail = () => {
   useEffect(() => {
     const fetchTemplate = async () => {
       try {
-        const { data } = await api.get(`/templates/${id}`);
+        const { data } = await api.get(`/api/templates/${id}`);
         setTemplate(data);
       } catch (err) {
         setError('Failed to fetch template details. It may have been removed or does not exist.');
@@ -140,7 +140,7 @@ const TemplateDetail = () => {
       const amount = template.price;
       const planName = template.title;
 
-      const { data: orderData } = await api.post('/payments/create-order', {
+      const { data: orderData } = await api.post('/api/payments/create-order', {
         amount,
         planName,
         user,
@@ -163,7 +163,7 @@ const TemplateDetail = () => {
         }
         if (result.paymentDetails) {
           try {
-            const { data: verifyData } = await api.post('/payments/verify-payment', {
+            const { data: verifyData } = await api.post('/api/payments/verify-payment', {
               orderId: orderData.order_id
             });
 

@@ -20,7 +20,7 @@ const Resources = () => {
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const { data } = await api.get('/resources');
+        const { data } = await api.get('/api/resources');
         const published = data.filter(r => r.published);
         setResources(published);
         setLoading(false);

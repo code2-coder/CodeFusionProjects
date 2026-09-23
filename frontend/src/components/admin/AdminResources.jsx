@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../../api/client';
 import { AuthContext } from '../../context/AuthContext';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
@@ -27,7 +27,7 @@ const AdminResources = () => {
 
   const fetchResources = async () => {
     try {
-      const { data } = await axios.get('/api/resources');
+      const { data } = await api.get('/api/resources');
       setResources(data);
     } catch (error) {
       console.error('Error fetching resources:', error);
@@ -61,9 +61,9 @@ const AdminResources = () => {
       };
 
       if (editingId) {
-        await axios.put(`/api/resources/${editingId}`, payload, config);
+        await api.put(`/api/resources/${editingId}`, payload, config);
       } else {
-        await axios.post('/api/resources', payload, config);
+        await api.post('/api/resources', payload, config);
       }
       
       resetForm();
@@ -110,7 +110,7 @@ const AdminResources = () => {
         const config = {
           headers: { Authorization: `Bearer ${user.token}` }
         };
-        await axios.delete(`/api/resources/${id}`, config);
+        await api.delete(`/api/resources/${id}`, config);
         fetchResources();
       } catch (error) {
         console.error('Error deleting resource:', error);

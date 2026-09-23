@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../../api/client';
 import { AuthContext } from '../../context/AuthContext';
 
 const AdminCategories = () => {
@@ -10,7 +10,7 @@ const AdminCategories = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await axios.get('/api/categories');
+      const { data } = await api.get('/api/categories');
       setCategories(data);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -31,9 +31,9 @@ const AdminCategories = () => {
       const payload = { name };
 
       if (editingId) {
-        await axios.put(`/api/categories/${editingId}`, payload, config);
+        await api.put(`/api/categories/${editingId}`, payload, config);
       } else {
-        await axios.post('/api/categories', payload, config);
+        await api.post('/api/categories', payload, config);
       }
       
       setName('');
@@ -56,7 +56,7 @@ const AdminCategories = () => {
         const config = {
           headers: { Authorization: `Bearer ${user.token}` }
         };
-        await axios.delete(`/api/categories/${id}`, config);
+        await api.delete(`/api/categories/${id}`, config);
         fetchCategories();
       } catch (error) {
         console.error('Error deleting category:', error);

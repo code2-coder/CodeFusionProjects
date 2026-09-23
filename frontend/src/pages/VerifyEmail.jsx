@@ -54,7 +54,7 @@ const VerifyEmail = () => {
     setError('');
 
     try {
-      await api.post('/auth/verify-otp', { email, otp: otpValue });
+      await api.post('/api/auth/verify-otp', { email, otp: otpValue });
       setSuccess(true);
       setTimeout(() => {
         navigate('/login');

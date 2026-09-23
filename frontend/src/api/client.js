@@ -1,18 +1,31 @@
 import axios from 'axios';
 
 // Base API URL configuration
-const baseURL = import.meta.env.VITE_API_URL || '';
+let rawBaseURL = import.meta.env.VITE_API_URL || '';
+rawBaseURL = rawBaseURL.replace(/\/+$/, '');
+if (rawBaseURL.endsWith('/api')) {
+  rawBaseURL = rawBaseURL.slice(0, -4);
+}
 
 const api = axios.create({
-  baseURL,
+  baseURL: rawBaseURL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor: Automatically attach token if present
+// Request interceptor: Automatically ensure /api prefix is present and attach auth token
 api.interceptors.request.use(
   (config) => {
+    // Ensure all internal API endpoints route through /api
+    if (config.url && !config.url.startsWith('http://') && !config.url.startsWith('https://')) {
+      if (!config.url.startsWith('/api') && !config.url.startsWith('api/')) {
+        config.url = `/api${config.url.startsWith('/') ? '' : '/'}${config.url}`;
+      } else if (config.url.startsWith('api/')) {
+        config.url = `/${config.url}`;
+      }
+    }
+
     try {
       const userInfoStr = localStorage.getItem('userInfo');
       if (userInfoStr) {

@@ -74,7 +74,7 @@ const StartProject = () => {
     formData.append('files', file);
 
     try {
-      const { data } = await api.post('/upload/user-files', formData);
+      const { data } = await api.post('/api/upload/user-files', formData);
       if (data.urls && data.urls.length > 0) {
         setLogoUrl(data.urls[0]);
       }
@@ -89,7 +89,7 @@ const StartProject = () => {
     Array.from(files).forEach(file => formData.append('files', file));
 
     try {
-      const { data } = await api.post('/upload/user-files', formData);
+      const { data } = await api.post('/api/upload/user-files', formData);
       if (data.urls) {
         setContentUrls(data.urls);
       }
@@ -110,7 +110,7 @@ const StartProject = () => {
         domainAvailable, hostingAvailable, budget, expectedLaunchDate, contentUrls, additionalRequirements
       };
 
-      await api.post('/project-requests', payload);
+      await api.post('/api/project-requests', payload);
       setSuccess(true);
     } catch (error) {
       setErrorMsg(error.response?.data?.message || 'Submission failed. Please try again.');

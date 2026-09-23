@@ -10,7 +10,7 @@ import {
   Clock,
   Briefcase
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../../api/client';
 
 const DashboardOverview = () => {
   const [stats, setStats] = useState({
@@ -25,13 +25,10 @@ const DashboardOverview = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Fetching totals using existing endpoints
-        // Note: Ideally, there would be a dedicated /api/stats endpoint, 
-        // but we'll fetch list lengths for now as a fallback.
         const [projectsRes, packagesRes, resourcesRes] = await Promise.all([
-          axios.get('/api/projects').catch(() => ({ data: [] })),
-          axios.get('/api/packages').catch(() => ({ data: [] })),
-          axios.get('/api/resources').catch(() => ({ data: [] }))
+          api.get('/api/projects').catch(() => ({ data: [] })),
+          api.get('/api/packages').catch(() => ({ data: [] })),
+          api.get('/api/resources').catch(() => ({ data: [] }))
         ]);
 
         setStats({
