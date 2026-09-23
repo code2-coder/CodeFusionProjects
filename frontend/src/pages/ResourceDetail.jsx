@@ -4,6 +4,7 @@ import SEO from '../components/SEO';
 import api from '../api/client';
 import { ArrowLeft, Clock, Download, Calendar, Share2 } from 'lucide-react';
 import Footer from '../components/Footer';
+import { getImageUrl, handleImageError } from '../utils';
 
 const ResourceDetail = () => {
   const { slug } = useParams();
@@ -105,7 +106,7 @@ const ResourceDetail = () => {
 
           {resource.coverImage && (
             <div className="rounded-3xl overflow-hidden border border-[color:var(--border)] shadow-2xl mb-16 max-h-[500px]">
-              <img src={resource.coverImage} alt={resource.title} className="w-full h-full object-cover" />
+              <img src={getImageUrl(resource.coverImage)} alt={resource.title} className="w-full h-full object-cover" onError={handleImageError} />
             </div>
           )}
         </div>

@@ -5,6 +5,7 @@ import SEO from '../components/SEO';
 import api from '../api/client';
 import { BookOpen, Clock, Download, ArrowRight, User } from 'lucide-react';
 import Footer from '../components/Footer';
+import { getImageUrl, handleImageError } from '../utils';
 
 const resourceCategories = [
   'All', 'Blog Articles', 'Tutorials', 'Free Templates', 'Premium Templates',
@@ -129,7 +130,7 @@ const Resources = () => {
                       >
                         <div className="relative h-56 overflow-hidden bg-black">
                           {resource.coverImage ? (
-                            <img src={resource.coverImage} alt={resource.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100" />
+                            <img src={getImageUrl(resource.coverImage)} alt={resource.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100" onError={handleImageError} />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/50 to-pink-900/50">
                               <BookOpen size={48} className="text-white/20" />

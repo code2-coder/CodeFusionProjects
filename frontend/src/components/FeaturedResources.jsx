@@ -3,6 +3,7 @@ import api from '../api/client';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen } from 'lucide-react';
+import { getImageUrl, handleImageError } from '../utils';
 
 const FeaturedResources = () => {
   const [resources, setResources] = useState([]);
@@ -49,7 +50,7 @@ const FeaturedResources = () => {
             >
               <div className="relative h-56 overflow-hidden bg-black">
                 {resource.coverImage ? (
-                  <img src={resource.coverImage} alt={resource.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" />
+                  <img src={getImageUrl(resource.coverImage)} alt={resource.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" onError={handleImageError} />
                 ) : (
                   <div className="w-full h-full bg-purple-900/20 flex items-center justify-center">
                     <BookOpen size={32} className="opacity-30" />

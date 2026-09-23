@@ -7,6 +7,16 @@ if (rawBaseURL.endsWith('/api')) {
   rawBaseURL = rawBaseURL.slice(0, -4);
 }
 
+const isProduction = import.meta.env.PROD || (
+  typeof window !== 'undefined' && 
+  window.location.hostname !== 'localhost' && 
+  window.location.hostname !== '127.0.0.1'
+);
+
+if (isProduction && (!rawBaseURL || rawBaseURL.includes('localhost') || rawBaseURL.includes('127.0.0.1'))) {
+  rawBaseURL = 'https://codefusionprojects.onrender.com';
+}
+
 const api = axios.create({
   baseURL: rawBaseURL,
   headers: {

@@ -1,10 +1,15 @@
 export const getImageUrl = (url) => {
   if (!url) return '';
-  // Strip hardcoded localhost:5000 if it exists in the database
+
+  // Strip hardcoded localhost:5000 if it was saved in the database
   if (url.startsWith('http://localhost:5000')) {
     url = url.replace('http://localhost:5000', '');
   }
-  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+
+  // If already absolute URL (external CDN, Cloudinary, etc.) or data URI, return as-is
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url;
+  }
   
   // Replace all backslashes with forward slashes
   let cleanUrl = url.replace(/\\/g, '/');
@@ -17,7 +22,30 @@ export const getImageUrl = (url) => {
   // Remove accidental double slashes (e.g. //uploads -> /uploads)
   cleanUrl = cleanUrl.replace(/\/\//g, '/');
 
-  // Return cleanUrl as relative path to let Vite proxy or production server resolve it.
+  // Determine production backend base URL
+  let apiBase = (import.meta.env.VITE_API_URL || '').trim();
+  apiBase = apiBase.replace(/\/+$/, '');
+  if (apiBase.endsWith('/api')) {
+    apiBase = apiBase.slice(0, -4);
+  }
+
+  const isProduction = import.meta.env.PROD || (
+    typeof window !== 'undefined' && 
+    window.location.hostname !== 'localhost' && 
+    window.location.hostname !== '127.0.0.1'
+  );
+
+  if (isProduction && (!apiBase || apiBase.includes('localhost') || apiBase.includes('127.0.0.1'))) {
+    apiBase = 'https://codefusionprojects.onrender.com';
+  }
+
+  // If asset is hosted by backend (e.g., /api/upload/... or /uploads/...)
+  if (cleanUrl.startsWith('/api/upload') || cleanUrl.startsWith('/uploads')) {
+    if (apiBase) {
+      return `${apiBase}${cleanUrl}`;
+    }
+  }
+
   return cleanUrl;
 };
 
