@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import { createContext, useState } from 'react';
+import api from '../api/client';
 
 export const AuthContext = createContext();
 
@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
 
   const requestOtp = async (email, phone, isLogin) => {
     try {
-      const { data } = await axios.post('/api/auth/request-otp', { email, phone, isLogin });
+      const { data } = await api.post('/auth/request-otp', { email, phone, isLogin });
       return { success: true, message: data.message };
     } catch (error) {
       return { success: false, error: error.response?.data?.message || 'Failed to send OTP' };
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyOtp = async (email, otp, name) => {
     try {
-      const { data } = await axios.post('/api/auth/verify-otp', { email, otp, name });
+      const { data } = await api.post('/auth/verify-otp', { email, otp, name });
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
       return { success: true };
@@ -31,12 +31,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (userData) => {
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.put('/api/auth/profile', userData, config);
+      const { data } = await api.put('/auth/profile', userData);
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
       return { success: true, message: 'Profile updated successfully' };

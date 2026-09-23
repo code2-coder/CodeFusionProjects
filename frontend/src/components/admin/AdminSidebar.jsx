@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Settings, Shield, Key, // My Account
   LayoutDashboard, // Workspace
-  LayoutTemplate, BookOpen, Tag, Briefcase, ShoppingCart,
+  LayoutTemplate, Tag, Briefcase, ShoppingCart,
   LogOut, ChevronDown, ChevronRight
 } from 'lucide-react';
 

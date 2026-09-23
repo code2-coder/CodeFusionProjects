@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/client';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 
 const VerifyEmail = () => {
@@ -43,7 +43,7 @@ const VerifyEmail = () => {
     }
   };
 
-  const verifyOTP = async () => {
+  const verifyOTP = useCallback(async () => {
     const otpValue = otp.join('');
     if (otpValue.length !== 6) {
       setError('Please enter a valid 6-digit OTP.');
@@ -54,7 +54,7 @@ const VerifyEmail = () => {
     setError('');
 
     try {
-      const { data } = await axios.post('/api/auth/verify-otp', { email, otp: otpValue });
+      await api.post('/auth/verify-otp', { email, otp: otpValue });
       setSuccess(true);
       setTimeout(() => {
         navigate('/login');
@@ -64,13 +64,16 @@ const VerifyEmail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [email, navigate, otp]);
 
   useEffect(() => {
     if (activeOTPIndex === 5 && otp[5] !== '') {
-      verifyOTP();
+      const timer = setTimeout(() => {
+        verifyOTP();
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, [activeOTPIndex, otp]);
+  }, [activeOTPIndex, otp, verifyOTP]);
 
   return (
     <div className="min-h-screen pt-32 pb-20 flex items-center justify-center bg-background">

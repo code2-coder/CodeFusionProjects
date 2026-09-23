@@ -53,7 +53,7 @@ export const deleteProject = async (projectId, token) => {
   }
 };
 
-export const generatePlan = async (projectId, prompt, token, onChunk) => {
+export const generatePlan = async (projectId, prompt, token, _onChunk) => {
   const config = {
     headers: { Authorization: `Bearer ${token}` }
   };

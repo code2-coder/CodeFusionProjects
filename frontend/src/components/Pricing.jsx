@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { Check, Sparkles, Timer, ChevronLeft, ChevronRight } from 'lucide-react';
 import { load } from '@cashfreepayments/cashfree-js';
 import toast from 'react-hot-toast';
+import api from '../api/client';
 
 const Pricing = () => {
   const [timeLeft, setTimeLeft] = useState(24 * 60 * 60); // 24 hours in seconds
@@ -53,20 +54,11 @@ const Pricing = () => {
       const amountStr = plan.price.replace('₹', '').replace(',', '');
       const amount = parseInt(amountStr);
 
-      const orderRes = await fetch(`${import.meta.env.VITE_API_URL}/api/payments/create-order`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ amount, planName: plan.name, user }),
+      const { data: orderData } = await api.post('/api/payments/create-order', {
+        amount,
+        planName: plan.name,
+        user,
       });
-
-      const orderData = await orderRes.json();
-
-      if (!orderRes.ok) {
-        alert("Failed to create order");
-        return;
-      }
 
       const cashfree = await load({
         mode: orderData.environment || 'sandbox'
@@ -84,18 +76,11 @@ const Pricing = () => {
         }
         if (result.paymentDetails) {
           try {
-            const verifyRes = await fetch(`${import.meta.env.VITE_API_URL}/api/payments/verify-payment`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                orderId: orderData.order_id
-              }),
+            const { data: verifyData } = await api.post('/api/payments/verify-payment', {
+              orderId: orderData.order_id
             });
-            const verifyData = await verifyRes.json();
 
-            if (verifyRes.ok && verifyData.message === 'Payment verified successfully') {
+            if (verifyData && verifyData.message === 'Payment verified successfully') {
               toast.success("Payment successful! Welcome aboard!");
             } else {
               toast.error("Payment verification failed");

@@ -13,5 +13,7 @@ const aiPageSchema = new mongoose.Schema({
   order: { type: Number, default: 0 }
 }, { timestamps: true });
 
+aiPageSchema.index({ project: 1, order: 1 });
+
 const AiPage = mongoose.model('AiPage', aiPageSchema);
 export default AiPage;

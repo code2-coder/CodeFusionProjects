@@ -54,5 +54,8 @@ const templateSchema = new mongoose.Schema(
   }
 );
 
+templateSchema.index({ status: 1, createdAt: -1 });
+templateSchema.index({ category: 1, status: 1 });
+
 const Template = mongoose.model('Template', templateSchema);
 export default Template;

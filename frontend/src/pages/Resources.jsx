@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
-import axios from 'axios';
+import api from '../api/client';
 import { BookOpen, Clock, Download, ArrowRight, User } from 'lucide-react';
 import Footer from '../components/Footer';
 
@@ -14,17 +14,15 @@ const resourceCategories = [
 
 const Resources = () => {
   const [resources, setResources] = useState([]);
-  const [filteredResources, setFilteredResources] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const { data } = await axios.get('/api/resources');
+        const { data } = await api.get('/resources');
         const published = data.filter(r => r.published);
         setResources(published);
-        setFilteredResources(published);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching resources:', error);
@@ -35,12 +33,9 @@ const Resources = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    if (activeCategory === 'All') {
-      setFilteredResources(resources);
-    } else {
-      setFilteredResources(resources.filter(r => r.category === activeCategory));
-    }
+  const filteredResources = useMemo(() => {
+    if (activeCategory === 'All') return resources;
+    return resources.filter(r => r.category === activeCategory);
   }, [activeCategory, resources]);
 
   return (

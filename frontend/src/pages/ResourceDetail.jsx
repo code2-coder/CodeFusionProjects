@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import SEO from '../components/SEO';
-import axios from 'axios';
-import { ArrowLeft, Clock, User, Download, Calendar, Share2 } from 'lucide-react';
+import api from '../api/client';
+import { ArrowLeft, Clock, Download, Calendar, Share2 } from 'lucide-react';
 import Footer from '../components/Footer';
 
 const ResourceDetail = () => {
@@ -13,7 +13,7 @@ const ResourceDetail = () => {
   useEffect(() => {
     const fetchResource = async () => {
       try {
-        const { data } = await axios.get(`/api/resources/slug/${slug}`);
+        const { data } = await api.get(`/resources/slug/${slug}`);
         setResource(data);
         setLoading(false);
       } catch (error) {

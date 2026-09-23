@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useMotionTemplate } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
-import axios from 'axios';
+import api from '../api/client';
 import { ArrowRight, ExternalLink, Filter, Sparkles, Code2, Calendar, Target, Globe } from 'lucide-react';
 import Footer from '../components/Footer';
 import { getImageUrl, handleImageError } from '../utils';
 
 // Premium Image component with a sleek shimmer loading state
-const ImageWithShimmer = ({ src, alt, className, onError }) => {
+const ImageWithShimmer = ({ src, alt, className }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -275,13 +274,15 @@ const ProjectSkeleton = () => (
 
 const Work = () => {
   const [projects, setProjects] = useState([]);
-  const [filteredProjects, setFilteredProjects] = useState([]);
-  const [activeFilter, setActiveFilter] = useState('All');
   const [filtersList, setFiltersList] = useState(['All']);
   const [loading, setLoading] = useState(true);
 
   const location = useLocation();
   const containerRef = useRef(null);
+
+  const urlFilter = new URLSearchParams(location.search).get('filter');
+  const [selectedFilter, setSelectedFilter] = useState('All');
+  const activeFilter = urlFilter || selectedFilter;
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -292,19 +293,11 @@ const Work = () => {
   const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const filterParam = params.get('filter');
-    if (filterParam) {
-      setActiveFilter(filterParam);
-    } else {
-      setActiveFilter('All');
-    }
-  }, [location.search]);
-
-  useEffect(() => {
+    let isMounted = true;
     const fetchProjects = async () => {
       try {
-        const { data } = await axios.get('/api/projects');
+        const { data } = await api.get('/projects');
+        if (!isMounted) return;
         const published = data.filter(p => p.published);
         setProjects(published);
 
@@ -314,28 +307,29 @@ const Work = () => {
           if (p.industry) uniqueFilters.add(p.industry);
         });
         setFiltersList(['All', ...Array.from(uniqueFilters).sort()]);
-
         setLoading(false);
       } catch (error) {
         console.error('Error fetching projects:', error);
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
     fetchProjects();
     window.scrollTo(0, 0);
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  useEffect(() => {
+  const filteredProjects = useMemo(() => {
     if (activeFilter === 'All') {
-      setFilteredProjects(projects);
-    } else {
-      setFilteredProjects(projects.filter(p => {
-        const matchCategory = p.category && p.category.toLowerCase() === activeFilter.toLowerCase();
-        const matchTags = p.tags && p.tags.some(tag => tag.toLowerCase() === activeFilter.toLowerCase());
-        const matchIndustry = p.industry && p.industry.toLowerCase() === activeFilter.toLowerCase();
-        return matchCategory || matchTags || matchIndustry;
-      }));
+      return projects;
     }
+    return projects.filter(p => {
+      const matchCategory = p.category && p.category.toLowerCase() === activeFilter.toLowerCase();
+      const matchTags = p.tags && p.tags.some(tag => tag.toLowerCase() === activeFilter.toLowerCase());
+      const matchIndustry = p.industry && p.industry.toLowerCase() === activeFilter.toLowerCase();
+      return matchCategory || matchTags || matchIndustry;
+    });
   }, [activeFilter, projects]);
 
   return (
@@ -403,7 +397,7 @@ const Work = () => {
               {filtersList.map((filter) => (
                 <button
                   key={filter}
-                  onClick={() => setActiveFilter(filter)}
+                  onClick={() => setSelectedFilter(filter)}
                   className={`relative px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-[0.15em] whitespace-nowrap transition-colors duration-500 z-10 ${
                     activeFilter === filter ? 'text-black font-extrabold' : 'text-white/40 hover:text-white'
                   }`}
@@ -448,7 +442,7 @@ const Work = () => {
                 <h3 className="text-2xl font-bold mb-3 text-white tracking-tight">No matching entries</h3>
                 <p className="text-white/40 max-w-sm mb-8 font-light text-sm">We couldn't find any projects matching your current filter criteria.</p>
                 <button
-                  onClick={() => setActiveFilter('All')}
+                  onClick={() => setSelectedFilter('All')}
                   className="px-6 py-3 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform text-[10px] tracking-widest uppercase shadow-[0_4px_15px_rgba(255,255,255,0.15)]"
                 >
                   Clear Filters

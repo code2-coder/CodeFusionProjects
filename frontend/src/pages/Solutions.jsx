@@ -4,10 +4,9 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { 
   Monitor, ShoppingCart, LayoutGrid, Smartphone, PenTool, 
-  RefreshCw, Cloud, Cpu, Building, Stethoscope, Hotel, 
-  Utensils, Home, GraduationCap, Scissors, Plane, 
-  PieChart, Rocket, CheckCircle, ArrowRight, Zap, Shield, 
-  Search, Code, Settings, Server, Users, Wrench, LineChart, Sparkles, Layers
+  Cloud, Cpu, Stethoscope, Hotel, 
+  Utensils, Home, GraduationCap, 
+  PieChart, Rocket, ArrowRight, LineChart, Layers
 } from 'lucide-react';
 import Footer from '../components/Footer';
 

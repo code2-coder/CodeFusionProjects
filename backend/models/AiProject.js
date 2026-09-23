@@ -26,5 +26,7 @@ const aiProjectSchema = new mongoose.Schema({
   isFavorite: { type: Boolean, default: false }
 }, { timestamps: true });
 
+aiProjectSchema.index({ user: 1, createdAt: -1 });
+
 const AiProject = mongoose.model('AiProject', aiProjectSchema);
 export default AiProject;

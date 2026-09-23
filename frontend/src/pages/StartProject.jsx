@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
-import axios from 'axios';
+import api from '../api/client';
 import { 
-  Building2, User, Phone, Mail, FileText, Upload, Globe, Layout, Link as LinkIcon, 
-  Server, DollarSign, Calendar, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Play
+  Building2, User, Phone, Mail, FileText, Upload, Link as LinkIcon, 
+  DollarSign, Calendar, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Play
 } from 'lucide-react';
 
 const StartProject = () => {
@@ -74,8 +74,7 @@ const StartProject = () => {
     formData.append('files', file);
 
     try {
-      const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.post('/api/upload/user-files', formData, config);
+      const { data } = await api.post('/upload/user-files', formData);
       if (data.urls && data.urls.length > 0) {
         setLogoUrl(data.urls[0]);
       }
@@ -90,8 +89,7 @@ const StartProject = () => {
     Array.from(files).forEach(file => formData.append('files', file));
 
     try {
-      const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.post('/api/upload/user-files', formData, config);
+      const { data } = await api.post('/upload/user-files', formData);
       if (data.urls) {
         setContentUrls(data.urls);
       }
@@ -106,14 +104,13 @@ const StartProject = () => {
     setErrorMsg('');
 
     try {
-      const config = { headers: { Authorization: `Bearer ${user.token}` } };
       const payload = {
         businessName, contactPerson, mobileNumber, emailAddress, businessType, description, logoUrl,
         websiteType, featuresNeeded, referenceWebsite,
         domainAvailable, hostingAvailable, budget, expectedLaunchDate, contentUrls, additionalRequirements
       };
 
-      await axios.post('/api/project-requests', payload, config);
+      await api.post('/project-requests', payload);
       setSuccess(true);
     } catch (error) {
       setErrorMsg(error.response?.data?.message || 'Submission failed. Please try again.');

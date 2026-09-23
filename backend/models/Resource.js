@@ -22,5 +22,9 @@ const resourceSchema = new mongoose.Schema(
   }
 );
 
+resourceSchema.index({ published: 1, createdAt: -1 });
+resourceSchema.index({ category: 1, published: 1 });
+resourceSchema.index({ featured: 1, published: 1 });
+
 const Resource = mongoose.model('Resource', resourceSchema);
 export default Resource;

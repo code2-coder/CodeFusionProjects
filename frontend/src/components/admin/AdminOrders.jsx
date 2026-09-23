@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect, useCallback } from 'react';
+import api from '../../api/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Loader2, CheckCircle2, XCircle, Clock, Calendar, Mail, Phone, Edit, Trash2, Plus, X } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -25,14 +25,10 @@ const AdminOrders = () => {
     status: 'success'
   });
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/payments/orders`);
+      const { data } = await api.get('/api/payments/orders');
       setOrders(data);
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -40,13 +36,17 @@ const AdminOrders = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to permanently delete this order?")) return;
     
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/payments/orders/${id}`);
+      await api.delete(`/api/payments/orders/${id}`);
       toast.success("Order deleted successfully");
       fetchOrders();
     } catch (error) {
@@ -71,7 +71,7 @@ const AdminOrders = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/payments/orders/${editingOrder._id}`, {
+      await api.put(`/api/payments/orders/${editingOrder._id}`, {
         userName: formData.userName,
         userEmail: formData.userEmail,
         userPhone: formData.userPhone,
@@ -90,7 +90,7 @@ const AdminOrders = () => {
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/orders/manual`, {
+      await api.post('/api/payments/orders/manual', {
         ...formData,
         amount: Number(formData.amount)
       });

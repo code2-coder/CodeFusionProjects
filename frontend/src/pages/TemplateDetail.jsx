@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/client';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence, useMotionValue, useMotionTemplate } from 'framer-motion';
 import { ArrowLeft, Share2, Play, ShoppingCart, X, CheckCircle2, ShieldCheck, Zap, Download, Layers, Globe, MessageSquare, Sparkles, Smartphone, Moon, Mail, HelpCircle, Users, BookOpen } from 'lucide-react';
@@ -70,7 +70,7 @@ const TemplateDetail = () => {
   useEffect(() => {
     const fetchTemplate = async () => {
       try {
-        const { data } = await axios.get(`/api/templates/${id}`);
+        const { data } = await api.get(`/templates/${id}`);
         setTemplate(data);
       } catch (err) {
         setError('Failed to fetch template details. It may have been removed or does not exist.');
@@ -119,7 +119,7 @@ const TemplateDetail = () => {
         title: template.title,
         url: window.location.href
       });
-    } catch (err) {
+    } catch {
       console.log('Share not supported or cancelled');
     }
   };
@@ -140,8 +140,7 @@ const TemplateDetail = () => {
       const amount = template.price;
       const planName = template.title;
 
-      // Use relative path for production API integration
-      const { data: orderData } = await axios.post(`/api/payments/create-order`, {
+      const { data: orderData } = await api.post('/payments/create-order', {
         amount,
         planName,
         user,
@@ -164,8 +163,7 @@ const TemplateDetail = () => {
         }
         if (result.paymentDetails) {
           try {
-            // Use relative path for verification check
-            const { data: verifyData } = await axios.post(`/api/payments/verify-payment`, {
+            const { data: verifyData } = await api.post('/payments/verify-payment', {
               orderId: orderData.order_id
             });
 

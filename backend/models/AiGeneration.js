@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const aiGenerationSchema = new mongoose.Schema({
   prompt: { type: mongoose.Schema.Types.ObjectId, ref: 'AiPrompt', required: true },
   project: { type: mongoose.Schema.Types.ObjectId, ref: 'AiProject', required: true },
-  provider: { type: String, default: 'Gemini' },
+  provider: { type: String, default: 'OpenRouter' },
   rawOutput: { type: String }, // raw JSON or text from AI
   parsedOutput: { type: mongoose.Schema.Types.Mixed }, // parsed resulting config/components
   tokenUsage: {

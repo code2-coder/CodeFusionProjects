@@ -14,6 +14,7 @@ const projectSchema = new mongoose.Schema(
     gallery: { type: [String], required: false },
     demoUrl: { type: String, required: false },
     githubUrl: { type: String, required: false },
+    featured: { type: Boolean, default: false },
     published: { type: Boolean, default: true },
     seoTitle: { type: String, required: false },
     seoDescription: { type: String, required: false },
@@ -24,6 +25,10 @@ const projectSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+projectSchema.index({ published: 1, createdAt: -1 });
+projectSchema.index({ category: 1, published: 1 });
+projectSchema.index({ featured: 1, published: 1 });
 
 const Project = mongoose.model('Project', projectSchema);
 export default Project;

@@ -97,7 +97,7 @@ export const getProjects = async (req, res) => {
 export const getProjectDetails = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const project = await AiProject.findById(projectId);
+    const project = await AiProject.findOne({ _id: projectId, user: req.user._id });
     if (!project) return res.status(404).json({ success: false, message: 'Project not found' });
     
     // Fetch pages
@@ -151,7 +151,7 @@ export const generatePlan = async (req, res) => {
     const { projectId, promptText } = req.body;
     const userId = req.user._id;
 
-    const project = await AiProject.findById(projectId);
+    const project = await AiProject.findOne({ _id: projectId, user: userId });
     if (!project) return res.status(404).json({ success: false, message: 'Project not found' });
 
     // Save user prompt
@@ -197,7 +197,7 @@ export const generatePlan = async (req, res) => {
     const generation = new AiGeneration({
       prompt: aiPrompt._id,
       project: projectId,
-      provider: 'Gemini',
+      provider: 'OpenRouter',
       rawOutput: aiResult.text,
       parsedOutput: parsedData
     });
@@ -254,12 +254,14 @@ export const generatePlan = async (req, res) => {
 
     // Generate Pages and Components
     if (parsedData.pages && Array.isArray(parsedData.pages)) {
-      await AiPage.deleteMany({ project: projectId });
-      const currentPages = await AiPage.find({project: projectId});
+      // Find existing pages first to clean up their components
+      const currentPages = await AiPage.find({ project: projectId });
       const pageIds = currentPages.map(p => p._id);
-      if(pageIds.length > 0) {
+      if (pageIds.length > 0) {
         await AiComponent.deleteMany({ page: { $in: pageIds } });
       }
+      // Now safe to remove the old pages
+      await AiPage.deleteMany({ project: projectId });
 
       for (let i = 0; i < parsedData.pages.length; i++) {
         const pageData = parsedData.pages[i];

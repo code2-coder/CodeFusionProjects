@@ -1,13 +1,12 @@
-import GeminiProvider from './providers/GeminiProvider.js';
+import OpenRouterProvider from './providers/OpenRouterProvider.js';
 
 class AiProviderFactory {
-  static getProvider(providerName = process.env.AI_PROVIDER || 'gemini') {
+  static getProvider(providerName = process.env.AI_PROVIDER || 'openrouter') {
     switch (providerName.toLowerCase()) {
-      case 'gemini':
-        return new GeminiProvider();
-      // other providers (openai, claude) can be added here
+      case 'openrouter':
+        return new OpenRouterProvider();
       default:
-        return new GeminiProvider();
+        return new OpenRouterProvider();
     }
   }
 }

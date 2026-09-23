@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { motion, AnimatePresence, useMotionValue, useMotionTemplate } from 'framer-motion';
-import { ExternalLink, Play, Search, Tag, Filter, ChevronRight, Sparkles, ShoppingCart, Download } from 'lucide-react';
+import { ExternalLink, Play, Search, Sparkles } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import axios from 'axios';
+import api from '../api/client';
 import { AuthContext } from '../context/AuthContext';
 import { getImageUrl, handleImageError } from '../utils';
 import { load } from '@cashfreepayments/cashfree-js';
 import toast from 'react-hot-toast';
 
 // Interactive Template Card with Cursor Spot Glow
-const TemplateCard = ({ tpl, handlePayment, user, navigate, location }) => {
+const TemplateCard = ({ tpl, handlePayment, navigate }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const cardRef = useRef(null);
@@ -186,7 +186,7 @@ const Templates = () => {
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
-        const { data } = await axios.get('/api/templates');
+        const { data } = await api.get('/templates');
         setTemplates(data.filter(t => t.status === 'Published'));
       } catch (error) {
         console.error('Error fetching templates:', error);
@@ -195,7 +195,7 @@ const Templates = () => {
     
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get('/api/categories');
+        const { data } = await api.get('/categories');
         setCategories([{ name: 'All' }, ...data]);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -226,7 +226,7 @@ const Templates = () => {
       const amount = template.price;
       const planName = template.title;
 
-      const { data: orderData } = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/payments/create-order`, {
+      const { data: orderData } = await api.post('/payments/create-order', {
         amount,
         planName,
         user,
@@ -249,7 +249,7 @@ const Templates = () => {
         }
         if (result.paymentDetails) {
           try {
-            const { data: verifyData } = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/payments/verify-payment`, {
+            const { data: verifyData } = await api.post('/payments/verify-payment', {
               orderId: orderData.order_id
             });
 
@@ -270,17 +270,20 @@ const Templates = () => {
     }
   };
 
-  const filteredTemplates = templates.filter(tpl => {
-    const title = tpl.title || '';
-    const description = tpl.description || '';
-    const matchesSearch = title.toLowerCase().includes(search.toLowerCase()) || 
-                          description.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = category === 'All' || tpl.category === category;
-    const matchesPrice = priceType === 'All' || 
-                         (priceType === 'Free' && (!tpl.price || tpl.price === 0)) || 
-                         (priceType === 'Premium' && tpl.price > 0);
-    return matchesSearch && matchesCategory && matchesPrice;
-  });
+  const filteredTemplates = useMemo(() => {
+    return templates.filter(tpl => {
+      const title = tpl.title || '';
+      const description = tpl.description || '';
+      const searchLower = search.toLowerCase();
+      const matchesSearch = title.toLowerCase().includes(searchLower) || 
+                            description.toLowerCase().includes(searchLower);
+      const matchesCategory = category === 'All' || tpl.category === category;
+      const matchesPrice = priceType === 'All' || 
+                           (priceType === 'Free' && (!tpl.price || tpl.price === 0)) || 
+                           (priceType === 'Premium' && tpl.price > 0);
+      return matchesSearch && matchesCategory && matchesPrice;
+    });
+  }, [templates, search, category, priceType]);
 
   return (
     <section id="templates" className="py-24 md:py-32 relative bg-[#030303] min-h-screen text-zinc-50 overflow-hidden font-sans">
@@ -429,9 +432,7 @@ const Templates = () => {
                   key={tpl._id}
                   tpl={tpl}
                   handlePayment={handlePayment}
-                  user={user}
                   navigate={navigate}
-                  location={location}
                 />
               ))}
             </AnimatePresence>

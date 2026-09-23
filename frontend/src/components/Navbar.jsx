@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, User, Mail, Search, Sparkles } from 'lucide-react';
+import { Menu, X, ChevronDown, User, Mail, Search } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 import AdminDropdown from './AdminDropdown';
 
@@ -174,7 +174,8 @@ const Navbar = () => {
 
   useEffect(() => {
     if (!mobileMenuOpen) {
-      setMobileDropdownOpen(null);
+      const timer = setTimeout(() => setMobileDropdownOpen(null), 0);
+      return () => clearTimeout(timer);
     }
   }, [mobileMenuOpen]);
 

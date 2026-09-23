@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import axios from 'axios';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import api from '../api/client';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowLeft, ArrowRight, ExternalLink, CheckCircle2, Sparkles, MonitorSmartphone, Code2, Cpu, Calendar, UserCheck, Layers } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import Footer from '../components/Footer';
@@ -25,6 +25,7 @@ const DetailImage = ({ src, alt, className, onError }) => {
         onError={(e) => {
           setIsError(true);
           handleImageError(e);
+          if (onError) onError(e);
         }}
         className={`${className} transition-all duration-[1.5s] ease-[0.16,1,0.3,1] ${
           isLoaded ? 'opacity-90 group-hover:opacity-100 group-hover:scale-[1.02]' : 'opacity-0'
@@ -51,7 +52,7 @@ const WorkDetail = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const { data } = await axios.get(`/api/projects/slug/${slug}`);
+        const { data } = await api.get(`/projects/slug/${slug}`);
         setProject(data);
         setLoading(false);
       } catch (error) {

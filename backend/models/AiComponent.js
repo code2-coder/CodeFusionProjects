@@ -11,5 +11,7 @@ const aiComponentSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
+aiComponentSchema.index({ page: 1, order: 1 });
+
 const AiComponent = mongoose.model('AiComponent', aiComponentSchema);
 export default AiComponent;

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+import api from '../api/client';
 import { Search, X, Folder, BookOpen, ArrowRight, LayoutTemplate } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -18,15 +18,17 @@ const GlobalSearch = ({ isOpen, onClose }) => {
   }, [isOpen, onClose]);
 
   useEffect(() => {
-    if (!query) {
-      setResults({ projects: [], resources: [], templates: [] });
-      return;
+    if (!query.trim()) {
+      const resetTimer = setTimeout(() => {
+        setResults({ projects: [], resources: [], templates: [] });
+      }, 0);
+      return () => clearTimeout(resetTimer);
     }
 
     const fetchResults = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get(`/api/search?q=${query}`);
+        const { data } = await api.get(`/api/search?q=${encodeURIComponent(query.trim())}`);
         setResults(data);
       } catch (error) {
         console.error('Error fetching search results:', error);

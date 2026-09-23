@@ -21,7 +21,7 @@ const paymentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: 'pending', // usually starts pending, updated when verified
+      default: 'pending',
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -41,6 +41,9 @@ const paymentSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+paymentSchema.index({ user: 1, createdAt: -1 });
+paymentSchema.index({ status: 1, createdAt: -1 });
 
 const Payment = mongoose.model('Payment', paymentSchema);
 export default Payment;

@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, ArrowRight, Loader2, CheckCircle2, ChevronLeft, Sparkles, Phone, User } from 'lucide-react';
+import { Mail, ArrowRight, Loader2, CheckCircle2, ChevronLeft, Phone, User } from 'lucide-react';
 
 const Login = () => {
   const [step, setStep] = useState(1); // 1: Email, 2: OTP

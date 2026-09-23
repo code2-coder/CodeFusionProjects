@@ -7,8 +7,10 @@ const aiPromptSchema = new mongoose.Schema({
   aiResponse: { type: String },
   type: { type: String, enum: ['planner', 'designer', 'content', 'react', 'edit', 'general'], required: true },
   status: { type: String, enum: ['pending', 'processing', 'completed', 'failed'], default: 'pending' },
-  targetComponent: { type: mongoose.Schema.Types.ObjectId, ref: 'AiComponent' } // if editing a specific section
+  targetComponent: { type: mongoose.Schema.Types.ObjectId, ref: 'AiComponent' }
 }, { timestamps: true });
+
+aiPromptSchema.index({ project: 1, createdAt: 1 });
 
 const AiPrompt = mongoose.model('AiPrompt', aiPromptSchema);
 export default AiPrompt;

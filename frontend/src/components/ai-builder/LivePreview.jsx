@@ -72,7 +72,7 @@ const Contact = ({ branding, props = {} }) => (
   </div>
 );
 
-const UnknownComponent = ({ type, branding, props = {} }) => (
+const UnknownComponent = ({ type, props = {} }) => (
   <div className="p-6 border-2 border-dashed border-gray-400 text-gray-500 text-center my-4 rounded-lg bg-gray-50 dark:bg-gray-800">
     <p>Component: <strong>{type}</strong></p>
     {props.title && <h3 className="text-xl font-bold mt-2 text-black dark:text-white">{props.title}</h3>}

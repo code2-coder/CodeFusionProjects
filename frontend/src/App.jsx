@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './context/AuthContext';
@@ -8,6 +8,8 @@ import { AiBuilderProvider } from './context/AiBuilderContext';
 import Navbar from './components/Navbar';
 import WhatsAppButton from './components/WhatsAppButton';
 import Contact from './components/Contact';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import AdminRoute from './components/common/AdminRoute';
 
 // Lazy load pages for performance (Code Splitting)
 const Home = lazy(() => import('./pages/Home'));
@@ -62,11 +64,48 @@ const AppContent = () => {
             <Route path="/resources/:slug" element={<ResourceDetail />} />
             <Route path="/templates" element={<TemplatesPage />} />
             <Route path="/templates/:id" element={<TemplateDetail />} />
-            <Route path="/admin" element={<AdminPanel />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/start-project" element={<StartProject />} />
-            <Route path="/builder" element={<BuilderDashboard />} />
-            <Route path="/builder/project/:projectId" element={<ProjectEditor />} />
+            
+            {/* Protected Routes */}
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminPanel />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/start-project"
+              element={
+                <ProtectedRoute>
+                  <StartProject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/builder"
+              element={
+                <ProtectedRoute>
+                  <BuilderDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/builder/project/:projectId"
+              element={
+                <ProtectedRoute>
+                  <ProjectEditor />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/preview/:projectId" element={<ProjectPreview />} />
           </Routes>
         </Suspense>

@@ -1,24 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import api from '../api/client';
 import { getImageUrl } from '../utils';
 
 const FeaturedWork = () => {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchProjects = async () => {
       try {
-        const { data } = await axios.get('/api/projects');
-        const featured = data.filter(p => p.published && p.featured).slice(0, 6);
-        setProjects(featured);
+        const { data } = await api.get('/api/projects');
+        if (!isMounted) return;
+        const explicitlyFeatured = data.filter((p) => p.published && p.featured).slice(0, 6);
+        // Fallback to recent published projects if no items are flagged as featured
+        const displayProjects = explicitlyFeatured.length > 0 
+          ? explicitlyFeatured 
+          : data.filter((p) => p.published).slice(0, 6);
+        setProjects(displayProjects);
       } catch (error) {
         console.error('Error fetching featured projects:', error);
       }
     };
     fetchProjects();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (projects.length === 0) return null;

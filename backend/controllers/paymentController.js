@@ -143,7 +143,8 @@ export const getOrders = async (req, res) => {
     const orders = await Payment.find({})
       .populate('templateId', 'title category price thumbnail')
       .populate('user', 'name email phone')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
       
     res.status(200).json(orders);
   } catch (error) {
