@@ -30,6 +30,9 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust first proxy (Render, Vercel, Cloudflare) for accurate client IP in rate limiters
+app.set('trust proxy', 1);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

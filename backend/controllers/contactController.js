@@ -12,40 +12,56 @@ const escapeHtml = (str) => {
     .replace(/'/g, '&#039;');
 };
 
-// Singleton Nodemailer Transporter
-let cachedTransporter = null;
+// Nodemailer Transporter with explicit timeouts and SSL/TLS on port 465
 const getTransporter = () => {
-  if (!cachedTransporter) {
-    cachedTransporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.zeptomail.in',
-      port: parseInt(process.env.SMTP_PORT, 10) || 587,
-      secure: process.env.SMTP_PORT === '465' || process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-  }
-  return cachedTransporter;
+  const port = parseInt(process.env.SMTP_PORT, 10) || 465;
+  const isSecure = process.env.SMTP_SECURE === 'false' ? false : (port === 465 || process.env.SMTP_SECURE === 'true');
+
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.zeptomail.in',
+    port: port,
+    secure: isSecure,
+    auth: {
+      user: process.env.SMTP_USER || 'emailapikey',
+      pass: process.env.SMTP_PASS,
+    },
+    connectionTimeout: 6000,
+    greetingTimeout: 6000,
+    socketTimeout: 6000,
+  });
 };
 
 // @desc    Submit contact form, save to DB, and send email notification
 // @route   POST /api/contact
 // @access  Public
 export const submitContactForm = async (req, res) => {
+  if (!req.body || typeof req.body !== 'object') {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Invalid request body.' 
+    });
+  }
+
   const { name, email, phone, service, businessType, message } = req.body;
 
   const trimmedName = typeof name === 'string' ? name.trim() : '';
-  const trimmedEmail = typeof email === 'string' ? email.trim() : '';
+  const trimmedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
   const trimmedPhone = typeof phone === 'string' ? phone.trim() : '';
   const trimmedService = typeof service === 'string' ? service.trim() : 'Website Development';
   const trimmedBusinessType = typeof businessType === 'string' ? businessType.trim() : 'web';
   const trimmedMessage = typeof message === 'string' ? message.trim() : '';
 
-  if (!trimmedName || !trimmedEmail || !trimmedMessage) {
+  if (!trimmedName) {
     return res.status(400).json({ 
       success: false, 
-      message: 'Name, email, and message are required fields.' 
+      message: 'Full Name is required.' 
+    });
+  }
+
+  if (!trimmedEmail) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Email address is required.' 
     });
   }
 
@@ -54,7 +70,14 @@ export const submitContactForm = async (req, res) => {
   if (!emailRegex.test(trimmedEmail)) {
     return res.status(400).json({ 
       success: false, 
-      message: 'Please provide a valid email address.' 
+      message: 'Please provide a valid email address (e.g. name@example.com).' 
+    });
+  }
+
+  if (!trimmedMessage) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Project details / message is required.' 
     });
   }
 
@@ -116,27 +139,22 @@ export const submitContactForm = async (req, res) => {
       savedContact.emailSent = true;
       await savedContact.save();
     }
+  } catch (error) {
+    console.error('Email dispatch error (inquiry preserved in DB):', error.message);
+  }
 
+  // If saved in DB, return 200 immediately
+  if (savedContact) {
     return res.status(200).json({ 
       success: true, 
-      message: 'Message sent successfully! Our team will get back to you shortly.' 
-    });
-  } catch (error) {
-    console.error('Email send error:', error.message);
-
-    // If message was saved to database, reassure the user their message is safe
-    if (savedContact) {
-      return res.status(200).json({ 
-        success: true, 
-        message: 'Your message has been received! Our team will get in touch with you shortly.' 
-      });
-    }
-
-    return res.status(500).json({ 
-      success: false, 
-      message: 'Failed to send message. Please try again or reach us at codefusionprojects@gmail.com.' 
+      message: 'Message sent successfully! Our team will get back to you within 24 hours.' 
     });
   }
+
+  return res.status(500).json({ 
+    success: false, 
+    message: 'Failed to process inquiry. Please try again or reach us at codefusionprojects@gmail.com.' 
+  });
 };
 
 // @desc    Get all contact messages (Admin)

@@ -34,10 +34,57 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+    const name = formData.name.trim();
+    const email = formData.email.trim().toLowerCase();
+    const phone = formData.phone.trim();
+    const message = formData.message.trim();
+
+    if (!name) {
       setStatus({
         type: 'error',
-        message: 'Please fill in all required fields (Full Name, Email Address, and Project Details).'
+        message: 'Please enter your full name.'
+      });
+      return;
+    }
+
+    if (name.length < 2) {
+      setStatus({
+        type: 'error',
+        message: 'Please enter a valid full name (at least 2 characters).'
+      });
+      return;
+    }
+
+    if (!email) {
+      setStatus({
+        type: 'error',
+        message: 'Please enter your email address.'
+      });
+      return;
+    }
+
+    // Standard RFC compliant email format check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setStatus({
+        type: 'error',
+        message: 'Please enter a valid email address (e.g. yourname@domain.com).'
+      });
+      return;
+    }
+
+    if (!message) {
+      setStatus({
+        type: 'error',
+        message: 'Please provide some details about your project or inquiry.'
+      });
+      return;
+    }
+
+    if (message.length < 5) {
+      setStatus({
+        type: 'error',
+        message: 'Project details are too brief. Please describe your project in at least 5 characters.'
       });
       return;
     }
@@ -46,12 +93,12 @@ const Contact = () => {
     setStatus({ type: '', message: '' });
 
     const payload = {
-      name: formData.name.trim(),
-      email: formData.email.trim(),
-      phone: formData.phone.trim(),
+      name,
+      email,
+      phone,
       service: serviceLabels[formData.businessType] || 'Website Development',
       businessType: formData.businessType,
-      message: formData.message.trim()
+      message
     };
 
     try {
@@ -69,12 +116,14 @@ const Contact = () => {
       });
       setTimeout(() => {
         setStatus((prev) => (prev.type === 'success' ? { type: '', message: '' } : prev));
-      }, 5000);
+      }, 7000);
     } catch (error) {
       console.error("Error sending message:", error);
       const serverMsg =
         error.response?.data?.message ||
-        'Failed to send message. Please try again or email us directly at codefusionprojects@gmail.com.';
+        (error.message === 'Network Error' 
+          ? 'Network connection issue. Please check your internet or email us directly at codefusionprojects@gmail.com.'
+          : 'Failed to send message. Please try again or email us directly at codefusionprojects@gmail.com.');
       setStatus({
         type: 'error',
         message: serverMsg
