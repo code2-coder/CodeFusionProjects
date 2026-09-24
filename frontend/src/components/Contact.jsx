@@ -1,34 +1,84 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Phone, Mail, Send, Sparkles, CheckCircle2 } from 'lucide-react';
+import { MapPin, Phone, Mail, Send, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
 import SEO from './SEO';
 import api from '../api/client';
 
+const serviceLabels = {
+  web: 'Website Development',
+  ecommerce: 'E-Commerce',
+  uiux: 'UI/UX Design',
+  ai: 'AI Solutions',
+  other: 'Other'
+};
+
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    businessType: 'web',
+    message: ''
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [status, setStatus] = useState({ type: '', message: '' }); // 'success' | 'error' | ''
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (status.type) {
+      setStatus({ type: '', message: '' });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    const formData = {
-      name: e.target.name.value,
-      email: e.target.email.value,
-      phone: e.target.phone.value,
-      service: e.target.type.options[e.target.type.selectedIndex].text,
-      businessType: e.target.type.value,
-      message: e.target.message.value
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setStatus({
+        type: 'error',
+        message: 'Please fill in all required fields (Full Name, Email Address, and Project Details).'
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setStatus({ type: '', message: '' });
+
+    const payload = {
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      service: serviceLabels[formData.businessType] || 'Website Development',
+      businessType: formData.businessType,
+      message: formData.message.trim()
     };
 
     try {
-      await api.post('/api/contact', formData);
-      setIsSuccess(true);
-      e.target.reset();
-      setTimeout(() => setIsSuccess(false), 3000);
+      const response = await api.post('/api/contact', payload);
+      setStatus({
+        type: 'success',
+        message: response.data?.message || 'Message sent successfully! Our team will get back to you within 24 hours.'
+      });
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        businessType: 'web',
+        message: ''
+      });
+      setTimeout(() => {
+        setStatus((prev) => (prev.type === 'success' ? { type: '', message: '' } : prev));
+      }, 5000);
     } catch (error) {
       console.error("Error sending message:", error);
-      alert('Failed to send message. Please try again.');
+      const serverMsg =
+        error.response?.data?.message ||
+        'Failed to send message. Please try again or email us directly at codefusionprojects@gmail.com.';
+      setStatus({
+        type: 'error',
+        message: serverMsg
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -119,7 +169,7 @@ const Contact = () => {
                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 pointer-events-none z-0"></div>
                <div className="absolute top-0 inset-x-10 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover/form:opacity-100 transition-opacity duration-1000 z-0"></div>
 
-               <form onSubmit={handleSubmit} className="relative z-10">
+               <form onSubmit={handleSubmit} className="relative z-10" noValidate>
                  
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                    <motion.div 
@@ -129,8 +179,22 @@ const Contact = () => {
                      transition={{ delay: 0.3 }}
                      className="relative group"
                    >
-                     <input type="text" id="name" className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl px-6 py-5 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all peer text-white font-medium" placeholder=" " required />
-                     <label htmlFor="name" className="absolute left-6 top-5 text-white/40 font-light tracking-wide transition-all duration-300 peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-400 peer-focus:bg-[#050505] peer-focus:px-2 peer-valid:-top-3 peer-valid:text-xs peer-valid:text-white/60 peer-valid:bg-[#050505] peer-valid:px-2 rounded-full cursor-text">Full Name</label>
+                     <input 
+                       type="text" 
+                       id="name" 
+                       name="name"
+                       value={formData.name}
+                       onChange={handleChange}
+                       className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl px-6 py-5 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all peer text-white font-medium" 
+                       placeholder=" " 
+                       required 
+                     />
+                     <label 
+                       htmlFor="name" 
+                       className="absolute left-6 top-5 text-white/40 font-light tracking-wide transition-all duration-300 peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-400 peer-focus:bg-[#050505] peer-focus:px-2 peer-not-placeholder-shown:-top-3 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:text-white/60 peer-not-placeholder-shown:bg-[#050505] peer-not-placeholder-shown:px-2 peer-valid:-top-3 peer-valid:text-xs peer-valid:text-white/60 peer-valid:bg-[#050505] peer-valid:px-2 rounded-full cursor-text pointer-events-none"
+                     >
+                       Full Name
+                     </label>
                    </motion.div>
                    <motion.div 
                      initial={{ opacity: 0, y: 20 }}
@@ -139,8 +203,22 @@ const Contact = () => {
                      transition={{ delay: 0.4 }}
                      className="relative group"
                    >
-                     <input type="email" id="email" className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl px-6 py-5 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all peer text-white font-medium" placeholder=" " required />
-                     <label htmlFor="email" className="absolute left-6 top-5 text-white/40 font-light tracking-wide transition-all duration-300 peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-400 peer-focus:bg-[#050505] peer-focus:px-2 peer-valid:-top-3 peer-valid:text-xs peer-valid:text-white/60 peer-valid:bg-[#050505] peer-valid:px-2 rounded-full cursor-text">Email Address</label>
+                     <input 
+                       type="email" 
+                       id="email" 
+                       name="email"
+                       value={formData.email}
+                       onChange={handleChange}
+                       className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl px-6 py-5 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all peer text-white font-medium" 
+                       placeholder=" " 
+                       required 
+                     />
+                     <label 
+                       htmlFor="email" 
+                       className="absolute left-6 top-5 text-white/40 font-light tracking-wide transition-all duration-300 peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-400 peer-focus:bg-[#050505] peer-focus:px-2 peer-not-placeholder-shown:-top-3 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:text-white/60 peer-not-placeholder-shown:bg-[#050505] peer-not-placeholder-shown:px-2 peer-valid:-top-3 peer-valid:text-xs peer-valid:text-white/60 peer-valid:bg-[#050505] peer-valid:px-2 rounded-full cursor-text pointer-events-none"
+                     >
+                       Email Address
+                     </label>
                    </motion.div>
                  </div>
 
@@ -152,8 +230,21 @@ const Contact = () => {
                      transition={{ delay: 0.5 }}
                      className="relative group"
                    >
-                     <input type="tel" id="phone" className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl px-6 py-5 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all peer text-white font-medium" placeholder=" " required />
-                     <label htmlFor="phone" className="absolute left-6 top-5 text-white/40 font-light tracking-wide transition-all duration-300 peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-400 peer-focus:bg-[#050505] peer-focus:px-2 peer-valid:-top-3 peer-valid:text-xs peer-valid:text-white/60 peer-valid:bg-[#050505] peer-valid:px-2 rounded-full cursor-text">Phone Number</label>
+                     <input 
+                       type="tel" 
+                       id="phone" 
+                       name="phone"
+                       value={formData.phone}
+                       onChange={handleChange}
+                       className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl px-6 py-5 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all peer text-white font-medium" 
+                       placeholder=" " 
+                     />
+                     <label 
+                       htmlFor="phone" 
+                       className="absolute left-6 top-5 text-white/40 font-light tracking-wide transition-all duration-300 peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-400 peer-focus:bg-[#050505] peer-focus:px-2 peer-not-placeholder-shown:-top-3 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:text-white/60 peer-not-placeholder-shown:bg-[#050505] peer-not-placeholder-shown:px-2 peer-valid:-top-3 peer-valid:text-xs peer-valid:text-white/60 peer-valid:bg-[#050505] peer-valid:px-2 rounded-full cursor-text pointer-events-none"
+                     >
+                       Phone Number
+                     </label>
                    </motion.div>
                    <motion.div 
                      initial={{ opacity: 0, y: 20 }}
@@ -162,14 +253,22 @@ const Contact = () => {
                      transition={{ delay: 0.6 }}
                      className="relative group"
                    >
-                     <select id="type" className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl px-6 py-5 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all appearance-none text-white font-medium cursor-pointer">
+                     <select 
+                       id="type" 
+                       name="businessType"
+                       value={formData.businessType}
+                       onChange={handleChange}
+                       className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl px-6 py-5 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all appearance-none text-white font-medium cursor-pointer"
+                     >
                        <option value="web" className="bg-[#111] text-white">Website Development</option>
                        <option value="ecommerce" className="bg-[#111] text-white">E-Commerce</option>
                        <option value="uiux" className="bg-[#111] text-white">UI/UX Design</option>
                        <option value="ai" className="bg-[#111] text-white">AI Solutions</option>
                        <option value="other" className="bg-[#111] text-white">Other</option>
                      </select>
-                     <label htmlFor="type" className="absolute left-6 -top-3 text-xs font-light tracking-wide text-white/60 bg-[#050505] px-2 rounded-full">Business Type</label>
+                     <label htmlFor="type" className="absolute left-6 -top-3 text-xs font-light tracking-wide text-white/60 bg-[#050505] px-2 rounded-full pointer-events-none">
+                       Business Type
+                     </label>
                      <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white/40 group-hover:text-blue-400 transition-colors">
                        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                      </div>
@@ -181,20 +280,57 @@ const Contact = () => {
                    whileInView={{ opacity: 1, y: 0 }}
                    viewport={{ once: true }}
                    transition={{ delay: 0.7 }}
-                   className="relative group mb-10"
+                   className="relative group mb-8"
                  >
-                   <textarea id="message" rows="4" className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl px-6 py-5 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all peer resize-none text-white font-medium" placeholder=" " required></textarea>
-                   <label htmlFor="message" className="absolute left-6 top-5 text-white/40 font-light tracking-wide transition-all duration-300 peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-400 peer-focus:bg-[#050505] peer-focus:px-2 peer-valid:-top-3 peer-valid:text-xs peer-valid:text-white/60 peer-valid:bg-[#050505] peer-valid:px-2 rounded-full cursor-text">Project Details...</label>
+                   <textarea 
+                     id="message" 
+                     name="message"
+                     rows="4" 
+                     value={formData.message}
+                     onChange={handleChange}
+                     className="w-full bg-white/[0.03] border border-white/10 hover:border-white/20 rounded-2xl px-6 py-5 outline-none focus:border-blue-500 focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all peer resize-none text-white font-medium" 
+                     placeholder=" " 
+                     required
+                   ></textarea>
+                   <label 
+                     htmlFor="message" 
+                     className="absolute left-6 top-5 text-white/40 font-light tracking-wide transition-all duration-300 peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-400 peer-focus:bg-[#050505] peer-focus:px-2 peer-not-placeholder-shown:-top-3 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:text-white/60 peer-not-placeholder-shown:bg-[#050505] peer-not-placeholder-shown:px-2 peer-valid:-top-3 peer-valid:text-xs peer-valid:text-white/60 peer-valid:bg-[#050505] peer-valid:px-2 rounded-full cursor-text pointer-events-none"
+                   >
+                     Project Details...
+                   </label>
                  </motion.div>
 
+                 {/* Status Feedback Notice */}
+                 <AnimatePresence>
+                   {status.message && (
+                     <motion.div
+                       initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                       animate={{ opacity: 1, y: 0, scale: 1 }}
+                       exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                       className={`mb-6 p-4 rounded-2xl flex items-start gap-3 border text-sm backdrop-blur-md shadow-lg ${
+                         status.type === 'success'
+                           ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 shadow-emerald-500/10'
+                           : 'bg-rose-500/10 border-rose-500/30 text-rose-300 shadow-rose-500/10'
+                       }`}
+                     >
+                       {status.type === 'success' ? (
+                         <CheckCircle2 size={18} className="shrink-0 mt-0.5 text-emerald-400" />
+                       ) : (
+                         <AlertCircle size={18} className="shrink-0 mt-0.5 text-rose-400" />
+                       )}
+                       <p className="font-medium leading-relaxed">{status.message}</p>
+                     </motion.div>
+                   )}
+                 </AnimatePresence>
+
                  <motion.button 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.8 }}
-                  type="submit" 
-                  disabled={isSubmitting || isSuccess}
-                  className="w-full py-5 rounded-2xl bg-white text-black font-bold text-lg hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all flex items-center justify-center gap-3 relative overflow-hidden group/btn hover:scale-105 active:scale-95 disabled:opacity-80 disabled:hover:scale-100 disabled:cursor-not-allowed"
+                   initial={{ opacity: 0, y: 20 }}
+                   whileInView={{ opacity: 1, y: 0 }}
+                   viewport={{ once: true }}
+                   transition={{ delay: 0.8 }}
+                   type="submit" 
+                   disabled={isSubmitting || status.type === 'success'}
+                   className="w-full py-5 rounded-2xl bg-white text-black font-bold text-lg hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all flex items-center justify-center gap-3 relative overflow-hidden group/btn hover:scale-105 active:scale-95 disabled:opacity-80 disabled:hover:scale-100 disabled:cursor-not-allowed cursor-pointer"
                  >
                    <AnimatePresence mode="wait">
                      {isSubmitting ? (
@@ -208,15 +344,15 @@ const Contact = () => {
                          <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
                          Sending...
                        </motion.div>
-                     ) : isSuccess ? (
+                     ) : status.type === 'success' ? (
                        <motion.div
                          key="success"
                          initial={{ opacity: 0, y: 10 }}
                          animate={{ opacity: 1, y: 0 }}
                          exit={{ opacity: 0, y: -10 }}
-                         className="flex items-center gap-2 text-emerald-600"
+                         className="flex items-center gap-2 text-emerald-700"
                        >
-                         <CheckCircle2 size={20} />
+                         <CheckCircle2 size={20} className="text-emerald-700" />
                          Message Sent!
                        </motion.div>
                      ) : (
@@ -232,7 +368,7 @@ const Contact = () => {
                        </motion.div>
                      )}
                    </AnimatePresence>
-                   {!isSubmitting && !isSuccess && (
+                   {!isSubmitting && status.type !== 'success' && (
                      <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/btn:animate-[glare_1.5s_ease-in-out_infinite] skew-x-[-25deg]"></div>
                    )}
                  </motion.button>
