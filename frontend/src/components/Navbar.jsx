@@ -2,9 +2,10 @@ import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, User, Mail, Search } from 'lucide-react';
+import { Menu, X, ChevronDown, User, Mail, Search, Sparkles, ArrowRight, UserPlus, ShieldCheck } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 import AdminDropdown from './AdminDropdown';
+import AccountDropdown from './AccountDropdown';
 
 const navItems = [
   { label: 'Home', href: '/#home' },
@@ -105,59 +106,7 @@ const DesktopNavItem = ({ item, index }) => {
   );
 };
 
-const AccountDropdown = () => {
-  const [isOpen, setIsOpen] = useState(false);
 
-  return (
-    <div
-      className="relative"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-    >
-      <button 
-        className="relative p-2.5 rounded-full bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-blue-500/50 transition-all duration-300 text-white group focus:outline-none overflow-hidden shadow-inner" 
-        aria-label="Account"
-      >
-        <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        <User size={18} className={`relative z-10 transition-colors duration-300 ${isOpen ? 'text-blue-400' : 'group-hover:text-blue-400'}`} />
-      </button>
-
-      {/* Invisible bridge */}
-      <div className="absolute top-full right-0 w-full h-4"></div>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 15, scale: 0.95, filter: 'blur(10px)' }}
-            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: 10, scale: 0.95, filter: 'blur(5px)' }}
-            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-            className="absolute top-full right-0 mt-3 w-64 rounded-3xl bg-white/[0.02] backdrop-blur-3xl border border-white/5 shadow-[0_30px_60px_rgba(0,0,0,0.5)] overflow-hidden z-50 p-3"
-          >
-            <div className="px-4 py-4 mb-2 border-b border-white/5 relative overflow-hidden rounded-xl bg-white/[0.02]">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 pointer-events-none"></div>
-              <p className="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em] mb-1">Welcome</p>
-              <p className="text-sm font-semibold text-white">Sign in to your account</p>
-            </div>
-
-            <div className="flex flex-col gap-1 mt-2">
-              <Link
-                to="/login"
-                className="group relative flex items-center gap-3 px-4 py-3 text-sm font-medium text-white/70 rounded-2xl hover:text-white transition-all overflow-hidden bg-white/[0.02] hover:bg-white/[0.05] border border-transparent hover:border-white/10"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                <div className="w-8 h-8 rounded-full bg-white/[0.05] flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-inner border border-white/10">
-                  <Mail size={14} className="text-blue-400" />
-                </div>
-                <span className="relative z-10">Continue with Email</span>
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -365,19 +314,50 @@ const Navbar = () => {
                     </button>
                   </>
                 ) : (
-                  <div className="p-4 rounded-2xl flex flex-col gap-3 mt-4 bg-white/[0.03] border border-white/5 shadow-inner">
-                    <div className="pb-3 border-b border-white/10">
-                      <p className="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em]">Welcome</p>
-                      <p className="text-sm font-semibold text-white">Sign in to continue</p>
-                    </div>
-                    <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="py-3 px-4 font-semibold border border-white/10 bg-black/50 rounded-xl hover:bg-white/[0.05] hover:border-white/20 transition-all text-white text-sm flex items-center justify-between group">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-white/[0.05] flex items-center justify-center border border-white/10 group-hover:border-blue-500/50 transition-colors">
-                          <Mail size={14} className="text-blue-400" />
-                        </div>
-                        <span>Continue with Email</span>
+                  <div className="p-5 rounded-3xl flex flex-col gap-3 mt-4 bg-gradient-to-b from-white/[0.05] to-transparent border border-white/10 shadow-[0_15px_30px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
+                    
+                    <div className="pb-3 border-b border-white/[0.08] relative z-10">
+                      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold tracking-[0.15em] uppercase mb-2">
+                        <Sparkles size={11} className="text-blue-400" />
+                        <span>Client Portal</span>
                       </div>
-                    </Link>
+                      <h4 className="text-base font-bold text-white tracking-tight">Welcome to CodeFusion</h4>
+                      <p className="text-xs text-white/50 mt-0.5">Sign in to track projects & manage quotes</p>
+                    </div>
+
+                    <div className="flex flex-col gap-2 relative z-10">
+                      <Link 
+                        to="/login?mode=login" 
+                        onClick={() => setMobileMenuOpen(false)} 
+                        className="py-3 px-4 font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl text-xs flex items-center justify-between shadow-[0_0_20px_rgba(79,70,229,0.35)]"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-xl bg-white/20 flex items-center justify-center">
+                            <Mail size={13} className="text-white" />
+                          </div>
+                          <span>Continue with Email</span>
+                        </div>
+                        <ArrowRight size={14} />
+                      </Link>
+
+                      <Link 
+                        to="/login?mode=signup" 
+                        onClick={() => setMobileMenuOpen(false)} 
+                        className="py-2.5 px-4 font-semibold bg-white/[0.04] border border-white/10 hover:border-white/20 text-white text-xs rounded-2xl flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <UserPlus size={13} className="text-purple-400" />
+                          <span>Create Account</span>
+                        </div>
+                        <span className="text-[10px] text-purple-400 font-bold">Free</span>
+                      </Link>
+                    </div>
+
+                    <div className="pt-2 border-t border-white/[0.06] flex items-center gap-1.5 text-[10px] text-white/40">
+                      <ShieldCheck size={12} className="text-emerald-400" />
+                      <span>Passwordless OTP • 256-bit encrypted</span>
+                    </div>
                   </div>
                 )}
               </motion.div>

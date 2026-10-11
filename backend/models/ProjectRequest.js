@@ -31,7 +31,15 @@ const projectRequestSchema = new mongoose.Schema(
       type: String, 
       enum: ['Pending', 'Reviewed', 'In Progress', 'Completed', 'Rejected'], 
       default: 'Pending' 
-    }
+    },
+    adminNotes: { type: String, required: false },
+    lastMessage: {
+      text: { type: String },
+      senderRole: { type: String },
+      createdAt: { type: Date }
+    },
+    unreadByAdmin: { type: Number, default: 0 },
+    unreadByClient: { type: Number, default: 0 }
   },
   {
     timestamps: true,

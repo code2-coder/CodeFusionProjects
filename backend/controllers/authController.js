@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 import User from '../models/User.js';
+import ProjectRequest from '../models/ProjectRequest.js';
+import Payment from '../models/Payment.js';
 import generateToken from '../utils/generateToken.js';
 import { sendAuthOTP } from '../utils/sendEmail.js';
 
@@ -161,3 +163,158 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error updating profile' });
   }
 };
+
+// @desc    Get all users with analytics & project counts (Admin only)
+// @route   GET /api/auth/users
+// @access  Private/Admin
+export const getAllUsers = async (req, res) => {
+  try {
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Access denied: Only administrators can view all users' });
+    }
+
+    const users = await User.find({})
+      .select('-password -otp -otpExpires')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Aggregate project inquiries per user
+    const projectCounts = await ProjectRequest.aggregate([
+      { $group: { _id: '$user', count: { $sum: 1 } } }
+    ]);
+    const projectCountMap = {};
+    projectCounts.forEach((pc) => {
+      if (pc._id) projectCountMap[pc._id.toString()] = pc.count;
+    });
+
+    // Aggregate orders/payments if Payment collection exists
+    let paymentCountMap = {};
+    try {
+      const paymentCounts = await Payment.aggregate([
+        { $group: { _id: '$user', count: { $sum: 1 }, totalSpent: { $sum: '$amount' } } }
+      ]);
+      paymentCounts.forEach((p) => {
+        if (p._id) paymentCountMap[p._id.toString()] = { count: p.count, totalSpent: p.totalSpent };
+      });
+    } catch {
+      // payment model optional/empty fallback
+    }
+
+    const enrichedUsers = users.map((u) => {
+      const userIdStr = u._id.toString();
+      return {
+        ...u,
+        projectCount: projectCountMap[userIdStr] || 0,
+        ordersCount: paymentCountMap[userIdStr]?.count || 0,
+        totalSpent: paymentCountMap[userIdStr]?.totalSpent || 0,
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      count: enrichedUsers.length,
+      users: enrichedUsers,
+    });
+  } catch (error) {
+    console.error('Get all users error:', error.message);
+    res.status(500).json({ success: false, message: 'Failed to retrieve users', error: error.message });
+  }
+};
+
+// @desc    Update user role (Admin only)
+// @route   PUT /api/auth/users/:id/role
+// @access  Private/Admin
+export const updateUserRole = async (req, res) => {
+  try {
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Access denied: Admin privileges required' });
+    }
+
+    const { role } = req.body;
+    if (!['user', 'admin'].includes(role)) {
+      return res.status(400).json({ success: false, message: 'Invalid role specified' });
+    }
+
+    if (req.params.id === req.user._id.toString() && role !== 'admin') {
+      return res.status(400).json({ success: false, message: 'You cannot revoke your own admin access.' });
+    }
+
+    const targetUser = await User.findById(req.params.id);
+    if (!targetUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    targetUser.role = role;
+    await targetUser.save();
+
+    res.status(200).json({
+      success: true,
+      message: `User role updated to ${role}`,
+      user: {
+        _id: targetUser._id,
+        name: targetUser.name,
+        email: targetUser.email,
+        role: targetUser.role,
+      },
+    });
+  } catch (error) {
+    console.error('Update user role error:', error.message);
+    res.status(500).json({ success: false, message: 'Failed to update user role' });
+  }
+};
+
+// @desc    Toggle user verification status (Admin only)
+// @route   PUT /api/auth/users/:id/verify
+// @access  Private/Admin
+export const toggleUserVerification = async (req, res) => {
+  try {
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Access denied: Admin privileges required' });
+    }
+
+    const targetUser = await User.findById(req.params.id);
+    if (!targetUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    targetUser.isVerified = !targetUser.isVerified;
+    await targetUser.save();
+
+    res.status(200).json({
+      success: true,
+      message: `User marked as ${targetUser.isVerified ? 'verified' : 'unverified'}`,
+      isVerified: targetUser.isVerified,
+    });
+  } catch (error) {
+    console.error('Toggle verification error:', error.message);
+    res.status(500).json({ success: false, message: 'Failed to update verification status' });
+  }
+};
+
+// @desc    Delete user account (Admin only)
+// @route   DELETE /api/auth/users/:id
+// @access  Private/Admin
+export const deleteUser = async (req, res) => {
+  try {
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Access denied: Admin privileges required' });
+    }
+
+    if (req.params.id === req.user._id.toString()) {
+      return res.status(400).json({ success: false, message: 'You cannot delete your own admin account.' });
+    }
+
+    const targetUser = await User.findById(req.params.id);
+    if (!targetUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ success: true, message: 'User account removed successfully' });
+  } catch (error) {
+    console.error('Delete user error:', error.message);
+    res.status(500).json({ success: false, message: 'Failed to delete user' });
+  }
+};
+

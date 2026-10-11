@@ -6,7 +6,7 @@ import SEO from '../components/SEO';
 import api from '../api/client';
 import { 
   Building2, User, Phone, Mail, FileText, Upload, Link as LinkIcon, 
-  DollarSign, Calendar, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Play
+  DollarSign, Calendar, CheckCircle2, ChevronRight, ChevronLeft, Loader2, Play, MessageSquare, ArrowRight
 } from 'lucide-react';
 
 const StartProject = () => {
@@ -148,17 +148,32 @@ const StartProject = () => {
           >
             Thank you for starting your project with us. Our team will review your requirements and get back to you shortly.
           </motion.p>
-          <motion.button 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/profile')} 
-            className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold rounded-2xl transition-all shadow-xl"
-          >
-            Go to My Profile
-          </motion.button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <motion.button 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate('/profile?tab=requests')} 
+              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold rounded-2xl transition-all shadow-[0_0_30px_rgba(79,70,229,0.4)] flex items-center justify-center gap-2 text-sm"
+            >
+              <MessageSquare size={16} />
+              <span>Open Real-time Chat with Engineers</span>
+            </motion.button>
+
+            <motion.button 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/')} 
+              className="w-full sm:w-auto px-6 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white font-semibold rounded-2xl transition-all text-sm"
+            >
+              Back to Home
+            </motion.button>
+          </div>
         </div>
       </div>
     );

@@ -12,12 +12,12 @@ import {
 } from 'lucide-react';
 import api from '../../api/client';
 
-const DashboardOverview = () => {
+const DashboardOverview = ({ onNavigateToUsers }) => {
   const [stats, setStats] = useState({
     projects: 0,
     packages: 0,
     resources: 0,
-    activeUsers: 24,
+    activeUsers: 0,
   });
 
   const [loading, setLoading] = useState(true);
@@ -25,17 +25,20 @@ const DashboardOverview = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [projectsRes, packagesRes, resourcesRes] = await Promise.all([
+        const [projectsRes, packagesRes, resourcesRes, usersRes] = await Promise.all([
           api.get('/api/projects').catch(() => ({ data: [] })),
           api.get('/api/packages').catch(() => ({ data: [] })),
-          api.get('/api/resources').catch(() => ({ data: [] }))
+          api.get('/api/resources').catch(() => ({ data: [] })),
+          api.get('/api/auth/users').catch(() => ({ data: { count: 0 } }))
         ]);
 
+        const usersCount = usersRes.data?.count ?? (Array.isArray(usersRes.data?.users) ? usersRes.data.users.length : (Array.isArray(usersRes.data) ? usersRes.data.length : 0));
+
         setStats({
-          projects: projectsRes.data.length || 0,
-          packages: packagesRes.data.length || 0,
-          resources: resourcesRes.data.length || 0,
-          activeUsers: Math.floor(Math.random() * 50) + 10, // Mock dynamic data
+          projects: projectsRes.data?.length || 0,
+          packages: packagesRes.data?.length || 0,
+          resources: resourcesRes.data?.length || 0,
+          activeUsers: usersCount,
         });
       } catch (error) {
         console.error("Error fetching stats:", error);
@@ -51,7 +54,7 @@ const DashboardOverview = () => {
     { title: 'Total Projects', value: stats.projects, icon: Briefcase, color: 'from-blue-500 to-indigo-450', trend: 'Live' },
     { title: 'Templates', value: stats.packages, icon: Package, color: 'from-purple-500 to-pink-450', trend: 'Live' },
     { title: 'Resources', value: stats.resources, icon: BookOpen, color: 'from-orange-500 to-amber-450', trend: 'Live' },
-    { title: 'Active Users', value: stats.activeUsers, icon: Users, color: 'from-emerald-500 to-teal-450', trend: 'Live' },
+    { title: 'Registered Users', value: stats.activeUsers, icon: Users, color: 'from-emerald-500 to-teal-450', trend: 'Directory', onClick: onNavigateToUsers },
   ];
 
   const recentActivity = [
@@ -80,7 +83,8 @@ const DashboardOverview = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className="glass-card rounded-3xl p-6 border border-[color:var(--border)] relative overflow-hidden group"
+              onClick={stat.onClick}
+              className={`glass-card rounded-3xl p-6 border border-[color:var(--border)] relative overflow-hidden group ${stat.onClick ? 'cursor-pointer hover:border-emerald-500/40 transition-all' : ''}`}
             >
               <div className={`absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-br ${stat.color} opacity-20 blur-2xl group-hover:opacity-40 transition-opacity`}></div>
               

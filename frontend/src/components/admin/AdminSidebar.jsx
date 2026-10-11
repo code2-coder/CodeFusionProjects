@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Settings, Shield, Key, // My Account
-  LayoutDashboard, // Workspace
+  LayoutDashboard, MessageSquare, Users, // Workspace
   LayoutTemplate, Tag, Briefcase, ShoppingCart,
   LogOut, ChevronDown, ChevronRight
 } from 'lucide-react';
@@ -34,14 +34,12 @@ const AdminSidebar = ({ activeTab, setActiveTab, handleLogout, user, className =
       title: 'Workspace',
       items: [
         { id: 'overview', label: 'Admin Dashboard', icon: LayoutDashboard },
-
-
-
+        { id: 'leads', label: 'Client Leads & Inquiries', icon: MessageSquare, badge: 'Live' },
+        { id: 'users', label: 'Users & Clients', icon: Users },
         { id: 'projects', label: 'Projects', icon: Briefcase },
         { id: 'categories', label: 'Categories', icon: Tag },
         { id: 'templates', label: 'Templates', icon: LayoutTemplate },
         { id: 'orders', label: 'Orders', icon: ShoppingCart },
-
       ]
     }
   ];

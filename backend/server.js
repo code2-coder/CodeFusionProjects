@@ -1,6 +1,8 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import http from 'http';
+import { Server } from 'socket.io';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
@@ -28,6 +30,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
+const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
 
 // Trust first proxy (Render, Vercel, Cloudflare) for accurate client IP in rate limiters
@@ -68,6 +71,58 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
+
+// Socket.io Setup with CORS
+const io = new Server(server, {
+  cors: {
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+  }
+});
+
+// Provide io instance to Express routes
+app.set('io', io);
+
+// Socket.io Real-time Event Handling
+io.on('connection', (socket) => {
+  // Join a specific project conversation room
+  socket.on('join_project_room', (projectId) => {
+    if (projectId) {
+      socket.join(projectId.toString());
+    }
+  });
+
+  // Leave project room
+  socket.on('leave_project_room', (projectId) => {
+    if (projectId) {
+      socket.leave(projectId.toString());
+    }
+  });
+
+  // User typing indicator
+  socket.on('typing', ({ projectId, senderName, senderRole }) => {
+    if (projectId) {
+      socket.to(projectId.toString()).emit('user_typing', { senderName, senderRole });
+    }
+  });
+
+  // User stopped typing
+  socket.on('stop_typing', ({ projectId }) => {
+    if (projectId) {
+      socket.to(projectId.toString()).emit('user_stop_typing');
+    }
+  });
+
+  socket.on('disconnect', () => {
+    // disconnected
+  });
+});
 
 // Body Parsers with reasonable limits
 app.use(express.json({ limit: '10mb' }));
@@ -126,6 +181,6 @@ app.get('/', (_req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server with Real-time WebSockets running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 });

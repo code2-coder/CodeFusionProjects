@@ -1,12 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Rocket, Sparkles } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import DashboardOverview from '../components/admin/DashboardOverview';
-
-
-
+import AdminProjectLeads from '../components/admin/AdminProjectLeads';
+import AdminUsers from '../components/admin/AdminUsers';
 import AdminTemplates from '../components/admin/AdminTemplates';
 import AdminCategories from '../components/admin/AdminCategories';
 import AdminProjects from '../components/admin/AdminProjects';
@@ -29,8 +28,16 @@ const ComingSoon = ({ title }) => (
 const AdminPanel = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
+  const location = useLocation();
+  const queryTab = new URLSearchParams(location.search).get('tab');
+  const [activeTab, setActiveTab] = useState(queryTab || 'overview');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (queryTab) {
+      setActiveTab(queryTab);
+    }
+  }, [queryTab]);
 
   useEffect(() => {
     if (!user || user.role !== 'admin') {
@@ -43,10 +50,11 @@ const AdminPanel = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'overview':
-        return <DashboardOverview />;
-
-
-
+        return <DashboardOverview onNavigateToUsers={() => handleTabChange('users')} />;
+      case 'leads':
+        return <AdminProjectLeads />;
+      case 'users':
+        return <AdminUsers onNavigateToLeads={() => handleTabChange('leads')} />;
       case 'projects':
         return <AdminProjects />;
       case 'categories':
